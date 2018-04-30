@@ -1,0 +1,21 @@
+{
+    "compilerOptions": {
+        "removeComments": false,
+        "experimentalDecorators": true,
+        "sourceMap": true,
+        "target": "es5",
+        "jsx": "react",
+        "module": "commonjs",
+        "allowJs": true,
+        "lib": [
+            "es6",
+            "dom"
+        ]
+    },
+    "files": [
+        "./ts/app.tsx"
+    ],
+    "exclude": [
+        "node_modules"
+    ]
+}

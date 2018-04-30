@@ -1,0 +1,10 @@
+[package]
+name = "webview_hw"
+version = "0.1.0"
+authors = ["Robert Masen <r.f.masen@gmail.com>"]
+
+[dependencies]
+web-view = { git = "https://github.com/huytd/web-view" }
+serde = "1"
+serde_derive = ""
+serde_json = "1"
