@@ -1,6 +1,6 @@
 import * as React from 'react';
 import AppState, {Project} from '../appState';
-
+import InputGroup from './inputGroup';
 interface IAllProps {
     source: string;
     destination: string;
@@ -10,42 +10,52 @@ interface IAllProps {
     sourceChanged: (newPath: string) => void;
     destChange: (newPath: string) => void;
     pageSelected: (project: Project) => void;
+    aboutSelected: () => void;
     generateSite: () => void;
 }
 
 export default class All extends React.Component<IAllProps, {}> {
+
     render() {
         return (
             <div className="all-container">
-                <div id="infile-input" className="input-group">
-                    <label>Input Directory</label>
-                    <input 
-                        id="infile" 
+                <div className="button-group">
+                <button 
+                    type="button" 
+                    onClick={ev => this.props.updateRequested()}
+                >Update
+                </button>
+                <button 
+                    type="button" 
+                    onClick={ev => this.props.generateSite()}
+                >Generate
+                </button>
+                <button
+                    type="button"
+                    onClick={ev => {}}
+                >Add Project</button>
+            </div>
+                <div className="paths">
+                    <InputGroup id="infile-input"
+                        label="Input Directory"
                         value={this.props.source} 
                         onChange={ev => this.props.sourceChanged(ev.currentTarget.value)}
                     />
-                    <button 
-                        type="button" 
-                        onClick={ev => this.props.updateRequested()}
-                    >
-                        Update
-                    </button>
-                </div>
-                <div id="outfile-input" className="input-group">
-                    <label>Output Directory</label>
-                    <input
-                        id="outfile"
+                    
+                    <InputGroup 
+                        id="outfile-input"
+                        label="Output Directory"
                         value={this.props.destination}
                         onChange={ev => this.props.destChange(ev.currentTarget.value)}
                     />
-                    <button 
-                        type="button" 
-                        onClick={ev => this.props.generateSite()}
-                    >
-                        Generate
-                    </button>
+                    <div className="button-group">
+                        
+                    </div>
                 </div>
                 <div className="page-list">
+                    <div onClick={ev => this.props.aboutSelected()} className="page-link">
+                        <span className="page-name">About</span>
+                    </div>
                     {this.props.pages.map((p, i) => {
                         return (
                             <div

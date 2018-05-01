@@ -4,13 +4,40 @@ import {mockState} from './mockState';
 
 export default class Comm {
     private mockState: AppState;
-    constructor(private stateChangeCb: (state: AppState) => void) {
+    private initted = false;
+    constructor(source: string, private stateChangeCb: (state: AppState) => void) {
         this.mockState = mockState();
         window.addEventListener('state-change', (ev: CustomEvent) => this.stateChange(ev));
-        setTimeout(() => this.sendMessge(Message.Init()), 2000);
+    }
+
+    public requestUpdate(source: string) {
+        if (this.initted) throw new Error('Loop error')
+        let msg = Message.Init(source);
+        this.initted = true;
+        this.sendMessge(msg);
+    }
+
+    public build(inDir: string, outDir: string) {
+        let msg = Message.Build(inDir, outDir);
+        this.sendMessge(msg);
+    }
+
+    public updateProject(p: Project) {
+        let msg = Message.UpdateProject(p);
+        this.sendMessge(msg);
+    }
+
+    public updateAbout(path: string, content: string) {
+        let msg = Message.UpdateAbout(path, content);
+        this.sendMessge(msg);
+    }
+
+    public log(msg: string) {
+        this.sendMessge(Message.Log(msg));
     }
 
     private stateChange(ev: CustomEvent) {
+        console.log('Comm.stateChange', ev.detail);
         try {
             let parsedState = JSON.parse(ev.detail);
             if (!this.stateChangeCb) return this.sendMessge(Message.Error('Cannot change state w/o state change callback'))
@@ -18,25 +45,28 @@ export default class Comm {
         } catch(e) {
             return this.sendMessge(Message.Error(`Error parsing json ${e}`));
         }
-
     }
 
-    public sendMessge(message: Message) {
-        // (window.external as any).invoke(JSON.stringify(message))
+    private sendMessge(message: any) {
+        console.log('Comm.sendMessage', message);
+        (window.external as any).invoke(JSON.stringify(message))
+        // this.mockEventHandler(message);
+    }
+    
+    private mockEventHandler(message: Message) {
         switch (message.kind) {
             case Event.Init:
             case Event.Build:
                 return this.mockDispatch();
             case Event.UpdateAbout:
-                this.mockState.about = message.data;
+                let parsed = JSON.parse(message.data);
+                this.mockState.image = parsed.image;
+                this.mockState.about = parsed.content;
                 return this.mockDispatch();
-            case Event.UpdateImage:
-                this.mockState.image = message.data;
-                return this.mockDispatch();
-            case Event.UpdatePage:
+            case Event.UpdateProject:
                 let incoming = JSON.parse(message.data);
                 this.mockState.portfolio = this.mockState.portfolio.map(p => {
-                    if (p.meta.title == incoming.title) {
+                    if (p.id == incoming.id) {
                         return incoming;
                     }
                     return p;
@@ -44,11 +74,13 @@ export default class Comm {
                 return this.mockDispatch();
             case Event.Add:
                 this.mockState.portfolio.push(new Project(
+                    this.mockState.portfolio.length,
                     new Meta(message.data),
                     [], ''
                 ));
                 return this.mockDispatch();
         }
+
     }
 
     private mockDispatch() {
@@ -62,65 +94,65 @@ class Message {
         public data: string,
     ) {}
 
-    public static Init():Message {
-        return new Message(
-            Event.Init,
-            ""
-        )
+    public static Init(source: string) {
+        return {
+            kind: Event.Init,
+            source: source
+        }
     }
 
-    public static Error(message: string):Message {
-        return new Message (
-            Event.Error,
+    public static Error(message: string)  {
+        return {
+            kind: Event.Error,
             message,
-        )
+        }
     }
 
-    public static Build(inDir: string, outDir: string):Message {
-        return new Message(
-            Event.Build,
-            JSON.stringify({in_dir: inDir, out_dir: outDir})
-        )
+    public static Build(inDir: string, outDir: string) {
+        return {
+            kind: Event.Build,
+            source: inDir, 
+            out_dir: outDir
+        }
     }
 
-    public static AddPage(name: string):Message {
-        return new Message(
-            Event.Add,
+    public static AddPage(name: string) {
+        return {
+            kind: Event.Add,
             name
-        )
+        }
     }
 
-    public static UpdatePage(project: Project):Message {
-        return new Message(
-            Event.UpdatePage,
-            JSON.stringify(project),
-        )
+    public static UpdateProject(project: Project) {
+        return {
+            kind: Event.UpdateProject,
+            project,
+        }
     }
 
-    public static UpdateAbout(text: string):Message {
-        return new Message(
-            Event.UpdateAbout,
-            text
-        )
+    public static UpdateAbout(path: string, text: string) {
+        return {
+            kind: Event.UpdateAbout,
+            imagePath: path, 
+            content: text
+        }
     }
 
-    public static UpdateImage(path: string):Message {
-        return new Message(
-            Event.UpdateImage,
-            path,
-        )
+    public static Log(msg: String) {
+        return {
+            kind: Event.Log,
+            msg,
+        }
     }
 }
 
 enum Event {
-    Init = "Init",
-    Error = "Error",
-    Build = "Build",
-    Add = "Add",
-    UpdatePage = "UpdatePage",
-    UpdateAbout = "UpdateAbout",
-    UpdateImage = "UpdateImage",
-    UpdateSource = "UpdateSource",
-    UpdateDest = "UpdateDest"
+    Init = "init",
+    Error = "error",
+    Build = "build",
+    Add = "add",
+    UpdateProject = "updateProject",
+    UpdateAbout = "updateAbout",
+    Log = 'log',
 }
 

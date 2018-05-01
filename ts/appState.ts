@@ -19,6 +19,7 @@ export default class Website {
 
 export class Project {
     constructor(
+        public id: number,
         public meta: Meta = new Meta(),
         public images: string[] = [],
         public description: string,
@@ -26,6 +27,7 @@ export class Project {
 
     public static fromJson(json: any): Project {
         return new Project(
+            json.id,
             Meta.fromJson(json.meta),
             json.images,
             json.description

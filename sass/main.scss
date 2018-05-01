@@ -1,0 +1,231 @@
+$dark: #2c363f;
+$warn: #e75a7c;
+$success: #bbc7a4;
+$lighter: #f2f5ea;
+$light: #d6dbd2;
+
+html, body {
+    width: 100%;
+    height: 100%;
+}
+
+button {
+    border: 0;
+    box-shadow: 1px 1px 1px 1px $success;
+    color: $light;
+    background: $dark;
+    border-radius: 5px;
+    font-size: 14pt;
+    padding: 5px;
+    &:active {
+        box-shadow: 0 0 0 0 white;
+        transform: translate(1px, 1px);
+    }
+    &:hover {
+        transform: translate(-1px, -1px);
+    }
+}
+.input-group {
+    display: flex;
+    flex-flow: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    label {
+        font-size: 16pt;
+        font-weight: bold;
+    }
+}
+#app-container {
+    .title-bar {
+        width: 100%;
+        height: 50px;
+        display: flex;
+        flex-flow: row;
+        justify-content: space-between;
+        align-content: flex-start;
+        align-items: center;
+        background: $dark;
+        color: $lighter;
+        .button-container {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            flex-flow: row;
+            justify-content: center;
+            align-items: center;
+            button {
+                background: $warn;
+                box-shadow: $light;
+                width: 40px;
+                height: 40px;
+                text-align: center;
+            }
+        }
+    }
+    main {
+        padding-top: 10px;
+        display: flex;
+        flex-flow: column;
+        justify-content: flex-start;
+        align-items: center;
+        .all-container {
+            min-width: 500px;
+            .paths {
+                display: flex;
+                flex-flow: row;
+                justify-content: flex-start;
+                align-items: center;
+                .input-group {
+                    margin: 0 5px;
+                    input {
+                        border: 0;
+                        font-size: 16pt;
+                        border-bottom: 1px solid $dark;
+                    }
+                }
+                .button-group {
+                    display: flex;
+                    flex-flow: column;
+                    justify-content: flex-end;
+                    align-items: flex-start;
+                    button {
+                        margin: 2px 0;
+                    }
+                }
+            }
+            .page-list {
+                display: flex;
+                flex-flow: column;
+                justify-content: flex-start;
+                align-content: stretch;
+                align-items: flex-start;
+                .page-link {
+                    background: $dark;
+                    padding: 5px;
+                    margin: 5px 0;
+                    color: $light;
+                    width: 100%;
+                    box-shadow: 1px 1px 1px 1px $success;
+                    font-size: 18pt;
+                    cursor: pointer;
+                    &:active {
+                        transform: translate(1px, 1px);
+                        box-shadow: 0;
+                    }
+                }
+            }
+        }
+        .button-group {
+            display: flex;
+            flex-flow:row;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            button {
+                padding: 5px;
+                &.cancel {
+                    background: $warn;
+                    color: $dark;
+                }
+                &.save {
+                    background: $success;
+                    color: $dark;
+                    box-shadow: 1px 1px 1px 1px $dark;
+                }
+            }
+        }
+        .project-view-container {
+            width: 100%;
+            .editors {
+                display: flex;
+                flex-flow: row;
+                justify-content: space-between;
+                align-items: flex-start;
+                width: 100%;
+                margin-bottom: 10px;
+                .text-editors {
+                    width: 500px;
+                    display: flex;
+                    flex-flow: column;
+                    justify-content: flex-start;
+                    align-items: center;
+                    .inputs {
+                        display: flex;
+                        flex-flow: row;
+                        justify-content: space-around;
+                        width: 100%;
+                        margin-bottom: 10px;
+                    }
+                    .content-editor {
+                        display: flex;
+                        flex-flow: column;
+                        justify-content: space-between;
+                        align-items: center;
+                        width: 100%;
+                        textarea {
+                            width: 100%;
+                            resize: none;
+                            height: 500px;
+                            width: 100%;
+                        }
+                    }
+                }
+                .image-editor {
+                    width: calc(100% - 510px);
+                    span {
+                        font-size: 18pt;
+                        font-weight: bold;
+                        height: 56px;
+                        line-height: 31px;
+                        display: block;
+                        margin-bottom: 10px;
+                    }
+                    .image-list {
+                        width: 100%;
+                        height: 458px;
+                        background: white;
+                        border: 1px solid black;
+                        margin-bottom: 10px;
+                        .project-image {
+                            font-size: 14pt;
+                            margin: 2px;
+                            padding: 0;
+                            display: block;
+                            height: 25px;
+                            line-height: 1;
+                            &::selection {
+                                background: $success;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        .about-container {
+            display: flex;
+            flex-flow: column;
+            align-content: flex-start;
+            align-items: center;
+            width: 500px;
+            .image-container {
+                display: flex;
+                flex-flow: row;
+                justify-content: flex-start;
+                align-items: flex-end;
+                align-content: flex-end;
+                width: 100%;
+                button {
+                    margin-left: 10px;
+                }
+            }
+            .content-editor {
+                width: 100%;
+                textarea {
+                    resize: none;
+                    height: 500px;
+                    width: 100%;
+                }
+            }
+        }
+    }
+}

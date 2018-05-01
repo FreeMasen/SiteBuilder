@@ -95,7 +95,11 @@
             </div>
         </div>
     </div>
-    <script src="app.js" ></script>
+    <script>
+        window.addEventListener('DOMContentLoaded', function() {
+            window.external.invoke(JSON.stringify({kind: 'load'}));
+        });
+    </script>
 </body>
 
 </html>

@@ -38,13 +38,19 @@ function setupState(): Website {
         for (var j = 0; j < teamSize;j++) {
             teammates.push(teammembers[Math.floor(Math.random() * teammembers.length)]);
         }
+        let imageNumber = Math.ceil(Math.random() * 10);
+        let images = [];
+        for (var k = 0; k < imageNumber; k++) {
+            images.push(`image-${k}.jpg`);
+        }
         portfolio.push(new Project(
+            i,
             new Meta(
                 name,
                 context,
                 teammates
             ),
-            [],
+            images,
             ''
         ))
     }

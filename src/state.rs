@@ -1,44 +1,34 @@
 use std::path::PathBuf;
 
-#[derive(Serialize, Deserialize, Debug)]
-pub struct AppState {
-    pub portfolio: Vec<Page>,
+#[derive(Serialize, Deserialize, Debug, Default)]
+pub struct Website {
+    pub portfolio: Vec<Project>,
     pub about: String,
     pub image: PathBuf,
 }
-#[derive(Serialize, Deserialize, Debug)]
-pub struct Page {
+#[derive(Serialize, Deserialize, Debug, Default)]
+pub struct Project {
+    pub id: u32,
     pub meta: Meta,
-    pub project: Project,
-    pub content: String,
+    pub images: Vec<PathBuf>,
+    pub description: String,
 }
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Default)]
 pub struct Meta {
     pub title: String,
     pub context: String,
     pub teammates: Vec<String>,
 }
-#[derive(Serialize, Deserialize, Debug)]
-pub struct Project {
-    pub name: String,
-    pub images: Vec<String>
-}
 
 #[derive(Serialize, Deserialize, Debug)]
+#[serde(rename_all = "camelCase", tag = "kind")]
 pub enum Message {
-    pub kind: ClientEvent,
-    pub data: String
-}
-
-#[derive(Serialize, Deserialize, Debug)]
-pub enum ClientEvent {
-    Init,
-    Error,
-    Build,
-    Add,
-    UpdatePage,
-    UpdateAbout,
-    UpdateImage,
-    UpdateSource,
-    UpdateDest,
+    Load,
+    Init { source: PathBuf },
+    Error { message: String },
+    Build { source: PathBuf, destination: PathBuf },
+    Add { name: String },
+    UpdateProject { project: Project },
+    UpdateAbout { image_path: PathBuf, content: String },
+    Log { msg: String }
 }
