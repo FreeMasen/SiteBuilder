@@ -1,15 +1,15 @@
 import * as React from 'react';
-import AppState, {Page} from '../appState';
+import AppState, {Project} from '../appState';
 
 interface IAllProps {
     source: string;
     destination: string;
-    pages: Page[];
+    pages: Project[];
 
     updateRequested: () => void;
     sourceChanged: (newPath: string) => void;
     destChange: (newPath: string) => void;
-    pageSelected: (page: Page) => void;
+    pageSelected: (project: Project) => void;
     generateSite: () => void;
 }
 
@@ -46,13 +46,14 @@ export default class All extends React.Component<IAllProps, {}> {
                     </button>
                 </div>
                 <div className="page-list">
-                    {this.props.pages.map(p => {
+                    {this.props.pages.map((p, i) => {
                         return (
                             <div
+                                key={`page-${i}`}
                                 className="page-link"
                                 onClick={ev => this.props.pageSelected(p)}
                             >
-                                <span className="page-name">{p.title}</span>
+                                <span className="page-name">{p.meta.title}</span>
                             </div>
                         )
                     })}

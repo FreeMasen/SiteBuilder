@@ -1,48 +1,34 @@
 
-export default class AppState {
+export default class Website {
     constructor(
-        public portfolio: Page[],
-        public about: string,
+        public portfolio: Project[] = [],
+        public about: string = '',
         public image: string = ''
     ) {
 
     }
 
-    static fromJson(json: any): AppState {
-        return new AppState(
-            json.portfolio.map(Page.fromJson),
+    static fromJson(json: any): Website {
+        return new Website(
+            json.portfolio.map(Project.fromJson),
             json.about,
             json.image,
         )
     }
 }
 
-export class Page {
-    constructor(
-        public title: string,
-        public project: Project,
-        public meta: Meta,
-    ){}
-
-    static fromJson(json: any): Page {
-        return new Page(
-            json.title,
-            Project.fromJson(json.project),
-            Meta.fromJson(json.meta),
-        )
-    }
-}
-
 export class Project {
     constructor(
-        public name: string = '',
+        public meta: Meta = new Meta(),
         public images: string[] = [],
-    ) {}
+        public description: string,
+    ) { }
 
-    static fromJson(json: any): Project {
+    public static fromJson(json: any): Project {
         return new Project(
-            json.name,
+            Meta.fromJson(json.meta),
             json.images,
+            json.description
         )
     }
 }
@@ -50,7 +36,7 @@ export class Project {
 export class Meta {
     constructor(
         public title: string = '',
-        public context: string = '',
+        public subtitle: string = '',
         public teammates: string[] = [],
     ) {}
 
