@@ -6,5 +6,7 @@ authors = ["Robert Masen <r.f.masen@gmail.com>"]
 [dependencies]
 web-view = { git = "https://github.com/huytd/web-view" }
 serde = "1"
-serde_derive = ""
+serde_derive = "1"
 serde_json = "1"
+toml = "0"
+walkdir = "2"

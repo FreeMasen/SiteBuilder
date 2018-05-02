@@ -1,17 +1,13 @@
-import AppState, {Project, Meta} from '../appState';
+import Website, {Project, Meta} from '../appState';
 
-import {mockState} from './mockState';
 
 export default class Comm {
-    private mockState: AppState;
     private initted = false;
-    constructor(source: string, private stateChangeCb: (state: AppState) => void) {
-        this.mockState = mockState();
+    constructor(source: string, private stateChangeCb: (state: Website) => void) {
         window.addEventListener('state-change', (ev: CustomEvent) => this.stateChange(ev));
     }
 
     public requestUpdate(source: string) {
-        if (this.initted) throw new Error('Loop error')
         let msg = Message.Init(source);
         this.initted = true;
         this.sendMessge(msg);
@@ -32,60 +28,29 @@ export default class Comm {
         this.sendMessge(msg);
     }
 
+    public getDirectory(name: string) {
+        let msg = Message.OpenDialog(name);
+        this.sendMessge(msg);
+    }
+
     public log(msg: string) {
         this.sendMessge(Message.Log(msg));
     }
 
     private stateChange(ev: CustomEvent) {
-        this.log('Comm.stateChange ' + JSON.stringify(ev.detail));
+        console.log('Comm.stateChange ', ev.detail);
         try {
-            let parsedState = JSON.parse(ev.detail);
+            let parsedState = Website.fromJson(ev.detail);
             if (!this.stateChangeCb) return this.sendMessge(Message.Error('Cannot change state w/o state change callback'))
             this.stateChangeCb(parsedState);
         } catch(e) {
+            console.error(e)
             return this.sendMessge(Message.Error(`Error parsing json ${e}`));
         }
     }
 
     private sendMessge(message: any) {
-        if (!(window.external as any).invoke) {
-            return this.mockEventHandler(message);
-        }
         (window.external as any).invoke(JSON.stringify(message))
-    }
-    
-    private mockEventHandler(message: Message) {
-        switch (message.kind) {
-            case Event.Init:
-            case Event.Build:
-                return this.mockDispatch();
-            case Event.UpdateAbout:
-                let parsed = JSON.parse(message.data);
-                this.mockState.image = parsed.image;
-                this.mockState.about = parsed.content;
-                return this.mockDispatch();
-            case Event.UpdateProject:
-                let incoming = JSON.parse(message.data);
-                this.mockState.portfolio = this.mockState.portfolio.map(p => {
-                    if (p.id == incoming.id) {
-                        return incoming;
-                    }
-                    return p;
-                });
-                return this.mockDispatch();
-            case Event.Add:
-                this.mockState.portfolio.push(new Project(
-                    this.mockState.portfolio.length,
-                    new Meta(message.data),
-                    [], ''
-                ));
-                return this.mockDispatch();
-        }
-
-    }
-
-    private mockDispatch() {
-        window.dispatchEvent(new CustomEvent('state-change', {detail: JSON.stringify(this.mockState)}));
     }
 }
 
@@ -145,6 +110,13 @@ class Message {
             msg,
         }
     }
+
+    public static OpenDialog(name: string) {
+        return {
+            kind: Event.OpenDialog,
+            name,
+        }
+    }
 }
 
 enum Event {
@@ -155,5 +127,6 @@ enum Event {
     UpdateProject = "updateProject",
     UpdateAbout = "updateAbout",
     Log = 'log',
+    OpenDialog = 'openDialog'
 }
 

@@ -83,6 +83,41 @@
             animation-duration: 1s;
             animation-name: fade-in;
         }
+
+        #console {
+            display: flex;
+            flex-flow: column;
+            justify-content: flex-start;
+            align-content: flex-start;
+            align-items: flex-start;
+            min-height: 100px;
+            width: 100%;
+            background: blue;
+        }
+        .console-line {
+            display: flex;
+            flex-flow: row wrap;
+            justify-content: flex-start;
+            align-items: center;
+            align-content: flex-start;
+            border-bottom: 1px solid white;
+            width: 100%;
+            font-family: monospace;
+            color: white;
+        }
+
+        .console-line-entry {
+            display: block;
+            margin-left: 5px;
+        }
+
+        .console-line.error {
+            background: red;
+
+        }
+        .console-line.warn {
+            background: rgb(189, 54, 5);
+        }
     </style>
 </head>
 
@@ -95,11 +130,113 @@
             </div>
         </div>
     </div>
+    <div id="console"></div>
     <script>
+        console.log = log;
+        console.error = error;
+        console.warn = warn;
         window.addEventListener('DOMContentLoaded', function() {
+            console.log('testing logger');
             window.external.invoke(JSON.stringify({kind: 'load'}));
         });
+        function log() {
+            let line = argsToDiv(arguments);
+            print(line, 'console-line')
+        }
+        function error() {
+            let line = argsToDiv(arguments);
+            print(line, 'console-line error');
+        }
+        function warn() {
+            let line = argsToDiv(arguments);
+            print(line, 'console-line warn');
+        }
+        function argsToDiv(args) {
+            let ret = document.createElement('div');
+            ret.appendChild(argToSpan(timestamp()));
+            for (var i = 0; i < args.length;i++) {
+                ret.appendChild(argToSpan(args[i]))
+            }
+            return ret;
+        }
+        function timestamp() {
+            let now = new Date();
+            let m = now.getMonth() + 1;
+            let d = now.getDate();
+            let y = now.getFullYear().toString().substr(1);
+            let h = now.getHours();
+            let min = now.getMinutes();
+            let s = now.getSeconds();
+            return m + '/' + d + '/' + y + ' ' + h + ':' + min + ':' + s + ': ';
+        }
+        function argToSpan(arg) {
+            if (typeof arg != 'string') arg = JSON.stringify(arg)
+            let ret = document.createElement('span');
+            ret.setAttribute('console-line-entry');
+            ret.appendChild(document.createTextNode(arg))
+            return ret;
+        }
+        function print(element, className) {
+            let div = document.getElementById('console');
+            if (!div) return document.body.innerHTML = 'UNABLE TO FIND CONSOLE';
+            element.setAttribute('class', className);
+            div.appendChild(element);
+            clearOld()
+        }
+        function clearOld() {
+            let div = document.getElementById('console');
+            if (!div) return;
+            while (div.childElementCount > 12) {
+                div.removeChild(div.firstChild);
+            }
+        }
     </script>
+    <script>
+    // Polyfill for creating CustomEvents on IE9/10/11
+
+    // code pulled from:
+    // https://github.com/d4tocchini/customevent-polyfill
+    // https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent#Polyfill
+
+    try {
+        var ce = new window.CustomEvent('test');
+        ce.preventDefault();
+        if (ce.defaultPrevented !== true) {
+            // IE has problems with .preventDefault() on custom events
+            // http://stackoverflow.com/questions/23349191
+            throw new Error('Could not prevent default');
+        }
+    } catch(e) {
+    var CustomEvent = function(event, params) {
+        var evt, origPrevent;
+        params = params || {
+        bubbles: false,
+        cancelable: false,
+        detail: undefined
+        };
+
+        evt = document.createEvent("CustomEvent");
+        evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
+        origPrevent = evt.preventDefault;
+        evt.preventDefault = function () {
+        origPrevent.call(this);
+        try {
+            Object.defineProperty(this, 'defaultPrevented', {
+            get: function () {
+                return true;
+            }
+            });
+        } catch(e) {
+            this.defaultPrevented = true;
+        }
+        };
+        return evt;
+    };
+
+    CustomEvent.prototype = window.Event.prototype;
+    window.CustomEvent = CustomEvent; // expose definition to window
+    }
+</script>
 </body>
 
 </html>

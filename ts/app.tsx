@@ -27,21 +27,21 @@ class AppContainer extends React.Component<{}, State> {
     private comm: Communicator;
     constructor(props) {
         super(props);
+        console.log('AppContainer.constructor');
         let website = new Website();
         let lastPaths = this.getPathsFromStorage();
         this.state = {
             website,
-            currentView: history.state ? history.state.currentView : Route.All,
+            currentView: Route.All,
             source: lastPaths.source,
             destination: lastPaths.destination,
-            selectedProject: history.state ? history.state.project : null,
+            selectedProject: null,
         };
-        this.comm = new Communicator(this.state.source, s => this.communicatorCallback(s))
-        this.comm.log('AppContainer.constructor');
+        this.comm = new Communicator(this.state.source, s => this.communicatorCallback(s));
     }
 
     componentDidMount() {
-        this.comm.log('AppContainer.componentDidMount')
+        console.log('AppContainer.componentDidMount')
         this.comm.requestUpdate(this.state.source);
     }
 
@@ -64,20 +64,25 @@ class AppContainer extends React.Component<{}, State> {
         }
     }
 
-    updateSource(newValue: string) {
-        this.setState({source: newValue}, () => this.storePaths());
+    updateSource() {
+        this.comm.getDirectory('source');
     }
 
-    updateDestination(newValue: string) {
-        this.setState({destination: newValue}, () => this.storePaths());
+    updateDestination() {
+        this.comm.getDirectory('destination');
     }
 
     storePaths() {
         let value = JSON.stringify({source: this.state.source, destination: this.state.destination});
-        localStorage.setItem('paths', value);
+        if (localStorage) {
+            localStorage.setItem('paths', value);
+        } else {
+            document.cookie = value;
+        }
     }
 
     communicatorCallback(w: Website) {
+        console.log('App.communicatorCallback');
         this.setState((prev, props) => {
             return {
                 website: w
@@ -117,6 +122,7 @@ class AppContainer extends React.Component<{}, State> {
     }
 
     render() {
+        console.log('App.render()');
         let title = this.state.currentView == Route.All ? 'Site Builder' :
                     this.state.currentView == Route.About ? 'About Editor' :
                     this.state.currentView == Route.Project ? `Project Editor` : 
@@ -128,24 +134,25 @@ class AppContainer extends React.Component<{}, State> {
                     backVisible={this.state.currentView != Route.All}
                     backHandler={() => this.gotoAll()}
                 />
-                <main>
+                <div>
                     {this.renderBody()}
-                </main>
+                </div>
             </div>
         )
     }
 
     renderBody() {
-        console.log('AppContainer.render', this.state);
+        console.log('AppContainer.renderBody()');
         switch (this.state.currentView) {
             case Route.All:
+                console.log('Route.All', this.state.website.portfolio.length, 'projects');
                 return (
                     <All
                         source={this.state.source}
                         destination={this.state.destination}
                         pages={this.state.website.portfolio}
-                        sourceChanged={p => this.updateSource(p)}
-                        destChange={p => this.updateDestination(p)}
+                        sourceSelected={() => this.updateSource()}
+                        destSelected={() => this.updateDestination()}
                         pageSelected={p => this.selectPage(p)}
                         aboutSelected={() => this.goToAbout()}
                         generateSite={() => this.comm.build(this.state.source, this.state.destination)}
@@ -179,9 +186,5 @@ class AppContainer extends React.Component<{}, State> {
 
 
 }
-window.addEventListener('DOMContentLoaded', () => {
-    console.log('DOMContentLoaded')
-    ReactDOM.render(
-        <AppContainer />,
-        document.querySelector("#main"));
-})
+
+ReactDOM.render(<AppContainer />, document.querySelector("#main"));

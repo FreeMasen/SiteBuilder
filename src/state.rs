@@ -30,5 +30,6 @@ pub enum Message {
     Add { name: String },
     UpdateProject { project: Project },
     UpdateAbout { image_path: PathBuf, content: String },
-    Log { msg: String }
+    Log { msg: String },
+    OpenDialog { name: String },
 }

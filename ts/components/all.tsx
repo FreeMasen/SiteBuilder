@@ -7,8 +7,8 @@ interface IAllProps {
     pages: Project[];
 
     updateRequested: () => void;
-    sourceChanged: (newPath: string) => void;
-    destChange: (newPath: string) => void;
+    sourceSelected: () => void;
+    destSelected: () => void;
     pageSelected: (project: Project) => void;
     aboutSelected: () => void;
     generateSite: () => void;
@@ -17,6 +17,7 @@ interface IAllProps {
 export default class All extends React.Component<IAllProps, {}> {
 
     render() {
+        console.log('All.render()', this.props.pages.length);
         return (
             <div className="all-container">
                 <div className="button-group">
@@ -39,24 +40,22 @@ export default class All extends React.Component<IAllProps, {}> {
                     <InputGroup id="infile-input"
                         label="Input Directory"
                         value={this.props.source} 
-                        onChange={ev => this.props.sourceChanged(ev.currentTarget.value)}
+                        onFocus={ev => this.props.sourceSelected()}
                     />
                     
                     <InputGroup 
                         id="outfile-input"
                         label="Output Directory"
                         value={this.props.destination}
-                        onChange={ev => this.props.destChange(ev.currentTarget.value)}
+                        onFocus={ev => this.props.destSelected()}
                     />
-                    <div className="button-group">
-                        
-                    </div>
                 </div>
                 <div className="page-list">
                     <div onClick={ev => this.props.aboutSelected()} className="page-link">
                         <span className="page-name">About</span>
                     </div>
                     {this.props.pages.map((p, i) => {
+                        console.log('project', i, p)
                         return (
                             <div
                                 key={`page-${i}`}

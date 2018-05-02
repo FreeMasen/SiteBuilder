@@ -49,4 +49,12 @@ export class Meta {
             json.teammates,
         )
     }
+
+    toJson(): any {
+        return {
+            title: this.title,
+            context: this.subtitle,
+            teammates: this.teammates
+        }
+    }
 }

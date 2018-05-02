@@ -23,7 +23,7 @@ module.exports = function(env) {
                 }
             ]
         },
-        mode: env == 'prod' ? 'production' : 'development'
+        mode: 'development'
     }
     return config;
 }
