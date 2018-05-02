@@ -1,0 +1,188 @@
+html, body {
+  width: 100%;
+  height: 100%; }
+
+button {
+  border: 0;
+  box-shadow: 1px 1px 1px 1px #bbc7a4;
+  color: #d6dbd2;
+  background: #2c363f;
+  border-radius: 5px;
+  font-size: 14pt;
+  padding: 5px; }
+  button:active {
+    box-shadow: 0 0 0 0 white;
+    transform: translate(1px, 1px); }
+  button:hover {
+    transform: translate(-1px, -1px); }
+
+.input-group {
+  display: flex;
+  flex-flow: column;
+  justify-content: flex-start;
+  align-items: flex-start; }
+  .input-group label {
+    font-size: 16pt;
+    font-weight: bold; }
+
+#app-container .title-bar {
+  width: 100%;
+  height: 50px;
+  display: flex;
+  flex-flow: row;
+  justify-content: space-between;
+  align-content: flex-start;
+  align-items: center;
+  background: #2c363f;
+  color: #f2f5ea; }
+  #app-container .title-bar .button-container {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    flex-flow: row;
+    justify-content: center;
+    align-items: center; }
+    #app-container .title-bar .button-container button {
+      background: #e75a7c;
+      box-shadow: #d6dbd2;
+      width: 40px;
+      height: 40px;
+      text-align: center; }
+#app-container main {
+  padding-top: 10px;
+  display: flex;
+  flex-flow: column;
+  justify-content: flex-start;
+  align-items: center; }
+  #app-container main .all-container {
+    min-width: 500px; }
+    #app-container main .all-container .paths {
+      display: flex;
+      flex-flow: row;
+      justify-content: flex-start;
+      align-items: center; }
+      #app-container main .all-container .paths .input-group {
+        margin: 0 5px; }
+        #app-container main .all-container .paths .input-group input {
+          border: 0;
+          font-size: 16pt;
+          border-bottom: 1px solid #2c363f; }
+      #app-container main .all-container .paths .button-group {
+        display: flex;
+        flex-flow: column;
+        justify-content: flex-end;
+        align-items: flex-start; }
+        #app-container main .all-container .paths .button-group button {
+          margin: 2px 0; }
+    #app-container main .all-container .page-list {
+      display: flex;
+      flex-flow: column;
+      justify-content: flex-start;
+      align-content: stretch;
+      align-items: flex-start; }
+      #app-container main .all-container .page-list .page-link {
+        background: #2c363f;
+        padding: 5px;
+        margin: 5px 0;
+        color: #d6dbd2;
+        width: 100%;
+        box-shadow: 1px 1px 1px 1px #bbc7a4;
+        font-size: 18pt;
+        cursor: pointer; }
+        #app-container main .all-container .page-list .page-link:active {
+          transform: translate(1px, 1px);
+          box-shadow: 0; }
+  #app-container main .button-group {
+    display: flex;
+    flex-flow: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%; }
+    #app-container main .button-group button {
+      padding: 5px; }
+      #app-container main .button-group button.cancel {
+        background: #e75a7c;
+        color: #2c363f; }
+      #app-container main .button-group button.save {
+        background: #bbc7a4;
+        color: #2c363f;
+        box-shadow: 1px 1px 1px 1px #2c363f; }
+  #app-container main .project-view-container {
+    width: 100%; }
+    #app-container main .project-view-container .editors {
+      display: flex;
+      flex-flow: row;
+      justify-content: space-between;
+      align-items: flex-start;
+      width: 100%;
+      margin-bottom: 10px; }
+      #app-container main .project-view-container .editors .text-editors {
+        width: 500px;
+        display: flex;
+        flex-flow: column;
+        justify-content: flex-start;
+        align-items: center; }
+        #app-container main .project-view-container .editors .text-editors .inputs {
+          display: flex;
+          flex-flow: row;
+          justify-content: space-around;
+          width: 100%;
+          margin-bottom: 10px; }
+        #app-container main .project-view-container .editors .text-editors .content-editor {
+          display: flex;
+          flex-flow: column;
+          justify-content: space-between;
+          align-items: center;
+          width: 100%; }
+          #app-container main .project-view-container .editors .text-editors .content-editor textarea {
+            width: 100%;
+            resize: none;
+            height: 500px;
+            width: 100%; }
+      #app-container main .project-view-container .editors .image-editor {
+        width: calc(100% - 510px); }
+        #app-container main .project-view-container .editors .image-editor span {
+          font-size: 18pt;
+          font-weight: bold;
+          height: 56px;
+          line-height: 31px;
+          display: block;
+          margin-bottom: 10px; }
+        #app-container main .project-view-container .editors .image-editor .image-list {
+          width: 100%;
+          height: 458px;
+          background: white;
+          border: 1px solid black;
+          margin-bottom: 10px; }
+          #app-container main .project-view-container .editors .image-editor .image-list .project-image {
+            font-size: 14pt;
+            margin: 2px;
+            padding: 0;
+            display: block;
+            height: 25px;
+            line-height: 1; }
+            #app-container main .project-view-container .editors .image-editor .image-list .project-image::selection {
+              background: #bbc7a4; }
+  #app-container main .about-container {
+    display: flex;
+    flex-flow: column;
+    align-content: flex-start;
+    align-items: center;
+    width: 500px; }
+    #app-container main .about-container .image-container {
+      display: flex;
+      flex-flow: row;
+      justify-content: flex-start;
+      align-items: flex-end;
+      align-content: flex-end;
+      width: 100%; }
+      #app-container main .about-container .image-container button {
+        margin-left: 10px; }
+    #app-container main .about-container .content-editor {
+      width: 100%; }
+      #app-container main .about-container .content-editor textarea {
+        resize: none;
+        height: 500px;
+        width: 100%; }
+
+/*# sourceMappingURL=main.css.map */

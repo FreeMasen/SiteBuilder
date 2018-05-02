@@ -16,14 +16,13 @@ const CSS: &'static str = include_str!("assets/main.css");
 
 fn main() {
     let size = (800, 800);
-    let debug = true;
     let w = Website::default();
     run(
         "Site Builder",
         Content::Html(INDEX),
         Some(size),
-        false,
-        debug,
+        true,
+        true,
         true,
         |_wv: MyUnique<WebView<Website>>| {},
         event_handler,
@@ -36,19 +35,26 @@ fn event_handler(wv: &mut WebView<Website>, arg: &str, state: &mut Website) {
     match from_str::<Message>(arg) {
         Ok(msg) => {
             match msg {
-                Load => {
+                Message::Load => {
+                    println!("Message::Load");
                     wv.inject_css(CSS);
-                    wv.eval(JS);
+                    println!("eval: {}", wv.eval(JS));
                 },
-                Message::Init {source} => {
+                Message::Init {source: _} => {
                     //TODO: parse source path for website info
                     inject_event(wv, state);
                 },
-                Message::Error {message} => (),
-                Message::Build {source, destination} => (),
-                Message::Add {name} => (),
-                Message::UpdateProject { project } => (),
-                Message::UpdateAbout {image_path, content} => (),
+                Message::Error {message} => {
+                    println!("Error: {}", message)
+                },
+                Message::Build {source, destination} => {
+                    println!("Build: {:?}, {:?}", source, destination)
+                },
+                Message::Add {name} => {
+                    println!("Add: {}", name)
+                },
+                Message::UpdateProject {project} => println!("UpdateProject: {:?}", project),
+                Message::UpdateAbout {image_path, content} => println!("UpdateAbout: {:?}, {:?}", image_path, content),
                 Message::Log { msg } => println!("Log: {}", msg),
             }
         },
@@ -56,7 +62,7 @@ fn event_handler(wv: &mut WebView<Website>, arg: &str, state: &mut Website) {
     }
 }
 
-// fn get_state(from: PathBuf) -> AppState {
+// fn get_state(from: PathBuf) -> Website {
 
 // }
 

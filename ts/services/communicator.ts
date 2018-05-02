@@ -37,7 +37,7 @@ export default class Comm {
     }
 
     private stateChange(ev: CustomEvent) {
-        console.log('Comm.stateChange', ev.detail);
+        this.log('Comm.stateChange ' + JSON.stringify(ev.detail));
         try {
             let parsedState = JSON.parse(ev.detail);
             if (!this.stateChangeCb) return this.sendMessge(Message.Error('Cannot change state w/o state change callback'))
@@ -48,9 +48,10 @@ export default class Comm {
     }
 
     private sendMessge(message: any) {
-        console.log('Comm.sendMessage', message);
+        if (!(window.external as any).invoke) {
+            return this.mockEventHandler(message);
+        }
         (window.external as any).invoke(JSON.stringify(message))
-        // this.mockEventHandler(message);
     }
     
     private mockEventHandler(message: Message) {
