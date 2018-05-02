@@ -5,7 +5,9 @@ extern crate serde_json;
 extern crate toml;
 extern crate web_view;
 extern crate walkdir;
+extern crate nfd;
 
+use nfd::{Response, open_pick_folder};
 use serde_json::{from_str, to_string};
 use web_view::{MyUnique ,WebView, Content, run, Dialog};
 
@@ -25,6 +27,7 @@ fn main() {
         "Site Builder",
         Content::Html(INDEX),
         Some(size),
+        true,
         true,
         true,
         |_wv: MyUnique<WebView<Website>>| {},
@@ -65,10 +68,12 @@ fn event_handler(wv: &mut WebView<Website>, arg: &str, state: &mut Website) {
                 Message::UpdateAbout {image_path, content} => println!("UpdateAbout: {:?}, {:?}", image_path, content),
                 Message::Log { msg } => println!("Log: {}", msg),
                 Message::OpenDialog { name } => {
-
-                    match wv.dialog(Dialog::ChooseDirectory, "Choose Path","") {
-                        Ok(value) => println!("{}: {}", name, value),
-                        Err(e) => println!("error: {:?}", e),
+                    if let Ok(r) = open_pick_folder(None) {
+                        match r {
+                            Response::Okay(p) => println!("single file {}", p),
+                            Response::OkayMultiple(ps) => println!("multiples {:?}", ps),
+                            Response::Cancel => println!("Cancel"),
+                        }
                     }
                 }
             }
