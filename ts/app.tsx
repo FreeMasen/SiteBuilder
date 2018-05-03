@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 
-import Website, {Project, Meta} from './appState';
+import AppState, {Website, Project, Meta, Route} from './appState';
 import Communicator from './services/communicator';
 
 import TitleBar from './components/titleBar';
@@ -9,21 +9,7 @@ import All from './components/all';
 import ProjectEditor from './components/project';
 import About from './components/about';
 
-interface State {
-    website: Website;
-    currentView: Route;
-    source: string;
-    destination: string;
-    selectedProject?: Project;
-}
-
-enum Route {
-    All,
-    Project,
-    About,
-}
-
-class AppContainer extends React.Component<{}, State> {
+class AppContainer extends React.Component<{}, AppState> {
     private comm: Communicator;
     constructor(props) {
         super(props);
@@ -37,7 +23,7 @@ class AppContainer extends React.Component<{}, State> {
             destination: lastPaths.destination,
             selectedProject: null,
         };
-        this.comm = new Communicator(this.state.source, s => this.communicatorCallback(s));
+        this.comm = new Communicator(s => this.communicatorCallback(s));
     }
 
     componentDidMount() {
@@ -81,12 +67,9 @@ class AppContainer extends React.Component<{}, State> {
         }
     }
 
-    communicatorCallback(w: Website) {
-        console.log('App.communicatorCallback');
+    communicatorCallback(s: AppState) {
         this.setState((prev, props) => {
-            return {
-                website: w
-            }
+            return s
         })
     }
 

@@ -1,28 +1,75 @@
-use std::fs::{File};
+use std::fs::{OpenOptions, File, DirBuilder};
 use std::io::{Read};
 use std::path::{PathBuf, Path};
 
+use bincode::{serialize_into, deserialize_from};
 use toml;
 use walkdir::WalkDir;
 
-use state::{Website, Project, Meta};
+use state::{AppState, Website, Project, Meta};
 
 
-pub fn get_website(path: PathBuf) -> Option<Website> {
-    if path == PathBuf::from("") {
-        return None;
+pub fn get_state() -> AppState {
+    if let Some(s) = try_get_cache() {
+        update_from_source(s)
+    } else {
+        AppState::default()
     }
-    let mut ret = Website::default();
-    for entry in WalkDir::new(&path).min_depth(1).max_depth(1) {
+}
+
+pub fn update_from_source(state: AppState) -> AppState {
+    let mut website = Website::default();
+    for entry in WalkDir::new(&state.source).min_depth(1).max_depth(1) {
         if let Ok(entry) = entry {
-            if entry.file_name() == "portfolio" {
-                ret.portfolio = portfolio(entry.path());
-            } else {
-                println!("{:?}", entry.file_name());
+            let name = entry.file_name();
+            if name == "portfolio" {
+                website.portfolio = portfolio(entry.path());
+            } else if name == "about.md" {
+                website.about = content(entry.path());
+            } else if name == "me.jpg" {
+                website.image = entry.path().to_path_buf();
             }
         }
     }
-    Some(ret)
+    let s = AppState {
+        website,
+        ..state
+    };
+    cache_state(&s);
+    s
+}
+
+pub fn cache_state(state: &AppState) {
+    if let Some(f) = cache_file() {
+        match serialize_into(&f, state) {
+            Ok(_) => (),
+            Err(e) => println!("{:?}", e),
+        }
+    }
+}
+
+pub fn try_get_cache() -> Option<AppState> {
+   if let Some(f) = cache_file() {
+        match deserialize_from(f) {
+            Ok(s) => Some(s),
+            Err(_e) => None
+        }
+   } else {
+       None
+   }
+}
+
+fn cache_file() -> Option<File> {
+    let db = DirBuilder::new();
+    let mut path = PathBuf::from("~/.website_builder");
+    if let Ok(()) = db.create(&path) {
+        path.push("cache.bincode");
+        return match OpenOptions::new().write(true).read(true).create(true).open(path) {
+            Ok(f) => Some(f),
+            Err(e) => None,
+        }
+    }
+    None
 }
 
 fn portfolio(path: &Path) -> Vec<Project>{

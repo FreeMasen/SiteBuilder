@@ -132,27 +132,42 @@
     </div>
     <div id="console"></div>
     <script>
-        console.log = log;
-        console.error = error;
-        console.warn = warn;
-        window.addEventListener('DOMContentLoaded', function() {
-            console.log('testing logger');
+
+        function checkForLoaded() {
+
+            var div = document.getElementById('console');
+            if (!div) {
+                return setTimeout(checkForLoaded, 0)
+            }
             window.external.invoke(JSON.stringify({kind: 'load'}));
-        });
+            if (!console) {
+                window.console = {
+                    log: log,
+                    error: error,
+                    warn: warn,
+                }
+            } else {
+                console.log = log;
+                console.error = error;
+                console.warn = warn;
+            }
+            console.log('testing logger');
+        }
+        checkForLoaded();
         function log() {
-            let line = argsToDiv(arguments);
+            var line = argsToDiv(arguments);
             print(line, 'console-line')
         }
         function error() {
-            let line = argsToDiv(arguments);
+            var line = argsToDiv(arguments);
             print(line, 'console-line error');
         }
         function warn() {
-            let line = argsToDiv(arguments);
+            var line = argsToDiv(arguments);
             print(line, 'console-line warn');
         }
         function argsToDiv(args) {
-            let ret = document.createElement('div');
+            var ret = document.createElement('div');
             ret.appendChild(argToSpan(timestamp()));
             for (var i = 0; i < args.length;i++) {
                 ret.appendChild(argToSpan(args[i]))
@@ -160,31 +175,31 @@
             return ret;
         }
         function timestamp() {
-            let now = new Date();
-            let m = now.getMonth() + 1;
-            let d = now.getDate();
-            let y = now.getFullYear().toString().substr(1);
-            let h = now.getHours();
-            let min = now.getMinutes();
-            let s = now.getSeconds();
+            var now = new Date();
+            var m = now.getMonth() + 1;
+            var d = now.getDate();
+            var y = now.getFullYear().toString().substr(1);
+            var h = now.getHours();
+            var min = now.getMinutes();
+            var s = now.getSeconds();
             return m + '/' + d + '/' + y + ' ' + h + ':' + min + ':' + s + ': ';
         }
         function argToSpan(arg) {
             if (typeof arg != 'string') arg = JSON.stringify(arg)
-            let ret = document.createElement('span');
+            var ret = document.createElement('span');
             ret.setAttribute('console-line-entry');
             ret.appendChild(document.createTextNode(arg))
             return ret;
         }
         function print(element, className) {
-            let div = document.getElementById('console');
+            var div = document.getElementById('console');
             if (!div) return document.body.innerHTML = 'UNABLE TO FIND CONSOLE';
             element.setAttribute('class', className);
             div.appendChild(element);
             clearOld()
         }
         function clearOld() {
-            let div = document.getElementById('console');
+            var div = document.getElementById('console');
             if (!div) return;
             while (div.childElementCount > 12) {
                 div.removeChild(div.firstChild);

@@ -1,9 +1,9 @@
-import Website, {Project, Meta} from '../appState';
+import AppState, {Website, Project, Meta} from '../appState';
 
 
 export default class Comm {
     private initted = false;
-    constructor(source: string, private stateChangeCb: (state: Website) => void) {
+    constructor(private stateChangeCb: (state: AppState) => void) {
         window.addEventListener('state-change', (ev: CustomEvent) => this.stateChange(ev));
     }
 
@@ -40,7 +40,7 @@ export default class Comm {
     private stateChange(ev: CustomEvent) {
         console.log('Comm.stateChange ', ev.detail);
         try {
-            let parsedState = Website.fromJson(ev.detail);
+            let parsedState = AppState.fromJson(ev.detail);
             if (!this.stateChangeCb) return this.sendMessge(Message.Error('Cannot change state w/o state change callback'))
             this.stateChangeCb(parsedState);
         } catch(e) {

@@ -1,5 +1,33 @@
 
-export default class Website {
+export default class AppState {
+    public selectedProject?: Project;
+    constructor(
+        public source: string = '',
+        public destination: string = '',
+        public website: Website = new Website(),
+        public currentView: Route = Route.All,
+        selectedProject: Project = null,
+    ) {
+        this.selectedProject = selectedProject;
+    }
+
+    public static fromJson(json: any): AppState {
+        return new AppState(
+            json.source,
+            json.destination,
+            Website.fromJson(json.website),
+            json.currentView,
+            json.selectedProject,
+        )
+    }
+}
+export enum Route {
+    All,
+    Project,
+    About,
+}
+
+export class Website {
     constructor(
         public portfolio: Project[] = [],
         public about: string = '',
@@ -9,8 +37,12 @@ export default class Website {
     }
 
     static fromJson(json: any): Website {
+        let portfolio = [];
+        for (var i = 0; i < json.portfolio;i++) {
+            Project.fromJson(json.portfolio[i]);
+        }
         return new Website(
-            json.portfolio.map(Project.fromJson),
+            portfolio,
             json.about,
             json.image,
         )
