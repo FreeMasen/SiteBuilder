@@ -9,6 +9,7 @@ interface IAllProps {
     updateRequested: () => void;
     sourceSelected: () => void;
     destSelected: () => void;
+    addPage: () => void;
     pageSelected: (project: Project) => void;
     aboutSelected: () => void;
     generateSite: () => void;
@@ -17,7 +18,6 @@ interface IAllProps {
 export default class All extends React.Component<IAllProps, {}> {
 
     render() {
-        console.log('All.render()', this.props.pages.length);
         return (
             <div className="all-container">
                 <div className="button-group">
@@ -33,7 +33,7 @@ export default class All extends React.Component<IAllProps, {}> {
                 </button>
                 <button
                     type="button"
-                    onClick={ev => {}}
+                    onClick={ev => this.props.addPage()}
                 >Add Project</button>
             </div>
                 <div className="paths">

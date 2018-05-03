@@ -1,55 +1,73 @@
-import AppState, {Website, Project, Meta} from '../appState';
+import AppState, {Website, Project, Meta, Route} from '../appState';
 
 
 export default class Comm {
-    private initted = false;
     constructor(private stateChangeCb: (state: AppState) => void) {
         window.addEventListener('state-change', (ev: CustomEvent) => this.stateChange(ev));
     }
 
-    public requestUpdate(source: string) {
-        let msg = Message.Init(source);
-        this.initted = true;
-        this.sendMessge(msg);
+    public init() {
+        let msg = Message.Init();
+        this.sendMessage(msg);
     }
 
-    public build(inDir: string, outDir: string) {
-        let msg = Message.Build(inDir, outDir);
-        this.sendMessge(msg);
+    public requestUpdate() {
+        let msg = Message.Refresh();
+        this.sendMessage(msg);
+    }
+
+    public build() {
+        let msg = Message.Build();
+        this.sendMessage(msg);
+    }
+
+    public add(name: string) {
+        let msg = Message.AddPage(name);
+        this.sendMessage(msg);
     }
 
     public updateProject(p: Project) {
         let msg = Message.UpdateProject(p);
-        this.sendMessge(msg);
+        this.sendMessage(msg);
     }
 
     public updateAbout(path: string, content: string) {
         let msg = Message.UpdateAbout(path, content);
-        this.sendMessge(msg);
+        this.sendMessage(msg);
     }
 
     public getDirectory(name: string) {
         let msg = Message.OpenDialog(name);
-        this.sendMessge(msg);
+        this.sendMessage(msg);
     }
 
     public log(msg: string) {
-        this.sendMessge(Message.Log(msg));
+        this.sendMessage(Message.Log(msg));
+    }
+
+    public changeView(route: Route, project?: Project) {
+        let msg = {
+            kind: "changeView", 
+            route,
+            project: project ? project.asJson() : null
+        }
+        this.sendMessage(msg);
     }
 
     private stateChange(ev: CustomEvent) {
         console.log('Comm.stateChange ', ev.detail);
         try {
             let parsedState = AppState.fromJson(ev.detail);
-            if (!this.stateChangeCb) return this.sendMessge(Message.Error('Cannot change state w/o state change callback'))
+            if (!this.stateChangeCb) return this.sendMessage(Message.Error('Cannot change state w/o state change callback'))
             this.stateChangeCb(parsedState);
         } catch(e) {
             console.error(e)
-            return this.sendMessge(Message.Error(`Error parsing json ${e}`));
+            return this.sendMessage(Message.Error(`Error parsing json ${e}`));
         }
     }
 
-    private sendMessge(message: any) {
+    private sendMessage(message: any) {
+        console.log('invoke: ', message);
         (window.external as any).invoke(JSON.stringify(message))
     }
 }
@@ -60,10 +78,15 @@ class Message {
         public data: string,
     ) {}
 
-    public static Init(source: string) {
+    public static Init() {
         return {
-            kind: Event.Init,
-            source: source
+            kind: Event.Init
+        }
+    }
+
+    public static Refresh() {
+        return {
+            kind: Event.Refresh
         }
     }
 
@@ -74,11 +97,9 @@ class Message {
         }
     }
 
-    public static Build(inDir: string, outDir: string) {
+    public static Build() {
         return {
-            kind: Event.Build,
-            source: inDir, 
-            out_dir: outDir
+            kind: Event.Build
         }
     }
 
@@ -92,7 +113,7 @@ class Message {
     public static UpdateProject(project: Project) {
         return {
             kind: Event.UpdateProject,
-            project,
+            project: project.asJson(),
         }
     }
 
@@ -121,6 +142,7 @@ class Message {
 
 enum Event {
     Init = "init",
+    Refresh = "refresh",
     Error = "error",
     Build = "build",
     Add = "add",

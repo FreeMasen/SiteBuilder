@@ -15,12 +15,11 @@ class AppContainer extends React.Component<{}, AppState> {
         super(props);
         console.log('AppContainer.constructor');
         let website = new Website();
-        let lastPaths = this.getPathsFromStorage();
         this.state = {
             website,
             currentView: Route.All,
-            source: lastPaths.source,
-            destination: lastPaths.destination,
+            source: '',
+            destination: '',
             selectedProject: null,
         };
         this.comm = new Communicator(s => this.communicatorCallback(s));
@@ -28,26 +27,7 @@ class AppContainer extends React.Component<{}, AppState> {
 
     componentDidMount() {
         console.log('AppContainer.componentDidMount')
-        this.comm.requestUpdate(this.state.source);
-    }
-
-    getPathsFromStorage(): {source: string, destination: string} {
-        let fallback = {
-            source: '',
-            destination: '',
-        };
-        try {
-            let stored;
-            if (window.localStorage) {
-                stored = localStorage.getItem('paths');
-            } else {
-                stored = document.cookie;
-            }
-            if (!stored) return fallback;
-            return JSON.parse(stored);
-        } catch(e) {
-            return fallback;
-        }
+        this.comm.init();
     }
 
     updateSource() {
@@ -58,46 +38,18 @@ class AppContainer extends React.Component<{}, AppState> {
         this.comm.getDirectory('destination');
     }
 
-    storePaths() {
-        let value = JSON.stringify({source: this.state.source, destination: this.state.destination});
-        if (localStorage) {
-            localStorage.setItem('paths', value);
-        } else {
-            document.cookie = value;
-        }
-    }
-
     communicatorCallback(s: AppState) {
+        console.log('communicatorCallback', s)
         this.setState((prev, props) => {
             return s
         })
     }
 
-    selectPage(p: Project) {
-        this.setState((prev, props) => {
-            return {
-                selectedProject: p,
-                currentView: Route.Project,
-            }
-        })
+    changeView(route: Route, project: Project = null) {
+        this.comm.changeView(route, project);
     }
+
     
-    gotoAll() {
-        this.setState((prev, props) => {
-            return {
-                selectedProject: null,
-                currentView: Route.All,
-            }
-        })
-    }
-    goToAbout() {
-        this.setState((prev, props) => {
-            return {
-                selectedProject: null,
-                currentView: Route.About,
-            }
-        })
-    }
     componentWillMount() {
         let spinner = document.getElementById('spinner-container');
         if (!spinner) return;
@@ -115,7 +67,8 @@ class AppContainer extends React.Component<{}, AppState> {
                 <TitleBar
                     title={title}
                     backVisible={this.state.currentView != Route.All}
-                    backHandler={() => this.gotoAll()}
+                    backHandler={() => this.changeView(Route.All)}
+                    lastBuilt={this.state.lastBuilt}
                 />
                 <div>
                     {this.renderBody()}
@@ -128,7 +81,7 @@ class AppContainer extends React.Component<{}, AppState> {
         console.log('AppContainer.renderBody()');
         switch (this.state.currentView) {
             case Route.All:
-                console.log('Route.All', this.state.website.portfolio.length, 'projects');
+                console.log('Route.All', this.state.website.portfolio.map(p => p.meta.title));
                 return (
                     <All
                         source={this.state.source}
@@ -136,10 +89,11 @@ class AppContainer extends React.Component<{}, AppState> {
                         pages={this.state.website.portfolio}
                         sourceSelected={() => this.updateSource()}
                         destSelected={() => this.updateDestination()}
-                        pageSelected={p => this.selectPage(p)}
-                        aboutSelected={() => this.goToAbout()}
-                        generateSite={() => this.comm.build(this.state.source, this.state.destination)}
-                        updateRequested={() => this.comm.requestUpdate(this.state.source)}
+                        addPage={() => this.comm.add(`project-${this.state.website.portfolio.length}`)}
+                        pageSelected={p => this.changeView(Route.Project, p)}
+                        aboutSelected={() => this.changeView(Route.About)}
+                        generateSite={() => this.comm.build()}
+                        updateRequested={() => this.comm.requestUpdate()}
                     />
                 );
             case Route.Project:
@@ -148,9 +102,9 @@ class AppContainer extends React.Component<{}, AppState> {
                         project={this.state.selectedProject}
                         saveHandler={p => {
                             this.comm.updateProject(p);
-                            this.gotoAll();
+                            this.changeView(Route.All);
                         }}
-                        cancelHandler={() => this.gotoAll()}
+                        cancelHandler={() => this.changeView(Route.All)}
                         addImageHandler={() => {}}
                     />
                 )
@@ -159,8 +113,9 @@ class AppContainer extends React.Component<{}, AppState> {
                     <About
                         content={this.state.website.about}
                         imagePath={this.state.website.image}
-                        backHandler={() => this.gotoAll()}
+                        backHandler={() => this.changeView(Route.All)}
                         saveHandler={(path, content) => this.comm.updateAbout(path, content)}
+                        imageHandler={() => this.comm.getDirectory('image')}
                     />
                 )
         }

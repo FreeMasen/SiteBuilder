@@ -6,7 +6,7 @@ interface IAboutEditorProps {
     content: string;
     backHandler: () => void;
     saveHandler: (image: string, content: string) => void;
-
+    imageHandler: () => void;
 }
 
 interface IAboutEditorState {
@@ -32,7 +32,7 @@ export default class AboutEditor extends React.Component<IAboutEditorProps, IAbo
                     <InputGroup
                         id="about-image"
                         label="Image"
-                        onChange={ev => this.setState({imagePath: ev.currentTarget.value})}
+                        onFocus={ev => this.props.imageHandler()}
                         value={this.props.imagePath}
                     />
                     <button 

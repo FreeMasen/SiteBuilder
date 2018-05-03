@@ -1,19 +1,23 @@
 use std::path::PathBuf;
+use chrono::prelude::*;
 
-#[derive(Serialize, Deserialize, Debug, Default)]
+#[derive(Serialize, Deserialize, Debug, Default, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct AppState {
     pub source: PathBuf,
     pub destination: PathBuf,
     pub website: Website,
     pub current_view: u32,
-    pub selected_project: Option<Project>
+    pub selected_project: Option<Project>,
+    pub last_built: Option<DateTime<Local>>,
 }
-#[derive(Serialize, Deserialize, Debug, Default)]
+
+#[derive(Serialize, Deserialize, Debug, Default, Clone)]
 pub struct Website {
     pub portfolio: Vec<Project>,
     pub about: String,
     pub image: PathBuf,
+    pub fonts: Vec<PathBuf>,
 }
 #[derive(Serialize, Deserialize, Debug, Default, Clone)]
 pub struct Project {
@@ -34,6 +38,7 @@ pub struct Meta {
 pub enum Message {
     Load,
     Init,
+    Refresh,
     Error { message: String },
     Build,
     Add { name: String },
@@ -41,4 +46,20 @@ pub enum Message {
     UpdateAbout { image_path: PathBuf, content: String },
     Log { msg: String },
     OpenDialog { name: String },
+    ChangeView { route: u32, project: Option<Project> },
+}
+
+impl Website {
+    pub fn add_project(&mut self, name: String) {
+        let new_project = Project {
+            id: self.portfolio.len() as u32,
+            meta: Meta {
+                title: name,
+                ..Meta::default()
+            },
+            ..Project::default()
+        };
+        self.portfolio.push(new_project);
+
+    }
 }

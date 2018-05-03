@@ -1,8 +1,3 @@
-html, body {
-  width: 100%;
-  height: 100%;
-}
-
 button {
   border: 0;
   box-shadow: 1px 1px 1px 1px #bbc7a4;
@@ -41,6 +36,7 @@ button:hover {
   align-items: center;
   background: #2c363f;
   color: #f2f5ea;
+  margin-bottom: 10px;
 }
 #app-container .title-bar .button-container {
   width: 50px;
@@ -57,47 +53,45 @@ button:hover {
   height: 40px;
   text-align: center;
 }
-#app-container main {
-  padding-top: 10px;
-  display: flex;
-  flex-flow: column;
-  justify-content: flex-start;
-  align-items: center;
-}
-#app-container main .all-container {
+#app-container .all-container {
   min-width: 500px;
 }
-#app-container main .all-container .paths {
+#app-container .all-container .button-group {
+  display: block;
+  width: 50%;
+  margin: auto;
+}
+#app-container .all-container .paths {
   display: flex;
   flex-flow: row;
   justify-content: flex-start;
   align-items: center;
 }
-#app-container main .all-container .paths .input-group {
+#app-container .all-container .paths .input-group {
   margin: 0 5px;
 }
-#app-container main .all-container .paths .input-group input {
+#app-container .all-container .paths .input-group input {
   border: 0;
   font-size: 16pt;
   border-bottom: 1px solid #2c363f;
 }
-#app-container main .all-container .paths .button-group {
+#app-container .all-container .paths .button-group {
   display: flex;
   flex-flow: column;
   justify-content: flex-end;
   align-items: flex-start;
 }
-#app-container main .all-container .paths .button-group button {
+#app-container .all-container .paths .button-group button {
   margin: 2px 0;
 }
-#app-container main .all-container .page-list {
+#app-container .all-container .page-list {
   display: flex;
   flex-flow: column;
   justify-content: flex-start;
   align-content: stretch;
   align-items: flex-start;
 }
-#app-container main .all-container .page-list .page-link {
+#app-container .all-container .page-list .page-link {
   background: #2c363f;
   padding: 5px;
   margin: 5px 0;
@@ -107,33 +101,33 @@ button:hover {
   font-size: 18pt;
   cursor: pointer;
 }
-#app-container main .all-container .page-list .page-link:active {
+#app-container .all-container .page-list .page-link:active {
   transform: translate(1px, 1px);
   box-shadow: 0;
 }
-#app-container main .button-group {
+#app-container .button-group {
   display: flex;
   flex-flow: row;
   justify-content: space-between;
   align-items: center;
   width: 100%;
 }
-#app-container main .button-group button {
+#app-container .button-group button {
   padding: 5px;
 }
-#app-container main .button-group button.cancel {
+#app-container .button-group button.cancel {
   background: #e75a7c;
   color: #2c363f;
 }
-#app-container main .button-group button.save {
+#app-container .button-group button.save {
   background: #bbc7a4;
   color: #2c363f;
   box-shadow: 1px 1px 1px 1px #2c363f;
 }
-#app-container main .project-view-container {
+#app-container .project-view-container {
   width: 100%;
 }
-#app-container main .project-view-container .editors {
+#app-container .project-view-container .editors {
   display: flex;
   flex-flow: row;
   justify-content: space-between;
@@ -141,37 +135,37 @@ button:hover {
   width: 100%;
   margin-bottom: 10px;
 }
-#app-container main .project-view-container .editors .text-editors {
+#app-container .project-view-container .editors .text-editors {
   width: 500px;
   display: flex;
   flex-flow: column;
   justify-content: flex-start;
   align-items: center;
 }
-#app-container main .project-view-container .editors .text-editors .inputs {
+#app-container .project-view-container .editors .text-editors .inputs {
   display: flex;
   flex-flow: row;
   justify-content: space-around;
   width: 100%;
   margin-bottom: 10px;
 }
-#app-container main .project-view-container .editors .text-editors .content-editor {
+#app-container .project-view-container .editors .text-editors .content-editor {
   display: flex;
   flex-flow: column;
   justify-content: space-between;
   align-items: center;
   width: 100%;
 }
-#app-container main .project-view-container .editors .text-editors .content-editor textarea {
+#app-container .project-view-container .editors .text-editors .content-editor textarea {
   width: 100%;
   resize: none;
   height: 500px;
   width: 100%;
 }
-#app-container main .project-view-container .editors .image-editor {
+#app-container .project-view-container .editors .image-editor {
   width: calc(100% - 510px);
 }
-#app-container main .project-view-container .editors .image-editor span {
+#app-container .project-view-container .editors .image-editor span {
   font-size: 18pt;
   font-weight: bold;
   height: 56px;
@@ -179,14 +173,14 @@ button:hover {
   display: block;
   margin-bottom: 10px;
 }
-#app-container main .project-view-container .editors .image-editor .image-list {
+#app-container .project-view-container .editors .image-editor .image-list {
   width: 100%;
   height: 458px;
   background: white;
   border: 1px solid black;
   margin-bottom: 10px;
 }
-#app-container main .project-view-container .editors .image-editor .image-list .project-image {
+#app-container .project-view-container .editors .image-editor .image-list .project-image {
   font-size: 14pt;
   margin: 2px;
   padding: 0;
@@ -194,17 +188,17 @@ button:hover {
   height: 25px;
   line-height: 1;
 }
-#app-container main .project-view-container .editors .image-editor .image-list .project-image::selection {
+#app-container .project-view-container .editors .image-editor .image-list .project-image::selection {
   background: #bbc7a4;
 }
-#app-container main .about-container {
+#app-container .about-container {
   display: flex;
   flex-flow: column;
   align-content: flex-start;
   align-items: center;
   width: 500px;
 }
-#app-container main .about-container .image-container {
+#app-container .about-container .image-container {
   display: flex;
   flex-flow: row;
   justify-content: flex-start;
@@ -212,13 +206,13 @@ button:hover {
   align-content: flex-end;
   width: 100%;
 }
-#app-container main .about-container .image-container button {
+#app-container .about-container .image-container button {
   margin-left: 10px;
 }
-#app-container main .about-container .content-editor {
+#app-container .about-container .content-editor {
   width: 100%;
 }
-#app-container main .about-container .content-editor textarea {
+#app-container .about-container .content-editor textarea {
   resize: none;
   height: 500px;
   width: 100%;

@@ -1,14 +1,17 @@
 
 export default class AppState {
     public selectedProject?: Project;
+    public lastBuilt?: Date; 
     constructor(
         public source: string = '',
         public destination: string = '',
         public website: Website = new Website(),
         public currentView: Route = Route.All,
         selectedProject: Project = null,
+        lastBuilt: Date = null,
     ) {
         this.selectedProject = selectedProject;
+        this.lastBuilt = lastBuilt;
     }
 
     public static fromJson(json: any): AppState {
@@ -18,6 +21,7 @@ export default class AppState {
             Website.fromJson(json.website),
             json.currentView,
             json.selectedProject,
+            new Date(json.lastBuilt),
         )
     }
 }
@@ -37,15 +41,19 @@ export class Website {
     }
 
     static fromJson(json: any): Website {
-        let portfolio = [];
-        for (var i = 0; i < json.portfolio;i++) {
-            Project.fromJson(json.portfolio[i]);
-        }
         return new Website(
-            portfolio,
+            json.portfolio.map(Project.fromJson),
             json.about,
             json.image,
         )
+    }
+
+    asJson(): any {
+        return {
+            portfolio: this.portfolio.map(p => p.asJson()),
+            about: this.about,
+            image: this.image,
+        }
     }
 }
 
@@ -65,6 +73,15 @@ export class Project {
             json.description
         )
     }
+
+    asJson(): any {
+        return {
+            id: this.id,
+            meta: this.meta.asJson(),
+            images: this.images,
+            description: this.description,
+        }
+    }
 }
 
 export class Meta {
@@ -82,7 +99,7 @@ export class Meta {
         )
     }
 
-    toJson(): any {
+    asJson(): any {
         return {
             title: this.title,
             context: this.subtitle,
