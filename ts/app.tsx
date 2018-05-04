@@ -30,14 +30,6 @@ class AppContainer extends React.Component<{}, AppState> {
         this.comm.init();
     }
 
-    updateSource() {
-        this.comm.getDirectory('source');
-    }
-
-    updateDestination() {
-        this.comm.getDirectory('destination');
-    }
-
     communicatorCallback(s: AppState) {
         console.log('communicatorCallback', s)
         this.setState((prev, props) => {
@@ -87,14 +79,15 @@ class AppContainer extends React.Component<{}, AppState> {
                         source={this.state.source}
                         destination={this.state.destination}
                         pages={this.state.website.portfolio}
-                        sourceSelected={() => this.updateSource()}
-                        destSelected={() => this.updateDestination()}
+                        sourceSelected={() => this.comm.updateSource()}
+                        destSelected={() => this.comm.updateDest()}
                         addPage={() => this.comm.add(`project-${this.state.website.portfolio.length}`)}
                         pageSelected={p => this.changeView(Route.Project, p)}
                         aboutSelected={() => this.changeView(Route.About)}
                         generateSite={() => this.comm.build()}
                         updateRequested={() => this.comm.requestUpdate()}
                         fonts={this.state.website.fonts}
+                        selectFontClicked={bold => this.comm.selectFont(bold)}
                     />
                 );
             case Route.Project:
@@ -115,8 +108,8 @@ class AppContainer extends React.Component<{}, AppState> {
                         content={this.state.website.about}
                         imagePath={this.state.website.image}
                         backHandler={() => this.changeView(Route.All)}
-                        saveHandler={(path, content) => this.comm.updateAbout(path, content)}
-                        imageHandler={() => this.comm.getDirectory('image')}
+                        saveHandler={(content) => this.comm.updateAbout(content)}
+                        imageHandler={() => this.comm.updateAboutImage()}
                     />
                 )
         }

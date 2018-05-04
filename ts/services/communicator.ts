@@ -31,14 +31,21 @@ export default class Comm {
         this.sendMessage(msg);
     }
 
-    public updateAbout(path: string, content: string) {
-        let msg = Message.UpdateAbout(path, content);
+    public updateAbout(content: string) {
+        let msg = Message.UpdateAbout(content);
         this.sendMessage(msg);
     }
 
-    public getDirectory(name: string) {
-        let msg = Message.OpenDialog(name);
-        this.sendMessage(msg);
+    public updateSource() {
+        this.sendMessage(Message.UpdateSource());
+    }
+
+    public updateDest() {
+        this.sendMessage(Message.UpdateDest());
+    }
+
+    public updateAboutImage() {
+        this.sendMessage(Message.UpdateAboutImage());
     }
 
     public log(msg: string) {
@@ -52,6 +59,10 @@ export default class Comm {
             project: project ? project.asJson() : null
         }
         this.sendMessage(msg);
+    }
+
+    public selectFont(bold: boolean) {
+        this.sendMessage(Message.AddFont(bold));
     }
 
     private stateChange(ev: CustomEvent) {
@@ -73,10 +84,6 @@ export default class Comm {
 }
 
 class Message {
-    constructor(
-        public kind: Event,
-        public data: string,
-    ) {}
 
     public static Init() {
         return {
@@ -105,7 +112,7 @@ class Message {
 
     public static AddPage(name: string) {
         return {
-            kind: Event.Add,
+            kind: Event.AddProject,
             name
         }
     }
@@ -117,11 +124,10 @@ class Message {
         }
     }
 
-    public static UpdateAbout(path: string, text: string) {
+    public static UpdateAbout(content: string) {
         return {
             kind: Event.UpdateAbout,
-            imagePath: path, 
-            content: text
+            content,
         }
     }
 
@@ -132,12 +138,39 @@ class Message {
         }
     }
 
-    public static OpenDialog(name: string) {
+    public static UpdateAboutImage() {
         return {
-            kind: Event.OpenDialog,
-            name,
+            kind: Event.UpdateAboutImage,
         }
     }
+
+    public static UpdateSource() {
+        return {
+            kind: Event.UpdateSource,
+        }
+    }
+
+    public static UpdateDest() {
+        return {
+            kind: Event.UpdateDest,
+        }
+    }
+
+    public static AddFont(bold: boolean) {
+        return {
+            kind: Event.AddFont,
+            bold,
+        }
+    }
+
+    public static RemoveFont(bold: boolean) {
+        return {
+            kind: Event.RemoveFont,
+            bold,
+        }
+    }
+
+
 }
 
 enum Event {
@@ -145,10 +178,17 @@ enum Event {
     Refresh = "refresh",
     Error = "error",
     Build = "build",
-    Add = "add",
+    AddProject = "addProject",
     UpdateProject = "updateProject",
     UpdateAbout = "updateAbout",
+    UpdateAboutImage = "updateAboutImage",
     Log = 'log',
-    OpenDialog = 'openDialog'
+    UpdateSource = 'updateSource',
+    UpdateDest = 'updateDest',
+    AddProjectImage = 'addProjectImage',
+    RemoveProjectImage = 'removeProjectImage',
+    ChangeView = 'changeView',
+    AddFont = 'addFont',
+    RemoveFont = 'removeFont',
 }
 

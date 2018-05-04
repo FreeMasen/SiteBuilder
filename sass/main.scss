@@ -59,168 +59,170 @@ button {
             }
         }
     }
-        .all-container {
-            min-width: 500px;
-            .button-group {
-                display: flex;
-                flex-flow: row;
-                
-                width: 50%;
-                margin: auto;
-            }
-            .paths {
-                display: flex;
-                flex-flow: row;
-                justify-content: space-around;
-                align-items: center;
-                .input-group {
-                    margin: 0 5px;
-                    input {
-                        border: 0;
-                        font-size: 16pt;
-                        border-bottom: 1px solid $dark;
-                    }
-                }
-                .button-group {
-                    display: flex;
-                    flex-flow: column;
-                    justify-content: flex-end;
-                    align-items: flex-start;
-                    button {
-                        margin: 2px 0;
-                    }
-                }
-            }
-            .page-list {
-                display: flex;
-                flex-flow: column;
-                justify-content: flex-start;
-                align-content: stretch;
-                align-items: flex-start;
-                .page-link {
-                    background: $dark;
-                    padding: 5px;
-                    margin: 5px 0;
-                    color: white;
-                    width: 100%;
-                    box-shadow: 1px 1px 1px 1px $light;
-                    font-size: 18pt;
-                    cursor: pointer;
-                    &:active {
-                        transform: translate(1px, 1px);
-                        box-shadow: 0;
-                    }
-                }
-            }
-        }
+    .all-container {
+        min-width: 500px;
         .button-group {
             display: flex;
-            flex-flow:row;
-            justify-content: space-between;
+            flex-flow: row;
+            
+            width: 50%;
+            margin: auto;
+        }
+        .paths {
+            display: flex;
+            flex-flow: row;
+            justify-content: space-around;
             align-items: center;
-            width: 100%;
-            button {
-                padding: 5px;
-                &.cancel {
-                    background: $warn;
-                }
-                &.save {
-                    background: $success;
-                    box-shadow: 1px 1px 1px 1px $dark;
+            .input-group {
+                margin: 0 5px;
+                input {
+                    border: 0;
+                    font-size: 16pt;
+                    border-bottom: 1px solid $dark;
                 }
             }
-        }
-        .project-view-container {
-            width: 100%;
-            .editors {
+            .button-group {
                 display: flex;
-                flex-flow: row;
-                justify-content: space-between;
+                flex-flow: column;
+                justify-content: flex-end;
                 align-items: flex-start;
-                width: 100%;
-                margin-bottom: 10px;
-                .text-editors {
-                    width: 500px;
-                    display: flex;
-                    flex-flow: column;
-                    justify-content: flex-start;
-                    align-items: center;
-                    .inputs {
-                        display: flex;
-                        flex-flow: row;
-                        justify-content: space-around;
-                        width: 100%;
-                        margin-bottom: 10px;
-                    }
-                    .content-editor {
-                        display: flex;
-                        flex-flow: column;
-                        justify-content: space-between;
-                        align-items: center;
-                        width: 100%;
-                        textarea {
-                            width: 100%;
-                            resize: none;
-                            height: 500px;
-                            width: 100%;
-                        }
-                    }
-                }
-                .image-editor {
-                    width: calc(100% - 510px);
-                    span {
-                        font-size: 18pt;
-                        font-weight: bold;
-                        height: 56px;
-                        line-height: 31px;
-                        display: block;
-                        margin-bottom: 10px;
-                    }
-                    .image-list {
-                        width: 100%;
-                        height: 458px;
-                        background: white;
-                        border: 1px solid black;
-                        margin-bottom: 10px;
-                        .project-image {
-                            font-size: 14pt;
-                            margin: 2px;
-                            padding: 0;
-                            display: block;
-                            height: 25px;
-                            line-height: 1;
-                            &::selection {
-                                background: $success;
-                            }
-                        }
-                    }
+                button {
+                    margin: 2px 0;
                 }
             }
         }
-        .about-container {
+        .page-list,
+        .font-list {
             display: flex;
             flex-flow: column;
-            align-content: flex-start;
-            align-items: center;
-            width: 500px;
-            .image-container {
-                display: flex;
-                flex-flow: row;
-                justify-content: flex-start;
-                align-items: flex-end;
-                align-content: flex-end;
+            justify-content: flex-start;
+            align-content: stretch;
+            align-items: flex-start;
+            .page-link,
+            .font {
+                background: $dark;
+                padding: 5px;
+                margin: 5px 0;
+                color: white;
                 width: 100%;
-                button {
-                    margin-left: 10px;
-                }
-            }
-            .content-editor {
-                width: 100%;
-                textarea {
-                    resize: none;
-                    height: 500px;
-                    width: 100%;
+                box-shadow: 1px 1px 1px 1px $light;
+                font-size: 18pt;
+                cursor: pointer;
+                &:active {
+                    transform: translate(1px, 1px);
+                    box-shadow: 0;
                 }
             }
         }
     }
+    .button-group {
+        display: flex;
+        flex-flow:row;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        button {
+            padding: 5px;
+            &.cancel {
+                background: $warn;
+            }
+            &.save {
+                background: $success;
+                box-shadow: 1px 1px 1px 1px $dark;
+            }
+        }
+    }
+    .project-view-container {
+        width: 100%;
+        .editors {
+            display: flex;
+            flex-flow: row;
+            justify-content: space-between;
+            align-items: flex-start;
+            width: 100%;
+            margin-bottom: 10px;
+            .text-editors {
+                width: 500px;
+                display: flex;
+                flex-flow: column;
+                justify-content: flex-start;
+                align-items: center;
+                .inputs {
+                    display: flex;
+                    flex-flow: row;
+                    justify-content: space-around;
+                    width: 100%;
+                    margin-bottom: 10px;
+                }
+                .content-editor {
+                    display: flex;
+                    flex-flow: column;
+                    justify-content: space-between;
+                    align-items: center;
+                    width: 100%;
+                    textarea {
+                        width: 100%;
+                        resize: none;
+                        height: 500px;
+                        width: 100%;
+                    }
+                }
+            }
+            .image-editor {
+                width: calc(100% - 510px);
+                span {
+                    font-size: 18pt;
+                    font-weight: bold;
+                    height: 56px;
+                    line-height: 31px;
+                    display: block;
+                    margin-bottom: 10px;
+                }
+                .image-list {
+                    width: 100%;
+                    height: 458px;
+                    background: white;
+                    border: 1px solid black;
+                    margin-bottom: 10px;
+                    .project-image {
+                        font-size: 14pt;
+                        margin: 2px;
+                        padding: 0;
+                        display: block;
+                        height: 25px;
+                        line-height: 1;
+                        &::selection {
+                            background: $success;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    .about-container {
+        display: flex;
+        flex-flow: column;
+        align-content: flex-start;
+        align-items: center;
+        width: 500px;
+        .image-container {
+            display: flex;
+            flex-flow: row;
+            justify-content: flex-start;
+            align-items: flex-end;
+            align-content: flex-end;
+            width: 100%;
+            button {
+                margin-left: 10px;
+            }
+        }
+        .content-editor {
+            width: 100%;
+            textarea {
+                resize: none;
+                height: 500px;
+                width: 100%;
+            }
+        }
+    }
+}

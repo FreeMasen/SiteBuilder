@@ -63,7 +63,7 @@ export class Project {
     constructor(
         public id: number,
         public meta: Meta = new Meta(),
-        public images: string[] = [],
+        public images: Image[] = [],
         public description: string,
     ) { }
 
@@ -71,7 +71,7 @@ export class Project {
         return new Project(
             json.id,
             Meta.fromJson(json.meta),
-            json.images,
+            json.images.map(Image.fromJson),
             json.description
         )
     }
@@ -80,8 +80,29 @@ export class Project {
         return {
             id: this.id,
             meta: this.meta.asJson(),
-            images: this.images,
+            images: this.images.map(i => i.asJson()),
             description: this.description,
+        }
+    }
+}
+
+export class Image {
+    constructor(
+        public position: number = null,
+        public path: string = null
+    ) { }
+
+    public static fromJson(json): Image {
+        return new Image(
+            json.position,
+            json.path,
+        );
+    }
+
+    public asJson(): any {
+        return {
+            position: this.position,
+            path: this.path,
         }
     }
 }

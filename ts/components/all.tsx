@@ -13,6 +13,7 @@ interface IAllProps {
     pageSelected: (project: Project) => void;
     aboutSelected: () => void;
     generateSite: () => void;
+    selectFontClicked: (bold: boolean) => void;
 }
 
 export default class All extends React.Component<IAllProps, {}> {
@@ -69,8 +70,18 @@ export default class All extends React.Component<IAllProps, {}> {
                 </div>
                 <h2>Fonts</h2>
                 <div className="font-list">
-                    <div><span className="font">Normal: {this.filename(this.props.fonts.normal)}</span></div>
-                    <div><span className="font">Bold: {this.filename(this.props.fonts.bold)}</span></div>
+                    <div 
+                        className="font"
+                        onClick={ev => this.props.selectFontClicked(false)}
+                    >
+                        <span className="font-name">Normal: {this.filename(this.props.fonts.normal)}</span>
+                    </div>
+                    <div 
+                        className="font"
+                        onClick={e => this.props.selectFontClicked(true)}
+                    >
+                        <span className="font-name">Bold: {this.filename(this.props.fonts.bold)}</span>
+                    </div>
                 </div>
             </div>
         )

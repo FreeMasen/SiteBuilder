@@ -5,9 +5,9 @@ use std::path::{PathBuf, Path};
 
 use bincode::{serialize_into, deserialize_from};
 use toml;
-use walkdir::{WalkDir, DirEntry, Error};
+use walkdir::{WalkDir,};
 
-use state::{AppState, Project, Meta, Fonts};
+use state::{AppState, Project, Meta, Fonts, Image, Website};
 
 ///Get the app state from our last session or default 
 /// if that is unavailable
@@ -27,7 +27,7 @@ impl AppState {
             if let Ok(entry) = entry {
                 let name = entry.file_name();
                 if name == "portfolio" {
-                    self.website.portfolio = portfolio(entry.path());
+                    self.website.update_projects_from_source(entry.path());
                 } else if name == "about.md" {
                     self.website.about = content(entry.path());
                 } else if name == "me.jpg" {
@@ -107,52 +107,73 @@ fn get_user_dir() -> Option<PathBuf> {
     } 
 }
 
-/// Use the path to create a list of projects
-fn portfolio(path: &Path) -> Vec<Project>{
-    println!("portfolio({:?})", path);
-    let mut ret = vec!();
-    for entry in WalkDir::new(path).min_depth(1).max_depth(1) {
-        if let Ok(entry) = entry {
-            let mut p = project(entry.path());
-            p.id = ret.len() as u32;
-            ret.push(p);
+impl Website {
+    pub fn update_projects_from_source(&mut self, path: &Path) {
+        let mut tmp_portfolio: Vec<Project> = vec!();
+        for entry in WalkDir::new(path).min_depth(1).max_depth(1) {
+            if let Ok(entry) = entry {
+                match self.portfolio.binary_search_by(|p| p.path().cmp(&entry.path().to_path_buf())) {
+                    Ok(idx) => {
+                        let mut p = self.portfolio[idx].clone();
+                        p.update_from_source(&entry.path().to_path_buf());
+                        tmp_portfolio.push(p);
+                    },
+                    Err(_) => {
+                        let mut p = Project::default();
+                        p.update_from_source(&entry.path().to_path_buf());
+                        tmp_portfolio.push(p);
+                    }
+                }
+            }
         }
+        self.portfolio = tmp_portfolio;
     }
-    ret
 }
 
-/// User the path the create a single project
-/// extracting the contents of content.md and meta.toml and
-/// the paths from the img folder
-fn project(path: &Path) -> Project {
-    let mut ret = Project::default();
-    for entry in WalkDir::new(path).min_depth(1).max_depth(1) {
-        if let Ok(entry) = entry {
-            let name = entry.file_name();
-            if name == "img" {
-                ret.images = list_of_files(entry.path())
-            } else
-            if name == "content.md" {
-                ret.description = content(entry.path())
-            } else
-            if name == "meta.toml" {
-                ret.meta = meta(entry.path())
+impl Project {
+    pub fn update_from_source(&mut self, path: &PathBuf) {
+        for entry in WalkDir::new(path).min_depth(1).max_depth(1) {
+            if let Ok(entry) = entry {
+                let name = entry.file_name();
+                if name == "img" {
+                    self.update_images_from_source(entry.path());
+                } else
+                if name == "content.md" {
+                    self.description = content(entry.path());
+                } else
+                if name == "meta.toml" {
+                    self.meta = meta(entry.path());
+                }
             }
         }
     }
-    ret
-}
 
-/// Walk the first level of files in this list and
-/// return only files, not symlinks or directories
-fn list_of_files(path: &Path) -> Vec<PathBuf> {
-    WalkDir::new(path)
-        .min_depth(1)
-        .max_depth(1)
-        .into_iter()
-        .filter_map(map_entry_to_path_buf)
-        .collect()
-
+    fn update_images_from_source(&mut self, path: &Path) {
+        let mut tmp_images: Vec<Image> = vec!();
+        for entry in WalkDir::new(path).min_depth(1).max_depth(1) {
+            if let Ok(entry) = entry {
+                if !entry.file_type().is_file() {
+                    continue;
+                }
+                match self.images.binary_search_by(|i| i.path.cmp(&entry.path().to_path_buf())) {
+                    Ok(idx) => {
+                        let mut img = self.images[idx].clone();
+                        img.path = entry.path().to_path_buf();
+                        tmp_images.push(img);
+                    },
+                    Err(_) => {
+                        let img = Image {
+                            position: self.images.len() as u32,
+                            path: entry.path().to_path_buf(),
+                        };
+                        tmp_images.push(img);
+                    }
+                }
+            }
+        }
+        self.images = tmp_images;
+        self.sort_images();
+    }
 }
 
 fn fonts(path: &Path) -> Fonts {
@@ -162,30 +183,16 @@ fn fonts(path: &Path) -> Fonts {
             Ok(e) => {
                 if let Some(n) = e.file_name().to_str() {
                     if let Some(_idx) = n.find("bold") {
-                        ret.bold = e.path().to_path_buf();
+                        ret.bold = Some(e.path().to_path_buf());
                     }
                 } else {
-                    ret.normal = e.path().to_path_buf();
+                    ret.normal = Some(e.path().to_path_buf());
                 }
             },
             Err(e) => println!("Error reading font file {:?}", e),
         }
     }
     ret
-}
-
-/// For `filter_map`ing a WalkDir to return only the files as a path buffer
-fn map_entry_to_path_buf(entry: Result<DirEntry, Error>) -> Option<PathBuf> {
-    match entry {
-            Ok(e) => {
-                if e.file_type().is_file() {
-                    Some(e.path().to_path_buf())
-                } else {
-                    None
-                }
-            },
-            Err(_) => None
-        }
 }
 
 /// Parse the meta.toml file for this project
@@ -283,13 +290,18 @@ pub fn ensure_dir_defaults(source: &PathBuf) {
     }
 }
 
-pub fn copy_file(source: &PathBuf, dest: &PathBuf) -> Result<(), String> {
-    let mut i_f = File::open(source).map_err(map_e)?;
-    let mut buf = vec!();
-    i_f.read_to_end(&mut buf).map_err(map_e)?;
-    let mut o_f = File::create(dest).map_err(map_e)?;
-    o_f.write_all(&mut buf).map_err(map_e)?;
-    Ok(())
+pub fn copy_file(source: &PathBuf, dest_dir: &PathBuf) -> Result<PathBuf, String> {
+    if let Some(file_name) = source.file_name() {
+        let dest = dest_dir.join(file_name);
+        let mut i_f = File::open(source).map_err(map_e)?;
+        let mut buf = vec!();
+        i_f.read_to_end(&mut buf).map_err(map_e)?;
+        let mut o_f = File::create(&dest).map_err(map_e)?;
+        o_f.write_all(&mut buf).map_err(map_e)?;
+        Ok(dest)
+    } else {
+        Err("Unable to get source's filename".into())
+    }
 }
 
 pub fn remove(path: &PathBuf) -> Result<(), String> {

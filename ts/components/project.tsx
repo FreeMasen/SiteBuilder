@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Project, Meta } from '../appState';
+import { Project, Meta, Image } from '../appState';
 import InputGroup from './inputGroup';
 
 interface IProjectEditorProps {
@@ -7,6 +7,7 @@ interface IProjectEditorProps {
     addImageHandler: () => void;
     saveHandler: (p: Project) => void;
     cancelHandler: () => void;
+    moveImage: (up: boolean, image: Image) => void;
 }
 
 interface IProjectEditorState {
@@ -14,7 +15,7 @@ interface IProjectEditorState {
     subtitle: string;
     teammates: string[];
     description: string;
-    images: string[];
+    images: Image[];
 }
 
 export default class ProjectEditor extends React.Component<IProjectEditorProps, IProjectEditorState> {
