@@ -18,7 +18,7 @@ use web_view::{MyUnique ,WebView, Content, run};
 mod state;
 mod fs;
 use state::{Message, AppState};
-use fs::{get_state, cache_state, write_input, ensure_dir_defaults, copy_file};
+use fs::{get_state, cache_state, write_input, ensure_dir_defaults, copy_file, remove};
 
 const INDEX: &'static str = include_str!("assets/index.html");
 const JS: &'static str = include_str!("assets/app.js");
@@ -58,7 +58,6 @@ fn event_handler(wv: &mut WebView<AppState>, arg: &str, state: &mut AppState) {
                     println!("Message::Init\n{:?}", &state);
                     inject_event(wv, state);
                 },
-
                 //When the app requests a refresh
                 //we refresh the state from the file system
                 Message::Refresh => {
@@ -145,7 +144,7 @@ fn event_handler(wv: &mut WebView<AppState>, arg: &str, state: &mut AppState) {
                                     };
                                 let mut dest = state.source.join("me");
                                 dest.set_extension(ext);
-                                match copy_file(source, &dest) {
+                                match copy_file(&source, &dest) {
                                     Ok(()) => state.website.image = dest,
                                     Err(e) => println!("Error moving image {:?}", e),
                                 }
@@ -174,6 +173,30 @@ fn event_handler(wv: &mut WebView<AppState>, arg: &str, state: &mut AppState) {
                     state.selected_project = project;
                     cache_state(state);
                     inject_event(wv, &state);
+                },
+                Message::AddFont { path } => {
+                    if let &Some(file_name) = &path.file_name() {
+                        let dest = path.join(file_name);
+                        match copy_file(&path, &dest) {
+                            Ok(()) => {
+                                state.update_from_source();
+                                cache_state(state);
+                                inject_event(wv, &state);
+                            },
+                            Err(e) => println!("{:?}", e),
+                        }
+                    }
+                },
+                Message::RemoveFont { name } => {
+                    let path = state.source.join(name);
+                    match remove(&path) {
+                        Ok(()) => {
+                            state.update_from_source();
+                            cache_state(state);
+                            inject_event(wv, &state);
+                        },
+                        Err(e) => println!("{:?}", e),
+                    }
                 }
             }
         },

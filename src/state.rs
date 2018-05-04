@@ -17,7 +17,7 @@ pub struct Website {
     pub portfolio: Vec<Project>,
     pub about: String,
     pub image: PathBuf,
-    pub fonts: Vec<PathBuf>,
+    pub fonts: Fonts,
 }
 #[derive(Serialize, Deserialize, Debug, Default, Clone)]
 pub struct Project {
@@ -25,6 +25,11 @@ pub struct Project {
     pub meta: Meta,
     pub images: Vec<PathBuf>,
     pub description: String,
+}
+#[derive(Serialize, Deserialize, Debug, Default, Clone)]
+pub struct Fonts {
+    pub bold: PathBuf,
+    pub normal: PathBuf,
 }
 #[derive(Serialize, Deserialize, Debug, Default, Clone)]
 pub struct Meta {
@@ -47,6 +52,8 @@ pub enum Message {
     Log { msg: String },
     OpenDialog { name: String },
     ChangeView { route: u32, project: Option<Project> },
+    AddFont { path: PathBuf },
+    RemoveFont { name: String },
 }
 
 impl Website {

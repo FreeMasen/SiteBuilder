@@ -1,13 +1,13 @@
-use std::fs::{OpenOptions, File, DirBuilder};
+use std::env::var_os;
+use std::fs::{OpenOptions, File, DirBuilder, remove_file};
 use std::io::{Read, Write};
 use std::path::{PathBuf, Path};
-use std::env::var_os;
 
 use bincode::{serialize_into, deserialize_from};
 use toml;
 use walkdir::{WalkDir, DirEntry, Error};
 
-use state::{AppState, Project, Meta};
+use state::{AppState, Project, Meta, Fonts};
 
 ///Get the app state from our last session or default 
 /// if that is unavailable
@@ -33,7 +33,7 @@ impl AppState {
                 } else if name == "me.jpg" {
                     self.website.image = entry.path().to_path_buf();
                 } else if name == "fonts" {
-                    self.website.fonts = list_of_files(entry.path());
+                    self.website.fonts = fonts(entry.path());
                 }
             }
         }
@@ -155,6 +155,25 @@ fn list_of_files(path: &Path) -> Vec<PathBuf> {
 
 }
 
+fn fonts(path: &Path) -> Fonts {
+    let mut ret = Fonts::default();
+    for entry in WalkDir::new(path).min_depth(1).max_depth(1) {
+        match entry {
+            Ok(e) => {
+                if let Some(n) = e.file_name().to_str() {
+                    if let Some(_idx) = n.find("bold") {
+                        ret.bold = e.path().to_path_buf();
+                    }
+                } else {
+                    ret.normal = e.path().to_path_buf();
+                }
+            },
+            Err(e) => println!("Error reading font file {:?}", e),
+        }
+    }
+    ret
+}
+
 /// For `filter_map`ing a WalkDir to return only the files as a path buffer
 fn map_entry_to_path_buf(entry: Result<DirEntry, Error>) -> Option<PathBuf> {
     match entry {
@@ -264,12 +283,17 @@ pub fn ensure_dir_defaults(source: &PathBuf) {
     }
 }
 
-pub fn copy_file(source: PathBuf, dest: &PathBuf) -> Result<(), String> {
+pub fn copy_file(source: &PathBuf, dest: &PathBuf) -> Result<(), String> {
     let mut i_f = File::open(source).map_err(map_e)?;
     let mut buf = vec!();
     i_f.read_to_end(&mut buf).map_err(map_e)?;
     let mut o_f = File::create(dest).map_err(map_e)?;
     o_f.write_all(&mut buf).map_err(map_e)?;
+    Ok(())
+}
+
+pub fn remove(path: &PathBuf) -> Result<(), String> {
+    remove_file(path).map_err(map_e)?;
     Ok(())
 }
 

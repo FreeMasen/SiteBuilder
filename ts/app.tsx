@@ -94,6 +94,7 @@ class AppContainer extends React.Component<{}, AppState> {
                         aboutSelected={() => this.changeView(Route.About)}
                         generateSite={() => this.comm.build()}
                         updateRequested={() => this.comm.requestUpdate()}
+                        fonts={this.state.website.fonts}
                     />
                 );
             case Route.Project:

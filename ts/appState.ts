@@ -35,7 +35,8 @@ export class Website {
     constructor(
         public portfolio: Project[] = [],
         public about: string = '',
-        public image: string = ''
+        public image: string = '',
+        public fonts: Fonts = new Fonts(),
     ) {
 
     }
@@ -45,6 +46,7 @@ export class Website {
             json.portfolio.map(Project.fromJson),
             json.about,
             json.image,
+            Fonts.fromJson(json.fonts),
         )
     }
 
@@ -80,6 +82,27 @@ export class Project {
             meta: this.meta.asJson(),
             images: this.images,
             description: this.description,
+        }
+    }
+}
+
+export class Fonts {
+    constructor(
+        public normal: string = '',
+        public bold: string = '',
+    ) { }
+
+    public static fromJson(json: any): Fonts {
+        return new Fonts(
+            json.normal,
+            json.bold,
+        )
+    }
+
+    asJson(): any {
+        return {
+            bold: this.bold,
+            normal: this.normal
         }
     }
 }
