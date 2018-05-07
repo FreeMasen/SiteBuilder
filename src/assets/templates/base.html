@@ -1,0 +1,128 @@
+<html>
+    <head>
+        <base href="/" /> 
+        <style>
+            @font-face {
+                font-family: 'Nanami-Book';
+                src: url('/fonts/Nanami-Book.otf')
+            }
+            @font-face {
+                font-family: 'Nanami-Thin';
+                src: url('/fonts/Nanami-Thin.otf')
+            }
+        html, body {
+            border: 0;
+            padding: 0;
+            margin: 0;
+        }
+        html > * {
+            box-sizing: border-box;
+            font-family: 'Nanami-Thin', sans-serif;
+        }
+        input, textarea {
+            font-family: 'Nanami-Thin', sans-serif !important;
+            font-size: 14pt;
+        }
+        #header {
+            margin-top: 10px;
+            font-size: 18pt;
+            display: flex;
+            flex-flow: row;
+            justify-content: space-between;
+            align-items: center;
+            align-content: flex-start;
+            margin-left: 11vw;
+            margin-right: 11vw;
+        }
+        #header > a {
+            font-family: 'Nanami-Book', sans-serif;
+            padding: 5px 0px;
+            font-weight: bold;
+            color: black;
+            text-decoration: none;
+        }
+        #header > a:visited {
+            color: black;
+        }
+        #nav {
+            display: flex;
+            flex-flow: row;
+            justify-content: center;
+            align-items: center;
+            align-content: flex-start;
+        }
+        .button {
+            display: block;
+            padding: 5px 10px;
+            text-decoration: none;
+            color: black;
+            background: none;
+            border: none;
+            font-family: 'Nanami-Thin', sans-serif;
+        }
+        .button:visited {
+            color: black;
+        }
+        .button:hover,
+        .button.selected {
+            color: rgb(0,147,239);
+        }
+        .button.selected:hover {
+            color: black;
+        }
+        @media (max-width: 550px) {
+            #header {
+                font-size: 14pt;
+            }
+        }
+        @media (max-width: 375px) {
+            #header {
+                font-size: 12pt;
+            }
+        }
+        </style>
+        {% block head %}
+        {% endblock head %}
+    </head>
+    <body>
+        <header id="header">
+            <a href="/">
+                Joe Mollen
+            </a>
+            </svg>
+            <nav id="nav">
+                <a href="/"
+                {% if route == "portfolio" %}
+                    class="button selected"
+                {% else %}
+                    class="button"
+                {% endif %}
+                >
+                    Work
+                </a>
+                <a href="/about/index.html"
+                {% if route == "about" %}
+                    class="button selected"
+                {% else %}
+                    class="button"
+                {% endif %}
+                >
+                    About
+                </a>
+                <a href="/contact/index.html"
+                {% if route == "contact" %}
+                    class="button selected"
+                {% else %}
+                    class="button"
+                {% endif %}
+                >
+                    Contact
+                </a>
+            </nav>
+        </header>
+        <main id="main">
+            {% block content %}
+            {% endblock content %}
+        </main>
+    </body>
+</html>

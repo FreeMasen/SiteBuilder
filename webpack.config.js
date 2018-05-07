@@ -1,15 +1,12 @@
 const path = require('path');
 
 module.exports = function(env) {
-    let out = env == 'prod' ? 
-                path.resolve(__dirname, 'src', 'assets') :
-                path.resolve(__dirname);
    let config = {
        entry: {
             app: path.resolve(__dirname, 'ts', 'app.tsx')
         },
         output: {
-            path: out,
+            path: path.resolve(__dirname, 'src', 'assets'),
             filename: '[name].js'
         },
         resolve: {
@@ -23,7 +20,7 @@ module.exports = function(env) {
                 }
             ]
         },
-        mode: 'production'
+        mode: 'development'
     }
     return config;
 }

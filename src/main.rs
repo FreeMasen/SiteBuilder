@@ -1,10 +1,12 @@
 extern crate bincode;
 extern crate chrono;
 extern crate nfd;
+extern crate pulldown_cmark;
 extern crate serde;
 #[macro_use]
 extern crate serde_derive;
 extern crate serde_json;
+extern crate tera;
 extern crate toml;
 extern crate web_view;
 extern crate walkdir;
@@ -15,10 +17,12 @@ use nfd::{Response, open_pick_folder, open_file_dialog};
 use serde_json::{from_str, to_string};
 use web_view::{MyUnique ,WebView, Content, run};
 
+mod builder;
 mod state;
 mod fs;
-use state::{Message, AppState};
+use state::{Message, AppState, Image};
 use fs::*;
+use builder::*;
 
 const INDEX: &'static str = include_str!("assets/index.html");
 const JS: &'static str = include_str!("assets/app.js");
@@ -42,7 +46,7 @@ fn main() {
 }
 
 fn event_handler(wv: &mut WebView<AppState>, arg: &str, state: &mut AppState) {
-    println!("event_loop {}", arg);
+    println!("event_handler {:?}", arg);
     match from_str::<Message>(arg) {
         Ok(msg) => {
             match msg {
@@ -56,7 +60,6 @@ fn event_handler(wv: &mut WebView<AppState>, arg: &str, state: &mut AppState) {
                 //When the react app is initialized, we
                 //send our state
                 Message::Init => {
-                    println!("Message::Init\n{:?}", &state);
                     inject_event(wv, state);
                 },
                 //When the app requests a refresh
@@ -73,7 +76,7 @@ fn event_handler(wv: &mut WebView<AppState>, arg: &str, state: &mut AppState) {
                 //When the app requests a build
                 //we convert the input to the output
                 Message::Build => {
-                    println!("Build: {:?}, {:?}", state.source, state.destination);
+                    // println!("Build: {:?}, {:?}", state.source, state.destination);
                     state.last_built = Some(Local::now());
                     cache_and_inject(wv, &state);
                 },
@@ -81,7 +84,6 @@ fn event_handler(wv: &mut WebView<AppState>, arg: &str, state: &mut AppState) {
                 //be added to the portfolio we do that
                 //and update the file system
                 Message::AddProject {name} => {
-                    println!("Add: {}", name);
                     match state.add_project(name) {
                         Ok(()) => cache_and_inject(wv, &state),
                         Err(e) => println!("Add Error: {:?}", e),
@@ -102,7 +104,6 @@ fn event_handler(wv: &mut WebView<AppState>, arg: &str, state: &mut AppState) {
                 //When the app requests to update the about page's
                 //content, we update the file system
                 Message::UpdateAbout { content } => {
-                    println!("UpdateAbout: {:?}", content);
                     let old_about = state.website.about.clone();
                     state.website.about = content;
                     match write_input(state) {
@@ -127,17 +128,25 @@ fn event_handler(wv: &mut WebView<AppState>, arg: &str, state: &mut AppState) {
                 }
                 //When the app wants to log some info
                 Message::Log { msg } => println!("Log: {}", msg),
-                Message::AddProjectImage { name } => {
-                    if let Some(p) = open_dialog(state.source.to_str(), false) {
-                        let source = PathBuf::from(p);
-                        match copy_file(&source, &state.source.join("portfolio").join(name).join("img")) {
-                            Ok(_path) => {
-                                state.update_from_source();
-                                cache_and_inject(wv, state);
-                            },
-                            Err(e) => println!("Error moving project image {:?}", e),
+                Message::AddProjectImage => {
+                    if let Some(ref mut proj) = state.selected_project {
+                        if let Some(p) = open_dialog(state.source.to_str(), false) {
+                            let source = PathBuf::from(p);
+                            match copy_file(&source, &proj.path.join("img")) {
+                                Ok(path) => {
+                                    let img = Image {
+                                        position: proj.images.len() as u32,
+                                        path,
+                                    };
+                                    proj.images.push(img);
+                                    proj.sort_images();
+                                },
+                                Err(e) => println!("Error moving project image {:?}", e),
+                            }
                         }
+
                     }
+                    cache_and_inject(wv, state);
                 },
                 Message::RemoveProjectImage { path } => {
                     match remove(&path) {
@@ -204,10 +213,14 @@ fn event_handler(wv: &mut WebView<AppState>, arg: &str, state: &mut AppState) {
                         }
                     }
                 },
-                Message::ChangeImagePos { project_id, old_pos, new_pos } => {
-                    if let Some(ref mut p) = state.website.get_project(project_id) {
-                        p.update_image_position(old_pos, new_pos)
+                Message::DeleteProject => {
+                    println!("Delete Project");
+                    if let Some(ref p) = state.selected_project {
+                        state.website.delete_project(p.id);
                     }
+                    state.current_view = 0;
+                    state.selected_project = None;
+                    cache_and_inject(wv, state);
                 }
             }
         },
@@ -229,7 +242,7 @@ fn open_dialog(path: Option<&str>, dir: bool) -> Option<String> {
     if dir {
         picker_result(open_pick_folder(path))
     } else {
-        picker_result(open_file_dialog(path, None))
+        picker_result(open_file_dialog(None, path))
     }
 }
 

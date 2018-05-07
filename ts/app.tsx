@@ -99,7 +99,12 @@ class AppContainer extends React.Component<{}, AppState> {
                             this.changeView(Route.All);
                         }}
                         cancelHandler={() => this.changeView(Route.All)}
-                        addImageHandler={() => {}}
+                        addImageHandler={() => {
+                            console.log('addImage');
+                            this.comm.addProjectImage()
+                        }}
+                        moveImage={(old, newPos) => this.comm.moveImage(old, newPos)}
+                        deleteProject={() => this.comm.deleteProject()}
                     />
                 )
             case Route.About:

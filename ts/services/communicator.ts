@@ -30,10 +30,24 @@ export default class Comm {
         let msg = Message.UpdateProject(p);
         this.sendMessage(msg);
     }
+    public addProjectImage() {
+        let msg = {
+            kind: 'addProjectImage',
+        }
+        this.sendMessage(msg);
+    }
 
     public updateAbout(content: string) {
         let msg = Message.UpdateAbout(content);
         this.sendMessage(msg);
+    }
+
+    moveImage(oldPos: number, newPos: number) {
+        this.sendMessage({
+            kind: 'changeImagePos',
+            old_pos: oldPos,
+            new_pos: newPos,
+        })
     }
 
     public updateSource() {
@@ -63,6 +77,12 @@ export default class Comm {
 
     public selectFont(bold: boolean) {
         this.sendMessage(Message.AddFont(bold));
+    }
+
+    public deleteProject() {
+        this.sendMessage({
+            kind: 'deleteProject',
+        })
     }
 
     private stateChange(ev: CustomEvent) {

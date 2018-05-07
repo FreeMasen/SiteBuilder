@@ -1,13 +1,16 @@
 import * as React from 'react';
 import { Project, Meta, Image } from '../appState';
 import InputGroup from './inputGroup';
+import ListBox from './listBox';
+import StringHandler from '../services/stringHandler';
 
 interface IProjectEditorProps {
     project: Project;
     addImageHandler: () => void;
     saveHandler: (p: Project) => void;
     cancelHandler: () => void;
-    moveImage: (up: boolean, image: Image) => void;
+    moveImage: (oldPos: number, newPos: number) => void;
+    deleteProject: () => void;
 }
 
 interface IProjectEditorState {
@@ -16,10 +19,10 @@ interface IProjectEditorState {
     teammates: string[];
     description: string;
     images: Image[];
+    selectedImage?: Image;
 }
 
 export default class ProjectEditor extends React.Component<IProjectEditorProps, IProjectEditorState> {
-    imageSelect: HTMLSelectElement;
     constructor(props) {
         super(props);
         console.log('new ProjectEditor', props);
@@ -35,6 +38,7 @@ export default class ProjectEditor extends React.Component<IProjectEditorProps, 
     pageSaved() {
         let p = new Project(
             this.props.project.id,
+            this.props.project.path,
             new Meta(this.state.title, this.state.subtitle, this.state.teammates),
             this.state.images,
             this.state.description
@@ -43,19 +47,37 @@ export default class ProjectEditor extends React.Component<IProjectEditorProps, 
     }
 
     removeImages() {
-        let selectedOptions = this.imageSelect.selectedOptions;
-        let names = [];
-        for (var i = 0; i < selectedOptions.length; i++) {
-            names.push(selectedOptions[i].value)
-        }
         this.setState((prev, props) => {
             return {
-                images: prev.images.filter(n => names.indexOf(n) < 0)
+                images: prev.images.filter((i) => i != this.state.selectedImage)
             }
-        });
+        })
+    }
+
+    moveImage(up: boolean) {
+        console.log('moveImage', up ? 'up' : 'down');
+        let oldPos = this.state.selectedImage ? this.state.selectedImage.position : -1;
+        if (oldPos < 0) return console.log('old position for this image is below 0');
+        let newPos;
+        if (up) {
+            newPos = oldPos - 1;
+        } else {
+            newPos = oldPos + 1;
+        }
+        console.log('moveImage from ', oldPos, 'to', newPos);
+        if (newPos < 0 || newPos >= this.state.images.length)
+            return console.error('Unable to move image outside of array')
+        let images = this.state.images;
+        let mover = images[oldPos];
+        images[oldPos] = images[newPos];
+        images[newPos] = mover;
+        console.log('new images', images);
+        images.forEach((e, i) => e.position = i);
+        this.setState({images});
     }
 
     render() {
+        // alert(`ProjectEditor.render: ${this.state}`);
         return (
             <div className="project-view-container">
                 <div className="editors">
@@ -82,29 +104,34 @@ export default class ProjectEditor extends React.Component<IProjectEditorProps, 
                         </div>
                     </div>
                     <div className="image-editor">
-                        <span>Images</span>
-                        <select 
-                            multiple={true} 
-                            className="image-list"
-                            ref={s => this.imageSelect = s}
-                        >
-                        
-                            {
-                                this.state.images.map((p, i) => {
-                                    return (
-                                        <option value={p} className="project-image" key={`image-${i}`}>{p}</option>
-                                    )
-                                })
-                            }
-                        </select>
+                        <div className="image-editor-title">
+                            <span>Images</span>
+                            <button
+                                className="remove"
+                                onClick={ev => this.props.deleteProject()}
+                            >Delete</button>
+                        </div>
+                        <ListBox
+                            options={this.props.project.images.map(i => StringHandler.fileName(i.path))}
+                            selected={this.state.selectedImage ? this.state.selectedImage.position : null}
+                            onChange={i => this.setState({selectedImage: this.state.images[i]})}
+                        />
                         <div className="button-group">
-                            <button 
+                            <button
                                 className="remove"
                                 onClick={ev => this.removeImages()}
                             >Remove</button>
-                            <button 
+                            <button
+                                className="move"
+                                onClick={ev => this.moveImage(true)}
+                            >↥</button>
+                            <button
+                                className="move"
+                                onClick={ev => this.moveImage(false)}
+                            >↧</button>
+                            <button
                                 className="add-new"
-                                onClick={ev => {}}
+                                onClick={ev => this.props.addImageHandler()}
                             >Add</button>
                         </div>
                     </div>

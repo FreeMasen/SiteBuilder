@@ -4,12 +4,14 @@ version = "0.1.0"
 authors = ["Robert Masen <r.f.masen@gmail.com>"]
 
 [dependencies]
-web-view = { git = "https://github.com/huytd/web-view" }
+bincode = "1"
+chrono = { version = "0.4", features = ["serde"] }
+nfd = "0.0.4"
+pulldown-cmark = "0.1"
+tera = "0.11"
 serde = "1"
 serde_derive = "1"
 serde_json = "1"
 toml = "0"
 walkdir = "2"
-nfd = "0.0.4"
-bincode = "1"
-chrono = { version = "0.4", features = ["serde"] }
+web-view = { git = "https://github.com/huytd/web-view" }

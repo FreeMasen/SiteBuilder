@@ -1,6 +1,8 @@
 import * as React from 'react';
 import AppState, {Project, Fonts} from '../appState';
 import InputGroup from './inputGroup';
+import StringHandler from '../services/stringHandler';
+
 interface IAllProps {
     source: string;
     destination: string;
@@ -74,27 +76,16 @@ export default class All extends React.Component<IAllProps, {}> {
                         className="font"
                         onClick={ev => this.props.selectFontClicked(false)}
                     >
-                        <span className="font-name">Normal: {this.filename(this.props.fonts.normal)}</span>
+                        <span className="font-name">Normal: {StringHandler.fileName(this.props.fonts.normal)}</span>
                     </div>
-                    <div 
+                    <div
                         className="font"
                         onClick={e => this.props.selectFontClicked(true)}
                     >
-                        <span className="font-name">Bold: {this.filename(this.props.fonts.bold)}</span>
+                        <span className="font-name">Bold: {StringHandler.fileName(this.props.fonts.bold)}</span>
                     </div>
                 </div>
             </div>
         )
-    }
-
-    filename(path: string): string {
-        if (!path || path == '') return 'Unset';
-        let parts;
-        if (path.indexOf('/') > -1) {
-            parts = path.split('/');
-        } else if (path.indexOf('\\') > -1) {
-            parts = path.split('\\');
-        }
-        return parts[parts.length - 1];
     }
 }

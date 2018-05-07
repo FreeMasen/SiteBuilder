@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block head %}
+<style>
+    .page-wrapper {
+        display: flex;
+        flex-flow: row;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin: 6vw;
+    }
+    article {
+        width: calc(40% - 10px);
+        margin: 0 5px;
+    }
+    article > h1 {
+        font-size: 18pt;
+        font-family: "Nanami-Book" sans-serif;
+        font-weight: bold;
+    }
+    article > h2 {
+        font-size: 18pt;
+        font-family: "Nanami-Thin" sans-serif;
+        font-weight: normal;
+    }
+    article > h3 {
+        font-size: 14pt;
+        font-family: "Nanami-Thin" sans-serif;
+    }
+    aside {
+        display: flex;
+        flex-flow: column;
+        width: calc(60% - 10px);
+        margin: 0 5px;
+        align-items: center;
+        justify-content: flex-start;
+        align-content: flex-start;
+    }
+    aside > img {
+        max-width: 100%;
+    }
+    h3 {
+        margin: 0;
+    }
+    .page-image + .page-image {
+        margin-top: 10px;
+    }
+</style>
+{% endblock head %}
+{% block content %}
+<div class="page-wrapper">
+    <article>
+        <h1>{{page.meta.title}}</h1>
+        <h2>{{page.meta.context}}</h2>
+        {% if page.meta.teammates | length > 0 %}
+            <h3>teammates</h3>
+            <span class="teammates">
+                {{ page.meta.teammates | join(sep=", ") }}
+            </span>
+        {% endif %}
+        {{ page.content | safe }}
+    </article>
+    <aside>
+        {% for img in page.project.images | sort %}
+            <img class="page-image" src="portfolio/{{page.project.name}}/img/{{img}}" alt="{{img}}" />
+        {% endfor %}
+    </aside>
+</div>
+{% endblock content %}

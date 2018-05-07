@@ -20,7 +20,7 @@ export default class AppState {
             json.destination,
             Website.fromJson(json.website),
             json.currentView,
-            json.selectedProject,
+            Project.fromJson(json.selectedProject),
             new Date(json.lastBuilt),
         )
     }
@@ -62,14 +62,17 @@ export class Website {
 export class Project {
     constructor(
         public id: number,
+        public path: string,
         public meta: Meta = new Meta(),
         public images: Image[] = [],
         public description: string,
     ) { }
 
     public static fromJson(json: any): Project {
+        if (!json) return;
         return new Project(
             json.id,
+            json.path,
             Meta.fromJson(json.meta),
             json.images.map(Image.fromJson),
             json.description
@@ -79,6 +82,7 @@ export class Project {
     asJson(): any {
         return {
             id: this.id,
+            path: this.path,
             meta: this.meta.asJson(),
             images: this.images.map(i => i.asJson()),
             description: this.description,

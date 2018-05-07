@@ -1,5 +1,5 @@
 use std::env::var_os;
-use std::fs::{OpenOptions, File, DirBuilder, remove_file};
+use std::fs::{OpenOptions, File, DirBuilder, remove_file, remove_dir_all};
 use std::io::{Read, Write};
 use std::path::{PathBuf, Path};
 
@@ -104,23 +104,29 @@ fn get_user_dir() -> Option<PathBuf> {
         Some(PathBuf::from(home))
     } else {
         None
-    } 
+    }
 }
 
 impl Website {
     pub fn update_projects_from_source(&mut self, path: &Path) {
+        // self.meta.title = path.file_name().as_str()
         let mut tmp_portfolio: Vec<Project> = vec!();
         for entry in WalkDir::new(path).min_depth(1).max_depth(1) {
             if let Ok(entry) = entry {
                 match self.portfolio.binary_search_by(|p| p.path().cmp(&entry.path().to_path_buf())) {
                     Ok(idx) => {
                         let mut p = self.portfolio[idx].clone();
-                        p.update_from_source(&entry.path().to_path_buf());
+                        p.id = tmp_portfolio.len() as u32;
+                        p.path = entry.path().to_path_buf();
+                        p.update_from_source();
                         tmp_portfolio.push(p);
+
                     },
                     Err(_) => {
                         let mut p = Project::default();
-                        p.update_from_source(&entry.path().to_path_buf());
+                        p.id = tmp_portfolio.len() as u32;
+                        p.path = entry.path().to_path_buf();
+                        p.update_from_source();
                         tmp_portfolio.push(p);
                     }
                 }
@@ -128,21 +134,32 @@ impl Website {
         }
         self.portfolio = tmp_portfolio;
     }
+    pub fn delete_project(&mut self, id: u32) {
+        if let Some(ref mut p) = self.get_project(id) {
+            match p.delete_files() {
+                Ok(()) => {
+                    self.portfolio = self.portfolio.clone().into_iter().filter(|p| p.id != id).collect();
+                },
+                Err(e) => println!("{:?}", e),
+            }
+        }
+    }
 }
 
 impl Project {
-    pub fn update_from_source(&mut self, path: &PathBuf) {
-        for entry in WalkDir::new(path).min_depth(1).max_depth(1) {
+    pub fn update_from_source(&mut self) {
+        for entry in WalkDir::new(&self.path).min_depth(1).max_depth(1) {
             if let Ok(entry) = entry {
                 let name = entry.file_name();
+                println!("project file: {:?}", name);
                 if name == "img" {
-                    self.update_images_from_source(entry.path());
+                    self.update_images_from_source(&entry.path());
                 } else
                 if name == "content.md" {
-                    self.description = content(entry.path());
+                    self.description = content(&entry.path());
                 } else
                 if name == "meta.toml" {
-                    self.meta = meta(entry.path());
+                    self.meta = meta(&entry.path());
                 }
             }
         }
@@ -173,6 +190,13 @@ impl Project {
         }
         self.images = tmp_images;
         self.sort_images();
+    }
+
+    pub fn delete_files(&self) -> Result<(), String> {
+        match remove_dir_all(&self.path) {
+            Ok(()) => Ok(()),
+            Err(e) => Err(format!("Error deleting files: {:?}", e)),
+        }
     }
 }
 
