@@ -1,25 +1,40 @@
+textarea {
+  border: 1px solid #546a76;
+}
+
 button {
   border: 0;
-  box-shadow: 1px 1px 1px 1px #94c9a9;
+  box-shadow: 1px 1px 1px 1px #ccc5b9;
   color: white;
-  background: #777da7;
-  border-radius: 5px;
+  background: #546a76;
   font-size: 14pt;
-  padding: 5px; }
-  button:active {
-    box-shadow: 0 0 0 0 white;
-    transform: translate(1px, 1px); }
-  button:hover {
-    transform: translate(-1px, -1px); }
+  padding: 5px;
+}
+button:active {
+  box-shadow: 0 0 0 0 white;
+  transform: translate(1px, 1px);
+}
+button:hover {
+  transform: translate(-1px, -1px);
+}
+button.cancel {
+  background: #550c18;
+}
+button.save {
+  background: #66d7d1;
+  box-shadow: 1px 1px 1px 1px #546a76;
+}
 
 .input-group {
   display: flex;
   flex-flow: column;
   justify-content: flex-start;
-  align-items: flex-start; }
-  .input-group label {
-    font-size: 16pt;
-    font-weight: bold; }
+  align-items: flex-start;
+}
+.input-group label {
+  font-size: 16pt;
+  font-weight: bold;
+}
 
 #app-container .title-bar {
   width: 100%;
@@ -29,197 +44,269 @@ button {
   justify-content: space-between;
   align-content: flex-start;
   align-items: center;
-  background: #777da7;
+  background: #546a76;
   color: white;
   margin-bottom: 10px;
-  padding: 0 5px; }
-  #app-container .title-bar * {
-    width: 33%; }
-  #app-container .title-bar .button-container {
-    height: 50px;
-    display: flex;
-    flex-flow: row;
-    justify-content: flex-start;
-    align-items: center; }
-    #app-container .title-bar .button-container button {
-      background: #db2763;
-      box-shadow: #bcd4de;
-      width: 40px;
-      height: 40px;
-      text-align: center; }
-  #app-container .title-bar .title-bar-title {
-    text-align: center; }
-  #app-container .title-bar .last-build-time {
-    text-align: right; }
+  padding: 0 5px;
+}
+#app-container .title-bar * {
+  width: 33%;
+}
+#app-container .title-bar .button-container {
+  height: 50px;
+  display: flex;
+  flex-flow: row;
+  justify-content: flex-start;
+  align-items: center;
+}
+#app-container .title-bar .button-container button {
+  background: #550c18;
+  box-shadow: #ccc5b9;
+  width: 40px;
+  height: 40px;
+  text-align: center;
+}
+#app-container .title-bar .title-bar-title {
+  text-align: center;
+}
+#app-container .title-bar .last-build-time {
+  text-align: right;
+}
+#app-container #app-body {
+  padding-left: 10px;
+  padding-right: 10px;
+}
 #app-container .all-container {
-  min-width: 500px; }
-  #app-container .all-container .button-group {
-    display: flex;
-    flex-flow: row;
-    width: 50%;
-    margin: auto; }
-  #app-container .all-container .paths {
-    display: flex;
-    flex-flow: row;
-    justify-content: space-around;
-    align-items: center; }
-    #app-container .all-container .paths .input-group {
-      margin: 0 5px; }
-      #app-container .all-container .paths .input-group input {
-        border: 0;
-        font-size: 16pt;
-        border-bottom: 1px solid #777da7; }
-    #app-container .all-container .paths .button-group {
-      display: flex;
-      flex-flow: column;
-      justify-content: flex-end;
-      align-items: flex-start; }
-      #app-container .all-container .paths .button-group button {
-        margin: 2px 0; }
-  #app-container .all-container .page-list,
-  #app-container .all-container .font-list {
-    display: flex;
-    flex-flow: column;
-    justify-content: flex-start;
-    align-content: stretch;
-    align-items: flex-start; }
-    #app-container .all-container .page-list .page-link,
-    #app-container .all-container .page-list .font,
-    #app-container .all-container .font-list .page-link,
-    #app-container .all-container .font-list .font {
-      background: #777da7;
-      padding: 5px;
-      margin: 5px 0;
-      color: white;
-      width: 100%;
-      box-shadow: 1px 1px 1px 1px #bcd4de;
-      font-size: 18pt;
-      cursor: pointer; }
-      #app-container .all-container .page-list .page-link:active,
-      #app-container .all-container .page-list .font:active,
-      #app-container .all-container .font-list .page-link:active,
-      #app-container .all-container .font-list .font:active {
-        transform: translate(1px, 1px);
-        box-shadow: 0; }
-#app-container .button-group {
+  width: 100%;
+}
+#app-container .all-container .button-group {
   display: flex;
   flex-flow: row;
   justify-content: space-between;
   align-items: center;
-  width: 100%; }
-  #app-container .button-group button {
-    padding: 5px; }
-    #app-container .button-group button.cancel {
-      background: #db2763; }
-    #app-container .button-group button.save {
-      background: #94c9a9;
-      box-shadow: 1px 1px 1px 1px #777da7; }
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 10px;
+  width: 50%;
+}
+#app-container .all-container .button-group button {
+  padding: 5px;
+}
+#app-container .all-container .paths {
+  display: flex;
+  flex-flow: row;
+  justify-content: space-around;
+  align-items: center;
+}
+#app-container .all-container .paths .input-group {
+  margin: 0 5px;
+}
+#app-container .all-container .paths .input-group input {
+  border: 0;
+  border-bottom: 1px solid #546a76;
+  width: 250px;
+}
+#app-container .all-container .page-list,
+#app-container .all-container .font-list {
+  display: flex;
+  flex-flow: column;
+  justify-content: flex-start;
+  align-content: stretch;
+  align-items: flex-start;
+}
+#app-container .all-container .page-list .page-link,
+#app-container .all-container .page-list .font,
+#app-container .all-container .font-list .page-link,
+#app-container .all-container .font-list .font {
+  background: #546a76;
+  padding: 5px;
+  margin: 5px 0;
+  color: white;
+  width: 100%;
+  box-shadow: 1px 1px 1px 1px #ccc5b9;
+  font-size: 18pt;
+  cursor: pointer;
+}
+#app-container .all-container .page-list .page-link:active,
+#app-container .all-container .page-list .font:active,
+#app-container .all-container .font-list .page-link:active,
+#app-container .all-container .font-list .font:active {
+  transform: translate(1px, 1px);
+  box-shadow: 0;
+}
 #app-container .project-view-container {
-  width: 100%; }
-  #app-container .project-view-container .editors {
-    display: flex;
-    flex-flow: row;
-    justify-content: space-between;
-    align-items: flex-start;
-    width: 100%;
-    margin-bottom: 10px; }
-    #app-container .project-view-container .editors .text-editors {
-      width: 500px;
-      display: flex;
-      flex-flow: column;
-      justify-content: flex-start;
-      align-items: center; }
-      #app-container .project-view-container .editors .text-editors .inputs {
-        display: flex;
-        flex-flow: row;
-        justify-content: space-around;
-        width: 100%;
-        margin-bottom: 10px; }
-      #app-container .project-view-container .editors .text-editors .content-editor {
-        display: flex;
-        flex-flow: column;
-        justify-content: space-between;
-        align-items: center;
-        width: 100%; }
-        #app-container .project-view-container .editors .text-editors .content-editor textarea {
-          width: 100%;
-          resize: none;
-          height: 500px;
-          width: 100%; }
-    #app-container .project-view-container .editors .image-editor {
-      width: calc(100% - 510px); }
-      #app-container .project-view-container .editors .image-editor .image-editor-title {
-        width: 100%;
-        display: flex;
-        flex-flow: row;
-        justify-content: space-between;
-        align-items: center; }
-      #app-container .project-view-container .editors .image-editor .list-box-container {
-        width: 100%;
-        height: 458px;
-        background: white;
-        border: 1px solid black;
-        margin-bottom: 10px;
-        display: flex;
-        flex-flow: column;
-        justify-content: flex-start;
-        align-items: flex-start; }
-        #app-container .project-view-container .editors .image-editor .list-box-container .list-box-option {
-          width: 100%;
-          height: 25px;
-          padding: 0 5px;
-          border-bottom: 1px solid #bcd4de; }
-          #app-container .project-view-container .editors .image-editor .list-box-container .list-box-option.selected {
-            background: #777da7;
-            color: white; }
-          #app-container .project-view-container .editors .image-editor .list-box-container .list-box-option .list-box-option-text {
-            font-size: 16pt;
-            line-height: 1;
-            font-weight: normal;
-            margin: 0;
-            padding: 0; }
-      #app-container .project-view-container .editors .image-editor span {
-        font-size: 18pt;
-        font-weight: bold;
-        height: 56px;
-        line-height: 31px;
-        display: block;
-        margin-bottom: 2px; }
-      #app-container .project-view-container .editors .image-editor .image-list {
-        width: 100%;
-        height: 458px;
-        background: white;
-        border: 1px solid black;
-        margin-bottom: 5px; }
-        #app-container .project-view-container .editors .image-editor .image-list .project-image {
-          font-size: 14pt;
-          margin: 2px;
-          padding: 0;
-          display: block;
-          height: 25px;
-          line-height: 1; }
-          #app-container .project-view-container .editors .image-editor .image-list .project-image::selection {
-            background: #94c9a9; }
+  width: 100%;
+}
+#app-container .project-view-container .editors {
+  display: flex;
+  flex-flow: row;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+  margin-bottom: 10px;
+}
+#app-container .project-view-container .editors .text-editors {
+  width: 500px;
+  display: flex;
+  flex-flow: column;
+  justify-content: flex-start;
+  align-items: center;
+}
+#app-container .project-view-container .editors .text-editors .inputs {
+  display: flex;
+  flex-flow: row;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 10px;
+}
+#app-container .project-view-container .editors .text-editors .inputs .input-group, #app-container .project-view-container .editors .text-editors .inputs button {
+  margin-left: 10px;
+}
+#app-container .project-view-container .editors .text-editors .inputs button {
+  width: 25px;
+  height: 25px;
+  padding: 0;
+}
+#app-container .project-view-container .editors .text-editors .contributors {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-around;
+  align-items: center;
+  align-content: flex-start;
+  width: 100%;
+  margin-bottom: 10px;
+}
+#app-container .project-view-container .editors .text-editors .contributors .contributor {
+  background: #550c18;
+  border: 0;
+  box-shadow: 1px 1px 1px 1px #66d7d1;
+  color: white;
+  font-size: 14pt;
+  padding: 5px;
+}
+#app-container .project-view-container .editors .text-editors .contributors .contributor:active {
+  box-shadow: 0 0 0 0 white;
+  transform: translate(1px, 1px);
+}
+#app-container .project-view-container .editors .text-editors .contributors .contributor:hover {
+  transform: translate(-1px, -1px);
+}
+#app-container .project-view-container .editors .text-editors .content-editor {
+  display: flex;
+  flex-flow: column;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+#app-container .project-view-container .editors .text-editors .content-editor textarea {
+  width: 100%;
+  resize: none;
+  height: 500px;
+  width: 100%;
+}
+#app-container .project-view-container .editors .image-editor {
+  width: calc(100% - 510px);
+}
+#app-container .project-view-container .editors .image-editor .image-editor-title {
+  width: 100%;
+  display: flex;
+  flex-flow: row;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+#app-container .project-view-container .editors .image-editor .image-editor-title span {
+  display: block;
+}
+#app-container .project-view-container .editors .image-editor .list-box-container {
+  width: 100%;
+  height: 458px;
+  background: white;
+  border: 1px solid black;
+  margin-bottom: 10px;
+  display: flex;
+  flex-flow: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+#app-container .project-view-container .editors .image-editor .list-box-container .list-box-option {
+  width: 100%;
+  height: 25px;
+  padding: 0 5px;
+  border-bottom: 1px solid #ccc5b9;
+}
+#app-container .project-view-container .editors .image-editor .list-box-container .list-box-option.selected {
+  background: #546a76;
+  color: white;
+}
+#app-container .project-view-container .editors .image-editor .list-box-container .list-box-option .list-box-option-text {
+  font-size: 16pt;
+  line-height: 1;
+  font-weight: normal;
+  margin: 0;
+  padding: 0;
+}
+#app-container .project-view-container .editors .image-editor span {
+  font-size: 18pt;
+  font-weight: bold;
+  height: 56px;
+  line-height: 31px;
+  display: block;
+  margin-bottom: 2px;
+}
+#app-container .project-view-container .editors .image-editor .image-list {
+  width: 100%;
+  height: 458px;
+  background: white;
+  border: 1px solid black;
+  margin-bottom: 5px;
+}
+#app-container .project-view-container .editors .image-editor .image-list .project-image {
+  font-size: 14pt;
+  margin: 2px;
+  padding: 0;
+  display: block;
+  height: 25px;
+  line-height: 1;
+}
+#app-container .project-view-container .editors .image-editor .image-list .project-image::selection {
+  background: #66d7d1;
+}
 #app-container .about-container {
   display: flex;
   flex-flow: column;
   align-content: flex-start;
   align-items: center;
-  width: 500px; }
-  #app-container .about-container .image-container {
-    display: flex;
-    flex-flow: row;
-    justify-content: flex-start;
-    align-items: flex-end;
-    align-content: flex-end;
-    width: 100%; }
-    #app-container .about-container .image-container button {
-      margin-left: 10px; }
-  #app-container .about-container .content-editor {
-    width: 100%; }
-    #app-container .about-container .content-editor textarea {
-      resize: none;
-      height: 500px;
-      width: 100%; }
+  width: 100%;
+}
+#app-container .about-container .image-container {
+  display: flex;
+  flex-flow: row;
+  justify-content: flex-start;
+  align-items: flex-end;
+  align-content: flex-end;
+  width: 100%;
+}
+#app-container .about-container .image-container input {
+  width: 300px;
+}
+#app-container .about-container .image-container button {
+  margin-left: 10px;
+}
+#app-container .about-container .content-editor {
+  width: 100%;
+  margin-bottom: 10px;
+}
+#app-container .about-container .content-editor textarea {
+  resize: none;
+  height: 500px;
+  width: 100%;
+}
 
-/*# sourceMappingURL=main.css.map */
+.button-group {
+  display: flex;
+  flex-flow: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}

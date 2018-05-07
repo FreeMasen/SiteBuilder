@@ -25,16 +25,19 @@ export default class All extends React.Component<IAllProps, {}> {
             <div className="all-container">
                 <div className="button-group">
                 <button 
+                    title="Refresh from the source folder"
                     type="button" 
                     onClick={ev => this.props.updateRequested()}
                 >Update
                 </button>
                 <button 
+                    title="Generate the html for this site"
                     type="button" 
                     onClick={ev => this.props.generateSite()}
                 >Generate
                 </button>
                 <button
+                    title="Add a new empty project to this site"
                     type="button"
                     onClick={ev => this.props.addPage()}
                 >Add Project</button>

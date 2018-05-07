@@ -20,7 +20,7 @@ use web_view::{MyUnique ,WebView, Content, run};
 mod builder;
 mod state;
 mod fs;
-use state::{Message, AppState, Image};
+use state::*;
 use fs::*;
 use builder::*;
 
@@ -77,7 +77,15 @@ fn event_handler(wv: &mut WebView<AppState>, arg: &str, state: &mut AppState) {
                 //we convert the input to the output
                 Message::Build => {
                     // println!("Build: {:?}, {:?}", state.source, state.destination);
-                    state.last_built = Some(Local::now());
+                    if state.is_valid() {
+                        build(&state);
+                        state.last_built = Some(Local::now());
+                    } else {
+                        state.message = Some(ServerMessage {
+                            content: String::from("Unable to build site"),
+                            is_error: true
+                        });
+                    }
                     cache_and_inject(wv, &state);
                 },
                 //When the app requests a new project
@@ -95,7 +103,11 @@ fn event_handler(wv: &mut WebView<AppState>, arg: &str, state: &mut AppState) {
                 Message::UpdateProject {project} => {
                     state.website.update_project(project);
                     match write_input(state) {
-                        Ok(()) => cache_and_inject(wv, &state),
+                        Ok(()) => {
+                            state.selected_project = None;
+                            state.current_view = 0;
+                            cache_and_inject(wv, &state)
+                        },
                         Err(e) => {
                             println!("Update Error: {:?}", e);
                         }
@@ -142,9 +154,8 @@ fn event_handler(wv: &mut WebView<AppState>, arg: &str, state: &mut AppState) {
                                     proj.sort_images();
                                 },
                                 Err(e) => println!("Error moving project image {:?}", e),
-                            }
+                            } 
                         }
-
                     }
                     cache_and_inject(wv, state);
                 },
@@ -216,11 +227,15 @@ fn event_handler(wv: &mut WebView<AppState>, arg: &str, state: &mut AppState) {
                 Message::DeleteProject => {
                     println!("Delete Project");
                     if let Some(ref p) = state.selected_project {
-                        state.website.delete_project(p.id);
+                        state.website.delete_project(p);
                     }
                     state.current_view = 0;
                     state.selected_project = None;
                     cache_and_inject(wv, state);
+                },
+                Message::ClearMessage => {
+                    state.message = None;
+                    cache_and_inject(wv, state)
                 }
             }
         },

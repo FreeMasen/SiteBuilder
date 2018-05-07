@@ -8,6 +8,7 @@ import TitleBar from './components/titleBar';
 import All from './components/all';
 import ProjectEditor from './components/project';
 import About from './components/about';
+import Toast from './components/toast';
 
 class AppContainer extends React.Component<{}, AppState> {
     private comm: Communicator;
@@ -21,6 +22,7 @@ class AppContainer extends React.Component<{}, AppState> {
             source: '',
             destination: '',
             selectedProject: null,
+            message: null,
         };
         this.comm = new Communicator(s => this.communicatorCallback(s));
     }
@@ -62,9 +64,19 @@ class AppContainer extends React.Component<{}, AppState> {
                     backHandler={() => this.changeView(Route.All)}
                     lastBuilt={this.state.lastBuilt}
                 />
-                <div>
+                <div id="app-body">
                     {this.renderBody()}
                 </div>
+                {
+                    this.state.message ? 
+                    (
+                        <Toast
+                            message={this.state.message.content}
+                            isError={this.state.message.isError}
+                        />
+                    )
+                    : null
+                }
             </div>
         )
     }
@@ -94,15 +106,9 @@ class AppContainer extends React.Component<{}, AppState> {
                 return (
                     <ProjectEditor
                         project={this.state.selectedProject}
-                        saveHandler={p => {
-                            this.comm.updateProject(p);
-                            this.changeView(Route.All);
-                        }}
+                        saveHandler={p => this.comm.updateProject(p)}
                         cancelHandler={() => this.changeView(Route.All)}
-                        addImageHandler={() => {
-                            console.log('addImage');
-                            this.comm.addProjectImage()
-                        }}
+                        addImageHandler={() => this.comm.addProjectImage()}
                         moveImage={(old, newPos) => this.comm.moveImage(old, newPos)}
                         deleteProject={() => this.comm.deleteProject()}
                     />

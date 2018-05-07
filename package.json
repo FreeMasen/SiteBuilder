@@ -6,8 +6,12 @@
   "author": "Robert Masen <r.f.masen@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "build-all": "./node_modules/.bin/webpack --env prod & sass ./sass/main.scss ./src/assets/main.css",
-    "build-run": "./node_modules/.bin/webpack --env prod & sass ./sass/main.scss ./src/assets/main.css & cargo run"
+    "build": "./node_modules/.bin/webpack & sass ./sass/main.scss ./src/assets/main.css",
+    "run": "./node_modules/.bin/webpack & sass ./sass/main.scss ./src/assets/main.css & cargo run",
+    "start": "cargo run",
+    "sass": "sass ./sass/main.scss ./src/assets/main.css",
+    "webpack": "./node_modules/.bin/webpack",
+    "browser": "sass ./sass/main.scss ./main.css & ./node_modules/.bin/webpack-dev-server"
   },
   "dependencies": {
     "react": "^16.3.2",

@@ -1,6 +1,7 @@
 use std::path::PathBuf;
 use chrono::prelude::*;
 
+
 #[derive(Serialize, Deserialize, Debug, Default, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct AppState {
@@ -10,6 +11,7 @@ pub struct AppState {
     pub current_view: u32,
     pub selected_project: Option<Project>,
     pub last_built: Option<DateTime<Local>>,
+    pub message: Option<ServerMessage>
 }
 
 #[derive(Serialize, Deserialize, Debug, Default, Clone)]
@@ -42,6 +44,12 @@ pub struct Meta {
     pub title: String,
     pub context: String,
     pub teammates: Vec<String>,
+}
+#[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(rename_all = "camelCase")]
+pub struct ServerMessage {
+    pub content: String,
+    pub is_error: bool,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -83,8 +91,28 @@ pub enum Message {
     RemoveFont { bold: bool },
     /// Delete the selected project
     DeleteProject,
+    /// Clear the message after a js setTimeout
+    ClearMessage
 }
 
+pub trait Valid {
+    fn is_valid(&self) -> bool;
+}
+
+impl Valid for AppState {
+    fn is_valid(&self) -> bool {
+        self.source.exists()  &&
+        self.destination.exists() &&
+        self.website.is_valid()
+    }
+}
+impl Valid for Website {
+    fn is_valid(&self) -> bool {
+        self.about.len() > 0 &&
+        self.image.exists() &&
+        self.portfolio.iter().any(|e| !e.is_valid())
+    }
+}
 impl Website {
     pub fn add_project(&mut self, name: String) {
         let new_project = Project {
@@ -96,16 +124,6 @@ impl Website {
             ..Project::default()
         };
         self.portfolio.push(new_project);
-    }
-
-    pub fn get_project(&mut self, id: u32) -> Option<Project> {
-        match  self.get_project_idx(id) {
-            Some(idx) => match self.portfolio.get(idx) {
-                Some(p) => Some(p.clone()),
-                None => None,
-            },
-            None => None,
-        }
     }
 
     pub fn update_project(&mut self, project: Project) {
@@ -129,29 +147,6 @@ impl Project {
         self.path.clone()
     }
 
-    pub fn update_image_position(&mut self, old_position: u32, new_position: u32) {
-        println!("old order: {:?}", &self.images);
-        println!("setting {} to {}", old_position, new_position);
-        self.images = self.images.clone().into_iter().map(|i| {
-            if i.position == old_position {
-                println!("found old position: {:?}", &i);
-                Image {
-                    position: new_position,
-                    ..i
-                }
-            } else if i.position == new_position {
-                Image {
-                    position: old_position,
-                    ..i
-                }
-            } else {
-                i.clone()
-            }
-        }).collect();
-        self.sort_images();
-        println!("new order: {:?}",& self.images);
-    }
-
     pub fn sort_images(&mut self) {
         self.images.sort_by(|lhs, rhs| lhs.position.cmp(&rhs.position));
         for i in 0..self.images.len() {
@@ -159,3 +154,42 @@ impl Project {
         }
     }
 }
+impl Valid for Project {
+    fn is_valid(&self) -> bool {
+        self.path.exists() &&
+        self.images.iter().any(|e| e.is_valid())
+    }
+}
+impl Valid for Meta {
+    fn is_valid(&self) -> bool {
+        self.title.len() > 0 &&
+        self.context.len() > 0
+    }
+}
+
+impl Valid for Image {
+    fn is_valid(&self) -> bool {
+        self.path.exists()
+    }
+}
+
+impl Valid for Fonts {
+    fn is_valid(&self) -> bool {
+        if let Some(ref n) = self.normal {
+            if !n.exists() {
+                return false;
+            }
+        } else {
+            return false;
+        }
+        if let Some(ref b) = self.bold {
+            if !b.exists() {
+                return false;
+            }
+        } else {
+            return false;
+        }
+        true
+    }
+}
+

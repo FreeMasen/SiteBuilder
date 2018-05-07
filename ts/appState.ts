@@ -2,6 +2,7 @@
 export default class AppState {
     public selectedProject?: Project;
     public lastBuilt?: Date; 
+    public message?: ServerMessage;
     constructor(
         public source: string = '',
         public destination: string = '',
@@ -9,9 +10,11 @@ export default class AppState {
         public currentView: Route = Route.All,
         selectedProject: Project = null,
         lastBuilt: Date = null,
+        message: ServerMessage = null,
     ) {
         this.selectedProject = selectedProject;
         this.lastBuilt = lastBuilt;
+        this.message = message;
     }
 
     public static fromJson(json: any): AppState {
@@ -21,7 +24,8 @@ export default class AppState {
             Website.fromJson(json.website),
             json.currentView,
             Project.fromJson(json.selectedProject),
-            new Date(json.lastBuilt),
+            json.lastBuilt ? new Date(json.lastBuilt) : null,
+            ServerMessage.fromJson(json.message),
         )
     }
 }
@@ -152,6 +156,28 @@ export class Meta {
             title: this.title,
             context: this.subtitle,
             teammates: this.teammates
+        }
+    }
+}
+
+export class ServerMessage {
+    constructor(
+        public content: string = '',
+        public isError: boolean = false
+    ) {}
+
+    public static fromJson(json: any): ServerMessage {
+        if (!json) return;
+        return new ServerMessage(
+            json.content,
+            json.isError,
+        );
+    }
+
+    public asJson(): any {
+        return {
+            content: this.content,
+            isError: this.isError,
         }
     }
 }

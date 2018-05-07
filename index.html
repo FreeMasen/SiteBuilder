@@ -10,23 +10,24 @@
             margin: 0;
             padding: 0;
             border: 0;
-            background: #2c363f;
+            background: whitesmoke;
         }
 
-        h1 {
+        h1,
+        h2 {
             margin: 0;
             padding: 0;
         }
 
         * {
             font-family: 'SegoeUI', Tahoma, Geneva, Verdana, sans-serif;
+            box-sizing: border-box;
         }
 
         #main {
             max-width: 800px;
-            margin: 10px auto 0;
-            background: #f2f5ea;
-            padding: 10px;
+            margin: auto;
+            background: whitesmoke;
         }
 
         #spinner-container {
@@ -84,6 +85,7 @@
             animation-name: fade-in;
         }
     </style>
+    <script>window.send = function(arg) { console.log(arg) }</script>
 </head>
 
 <body>
@@ -95,55 +97,11 @@
             </div>
         </div>
     </div>
-
-    <link href="src/assets/main.css" type="text/css" rel="stylesheet" />
-    <script>
-        // Polyfill for creating CustomEvents on IE9/10/11
-        
-        // code pulled from:
-        // https://github.com/d4tocchini/customevent-polyfill
-        // https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent#Polyfill
-        
-        try {
-            var ce = new window.CustomEvent('test');
-            ce.preventDefault();
-            if (ce.defaultPrevented !== true) {
-                // IE has problems with .preventDefault() on custom events
-                // http://stackoverflow.com/questions/23349191
-                throw new Error('Could not prevent default');
-            }
-        } catch(e) {
-            var CustomEvent = function(event, params) {
-                var evt, origPrevent;
-                params = params || {
-                    bubbles: false,
-                    cancelable: false,
-                    detail: undefined
-                };
-                
-                evt = document.createEvent("CustomEvent");
-                evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
-                origPrevent = evt.preventDefault;
-                evt.preventDefault = function () {
-                    origPrevent.call(this);
-                    try {
-                        Object.defineProperty(this, 'defaultPrevented', {
-                            get: function () {
-                                return true;
-                            }
-                });
-            } catch(e) {
-                this.defaultPrevented = true;
-            }
-        };
-        return evt;
-    };
-    
-    CustomEvent.prototype = window.Event.prototype;
-        window.CustomEvent = CustomEvent; // expose definition to window
-    }
-    </script>
-    <script src="app.js" ></script>
+    <script>window.addEventListener('DOMContentLoaded', function () { a() }); var b = false; function a() { if (b) { return } b = true; window.external.invoke(JSON.stringify({ kind: 'load' })) } function c() { var div = document.getElementById('main'); if (!div) { return setTimeout(c, 0) } a() }</script>
+    <script>var CustomEvent; CustomEvent = function (a, b) { var c; b = b || { bubbles: false, cancelable: false, detail: undefined }; c = document.createEvent("CustomEvent"); c.initCustomEvent(a, b.bubbles, b.cancelable, b.detail); return c }; CustomEvent.prototype = window.Event.prototype; window.CustomEvent = CustomEvent;</script>
+    <script>if (!Array.prototype.map) { Array.prototype.map = function (callback) { var T, A, k; if (this == null) { throw new TypeError('this is null or not defined') } var O = Object(this); var len = O.length >>> 0; if (typeof callback !== 'function') { throw new TypeError(callback + ' is not a function') } if (arguments.length > 1) { T = arguments[1] } A = [len]; k = 0; while (k < len) { var kValue, mappedValue; if (k in O) { kValue = O[k]; mappedValue = callback.call(T, kValue, k, O); A[k] = mappedValue } k += 1 } return A } }</script>
+    <link type="text/css" href="main.css" rel="stylesheet" />
+    <script src="app.js"></script>
 </body>
 
 </html>

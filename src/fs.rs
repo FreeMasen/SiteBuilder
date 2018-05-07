@@ -134,15 +134,13 @@ impl Website {
         }
         self.portfolio = tmp_portfolio;
     }
-    pub fn delete_project(&mut self, id: u32) {
-        if let Some(ref mut p) = self.get_project(id) {
-            match p.delete_files() {
+    pub fn delete_project(&mut self, project: &Project) {
+            match project.delete_files() {
                 Ok(()) => {
-                    self.portfolio = self.portfolio.clone().into_iter().filter(|p| p.id != id).collect();
+                    self.portfolio = self.portfolio.clone().into_iter().filter(|p| p.id != project.id).collect();
                 },
                 Err(e) => println!("{:?}", e),
             }
-        }
     }
 }
 
@@ -267,7 +265,7 @@ pub fn ensure_folder(path: &PathBuf) -> Result<(), String> {
     db.create(path).map_err(|e| format!("{:?}", e))
 }
 
-pub fn write_file(content: &mut str, path: PathBuf) -> Result<(), String> {
+pub fn write_file(content: &str, path: PathBuf) -> Result<(), String> {
     match File::create(&path) {
         Ok(mut f) => {
             match f.write_all(content.as_bytes()) {
@@ -279,39 +277,76 @@ pub fn write_file(content: &mut str, path: PathBuf) -> Result<(), String> {
     }
 }
 
-use std::collections::HashSet;
 /// Ensure that all of the top level files and folders are
 /// included in the source dir
 pub fn ensure_dir_defaults(source: &PathBuf) {
-    let files: HashSet<PathBuf> = WalkDir::new(&source).min_depth(1).max_depth(1).into_iter().filter_map(|e| {
-        match e {
-            Ok(e) => {
-                Some(e.path().to_path_buf())
-            },
-            Err(_) => None
-        }
-    }).collect();
+    if let Err(e) = ensure_folder(&source.join("fonts")) {
+        println!("Error ensuring folder: {:?}", e);
+    }
+    if let Err(e) = ensure_folder(&source.join("portfolio")) {
+        println!("Error ensuring folder: {:?}", e);
+    }
+    if let Err(e) = ensure_folder(&source.join("about.md")) {
+        println!("Error ensuring folder: {:?}", e);
+    }
+    if let Err(e) = ensure_folder(&source.join("me.jpg")) {
+        println!("Error ensuring folder: {:?}", e);
+    }
+}
+/// Delete and recreate the output directory
+/// we don't want to have any old files laying around
+/// so we want to wipe everything first
+pub fn ensure_out_dir_defaults(path: &PathBuf) {
+    println!("ensure_out_dir_defaults: {:?}", path);
+    println!("Clearing parent");
     let db = DirBuilder::new();
-    let fonts = source.join("fonts");
-    let portfolio = source.join("portfolio");
-    let templates = source.join("templates");
-    let about = source.join("about.md");
-    let img = source.join("me.jpg");
-    if files.get(&fonts).is_none() {
-        let _ = db.create(&fonts);
+    if let Err(e) = ensure_folder(&path) {
+        println!("Error ensuring {:?}\n{:?}", &path, e);
     }
-    if files.get(&portfolio).is_none() {
-        let _ = db.create(&portfolio);
-    } 
-    if files.get(&templates).is_none() {
-        let _ = db.create(&templates);
+    for entry in WalkDir::new(&path).max_depth(1).min_depth(1) {
+        if let Ok(entry) = entry {
+            if entry.file_type().is_dir() {
+                if let Err(e) = remove_dir_all(&entry.path()) {
+                    println!("Error removing {:?}\n{:?}", entry.path(), e);
+                }
+            } else {
+                if let Err(e) = remove_file(&entry.path()) {
+                    println!("Error removing {:?}\n{:?}", entry.path(), e);
+                }
+            }
+        }
     }
-    if files.get(&about).is_none() {
-        let _ = File::create(&about);
+    println!("creating fonts");
+    if let Err(e) = db.create(&path.join("fonts")) {
+        println!("Error creating fonts dir: {:?}", e);
     }
-    if files.get(&img).is_none() {
-        let _ = File::create(&img);
+    println!("creating portfolio");
+    if let Err(e) = db.create(&path.join("portfolio")) {
+        println!("Error creating portfolio dir: {:?}", e);
     }
+    println!("creating contact");
+    if let Err(e) = db.create(&path.join("contact")) {
+        println!("Error creating contact dir: {:?}", e);
+    }
+    println!("creating about");
+    if let Err(e) = db.create(&path.join("about")) {
+        println!("Error creating about dir: {:?}", e);
+    }
+}
+/// Deletes the project folder if it exists (it shouldn't)
+/// and creates it
+pub fn ensure_project_folder(base_path: &PathBuf, project_folder: &String) {
+    let db = DirBuilder::new();
+    let project_path = base_path.join("portfolio").join(project_folder);
+    println!("creating folder {:?}", &project_path);
+    if project_path.exists() {
+        if let Err(e) = remove_dir_all(&project_path) {
+            println!("Error removing existing files {:?}\n{:?}", &project_path, e);
+        }
+    }
+    let _ = db.create(&project_path);
+    let img = project_path.join("img");
+    let _ = db.create(&img);
 }
 
 pub fn copy_file(source: &PathBuf, dest_dir: &PathBuf) -> Result<PathBuf, String> {

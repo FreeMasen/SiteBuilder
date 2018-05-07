@@ -20,7 +20,7 @@ module.exports = function(env) {
                 }
             ]
         },
-        mode: 'development'
+        mode: env == 'prod' ? 'production' : 'development'
     }
     return config;
 }

@@ -1,2 +1,105 @@
-<!DOCTYPE html><html><head><style>html,body {width: 100%;height: 100%;margin: 0;padding: 0;border: 0;background: #2c363f;}h1, h2 {margin: 0;padding: 0;}* {font-family: 'SegoeUI', Tahoma, Geneva, Verdana, sans-serif;box-sizing: border-box;}#main {max-width: 800px;margin: 10px auto 0;background: #f2f5ea;padding: 10px;}#spinner-container {width: 100%;min-height: 400px;margin: 0;padding: 0;display: flex;flex-flow: row;justify-content: center;align-items: center;}#spinner {background: #2c363f;width: 100px;height: 100px;border-radius: 50%;animation-duration: 1.5s;animation-name: spin;animation-iteration-count: infinite;display: flex;flex-flow: row;justify-content: space-between;}@keyframes spin {to {transform: rotate(360deg);}from {transform: rotate(0);}}.spinner-inner {width: 15px;height: 15px;margin: auto;background: #e75a7c;border-radius: 50%;}@keyframes fade-in {to {opacity: 100%;}from {opacity: 0;}}#app-container {animation-duration: 1s;animation-name: fade-in;}</style></head><body><div id="main"><div id="spinner-container"><div id="spinner"><div class="spinner-inner"></div><div class="spinner-inner"></div></div></div></div><script>window.addEventListener('DOMContentLoaded',function(){a()});var b=false;function a(){if(b){return}b=true;window.external.invoke(JSON.stringify({kind:'load'}))}function c(){var div=document.getElementById('main');if(!div){return setTimeout(c,0)}a()}</script><script>var CustomEvent;CustomEvent=function(a,b){var c;b=b||{bubbles:false,cancelable:false,detail:undefined};c=document.createEvent("CustomEvent");c.initCustomEvent(a,b.bubbles,b.cancelable,b.detail);return c};CustomEvent.prototype=window.Event.prototype;window.CustomEvent=CustomEvent;</script><script>if(!Array.prototype.map){Array.prototype.map=function(callback ){var T,A,k;if(this==null){throw new TypeError('this is null or not defined')}var O=Object(this);var len=O.length>>>0;if(typeof callback!=='function'){throw new TypeError(callback+' is not a function')}if(arguments.length>1){T=arguments[1]}A=[len];k=0;while(k<len){var kValue,mappedValue;if(k in O){kValue=O[k];mappedValue=callback.call(T,kValue,k,O);A[k]=mappedValue}k+=1}return A}}</script>
-</body></html>
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            border: 0;
+            background: whitesmoke;
+        }
+
+        h1,
+        h2 {
+            margin: 0;
+            padding: 0;
+        }
+
+        * {
+            font-family: 'SegoeUI', Tahoma, Geneva, Verdana, sans-serif;
+            box-sizing: border-box;
+        }
+
+        #main {
+            max-width: 800px;
+            margin: auto;
+            background: whitesmoke;
+        }
+
+        #spinner-container {
+            width: 100%;
+            min-height: 400px;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-flow: row;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #spinner {
+            background: #2c363f;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            animation-duration: 1.5s;
+            animation-name: spin;
+            animation-iteration-count: infinite;
+            display: flex;
+            flex-flow: row;
+            justify-content: space-between;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+            from {
+                transform: rotate(0);
+            }
+        }
+
+        .spinner-inner {
+            width: 15px;
+            height: 15px;
+            margin: auto;
+            background: #e75a7c;
+            border-radius: 50%;
+        }
+
+        @keyframes fade-in {
+            to {
+                opacity: 100%;
+            }
+            from {
+                opacity: 0;
+            }
+        }
+
+        #app-container {
+            animation-duration: 1s;
+            animation-name: fade-in;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="main">
+        <div id="spinner-container">
+            <div id="spinner">
+                <div class="spinner-inner"></div>
+                <div class="spinner-inner"></div>
+            </div>
+        </div>
+    </div>
+    <script>window.send = function(arg) {window.external.invoke(arg)}</script>
+    <script>window.addEventListener('DOMContentLoaded', function () { a() }); var b = false; function a() { if (b) { return } b = true; send(JSON.stringify({ kind: 'load' })) } function c() { var div = document.getElementById('main'); if (!div) { return setTimeout(c, 0) } a() }</script>
+    <script>var CustomEvent; CustomEvent = function (a, b) { var c; b = b || { bubbles: false, cancelable: false, detail: undefined }; c = document.createEvent("CustomEvent"); c.initCustomEvent(a, b.bubbles, b.cancelable, b.detail); return c }; CustomEvent.prototype = window.Event.prototype; window.CustomEvent = CustomEvent;</script>
+    <script>if (!Array.prototype.map) { Array.prototype.map = function (callback) { var T, A, k; if (this == null) { throw new TypeError('this is null or not defined') } var O = Object(this); var len = O.length >>> 0; if (typeof callback !== 'function') { throw new TypeError(callback + ' is not a function') } if (arguments.length > 1) { T = arguments[1] } A = [len]; k = 0; while (k < len) { var kValue, mappedValue; if (k in O) { kValue = O[k]; mappedValue = callback.call(T, kValue, k, O); A[k] = mappedValue } k += 1 } return A } }</script>
+</body>
+
+</html>

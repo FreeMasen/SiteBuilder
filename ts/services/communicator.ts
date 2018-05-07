@@ -85,11 +85,18 @@ export default class Comm {
         })
     }
 
+    private clearMessage() {
+        this.sendMessage({
+            kind: 'clearMessage',
+        })
+    }
+
     private stateChange(ev: CustomEvent) {
         console.log('Comm.stateChange ', ev.detail);
         try {
             let parsedState = AppState.fromJson(ev.detail);
-            if (!this.stateChangeCb) return this.sendMessage(Message.Error('Cannot change state w/o state change callback'))
+            if (!this.stateChangeCb) return this.sendMessage(Message.Error('Cannot change state w/o state change callback'));
+            if (parsedState.message) setTimeout(() => this.clearMessage(), 3000);
             this.stateChangeCb(parsedState);
         } catch(e) {
             console.error(e)
@@ -98,8 +105,7 @@ export default class Comm {
     }
 
     private sendMessage(message: any) {
-        console.log('invoke: ', message);
-        (window.external as any).invoke(JSON.stringify(message))
+        (window as any).send(JSON.stringify(message))
     }
 }
 

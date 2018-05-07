@@ -49,19 +49,19 @@
 {% block content %}
 <div class="page-wrapper">
     <article>
-        <h1>{{page.meta.title}}</h1>
-        <h2>{{page.meta.context}}</h2>
-        {% if page.meta.teammates | length > 0 %}
+        <h1>{{page.title}}</h1>
+        <h2>{{page.sub_title}}</h2>
+        {% if page.teammates | length > 0 %}
             <h3>teammates</h3>
             <span class="teammates">
-                {{ page.meta.teammates | join(sep=", ") }}
+                {{ page.teammates | join(sep=", ") }}
             </span>
         {% endif %}
         {{ page.content | safe }}
     </article>
     <aside>
-        {% for img in page.project.images | sort %}
-            <img class="page-image" src="portfolio/{{page.project.name}}/img/{{img}}" alt="{{img}}" />
+        {% for img in page.images %}
+            <img class="page-image" src="portfolio/{{page.project_folder}}/img/{{img}}" alt="{{img}}" />
         {% endfor %}
     </aside>
 </div>
