@@ -1,6 +1,6 @@
 {
-  "name": "jm.com",
-  "version": "0.1.",
+  "name": "sitebuilder",
+  "version": "1.0.0",
   "main": "ts/app.ts",
   "repository": "na",
   "author": "Robert Masen <r.f.masen@gmail.com>",
