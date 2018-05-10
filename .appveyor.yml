@@ -9,11 +9,11 @@ install:
   - set PATH=%PATH%;C:\Users\appveyor\.cargo\bin
   - rustc -V
   - cargo -V
-  - npm install
-  - node_modules\.bin\webpack -v
-  - node_modules\.bin\node-sass -v
-  - ps: echo $env:APPVEYOR_BUILD_FOLDER
-  - ls
+  # - npm install
+  # - node_modules\.bin\webpack -v
+  # - node_modules\.bin\node-sass -v
+  # - ps: echo $env:APPVEYOR_BUILD_FOLDER
+  # - ls
 build: false
 
 test_script:
