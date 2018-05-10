@@ -17,5 +17,5 @@ walkdir = "2"
 web-view = { git = "https://github.com/huytd/web-view" }
 
 [target.'cfg(windows)'.build-dependencies]
-windres-rs = "0.1.0"
+windres = "0.1.0"
 
