@@ -17,9 +17,9 @@ install:
 build: false
 
 test_script:
-  - node_modules\.bin\webpack  --env prod
-  - node_modules\.bin\node-sass .\sass\main.scss --output-style compressed -o .\src\assets
-  - cargo build --release
+  # - node_modules\.bin\webpack  --env prod
+  # - node_modules\.bin\node-sass .\sass\main.scss --output-style compressed -o .\src\assets
+  - cargo build #--release
 before_deploy:
 - ps: |
       
