@@ -15,8 +15,9 @@ install:
   # - ps: echo $env:APPVEYOR_BUILD_FOLDER
   # - ls
   - ps: $env:cwd=(Get-Item -Path ".\" -Verbose).FullName
+  - ps: echo $env:cwd
   - ps: echo "1 ICON $env:cwd\assets\site-builder.ico" > assets/site-builder.rc
-  
+
 build: false
 
 test_script:
