@@ -3,7 +3,7 @@ rust: stable
 cache: cargo
 os: osx
 script: 
-  - webpack --env prod
+  - ./node_modules/.bin/webpack --env prod
   - ./node_modules/.bin/node-sass ./sass/main.scss -o ./src/assets/
   - cargo build --release
 notifications:
