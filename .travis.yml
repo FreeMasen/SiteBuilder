@@ -3,8 +3,8 @@ rust: stable
 cache: cargo
 os: osx
 script: 
-  - ./node_modules/.bin/webpack --env prod
-  - ./node_modules/.bin/node-sass ./sass/main.scss -o ./src/assets/
+  - node_modules/.bin/webpack --env prod
+  - node_modules/.bin/node-sass ./sass/main.scss -o ./src/assets/
   - cargo build --release
 notifications:
 - email: false

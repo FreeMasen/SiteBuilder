@@ -9,13 +9,15 @@ install:
   - set PATH=%PATH%;C:\Users\appveyor\.cargo\bin
   - rustc -V
   - cargo -V
+  - npm install
+  - node_modules\.bin\webpack -v
+  - node_modules\.bin\node-sass -v
 
 build: false
 
 test_script:
-  - npm install
-  - .\node_modules\.bin\webpack  --env prod
-  - .\node_modules\.bin\node-sass .\sass\main.scss --output-style compressed -o .\src\assets
+  - node_modules\.bin\webpack  --env prod
+  - node_modules\.bin\node-sass .\sass\main.scss --output-style compressed -o .\src\assets
   - cargo build --release
 before_deploy:
 - ps: |
