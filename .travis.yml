@@ -22,9 +22,9 @@ before_deploy:
 - echo copying icon into .app
 - cp assets/SiteBuilder.icns SiteBuilder.app/Contents/Resources/SiteBuilder.icns
 - echo copying bin to .app
-- stat assets/SiteBuilder.icns
-- stat target/release/site-builder
-- mv target/release/site-builder SiteBuilder.app/Content/MacOS/SiteBuilder
+- find SiteBuilder.app/Content/MacOS/SiteBuilder
+- cp target/release/site-builder SiteBuilder.app/Content/MacOS/
+- mv SiteBuilder.app/Content/MacOS/site-builder SiteBuilder.app/Content/MacOS/SiteBuilder
 - echo zipping up .app
 - tar -czvf SiteBuilder.tar.gz SiteBuilder.app
 - ls -lh
