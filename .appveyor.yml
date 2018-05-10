@@ -25,7 +25,7 @@ before_deploy:
 deploy:
   artifact: .\target\src\release\site-builder.exe
   auth_toke:
-    secure: R5fzSpX4xEwv4pFtArqFTlI+sur+Vf/rU7fDYHSmz+r3/Ka3JfOhI9id4Yoqz7ys
+    secure: EpXDXTEUzBgDY/Rh/wvg26vNWPEbryZ5+OifhjEdXn7jvUg7k7n3EwjoEiz4075v
   description: ''
   # on:
   #   appveyor_repo_tag: true
