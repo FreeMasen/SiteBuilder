@@ -3,7 +3,7 @@ environment:
     - TARGET: x86_64-pc-windows-msvc
       DEPLOY: 1
 install:
-  - ps: InstallProduct node 10
+  - ps: Install-Product node 10
   - appveyor-retry appveyor DownloadFile https://win.rustup.rs/ -FileName rustup-init.exe
   - set PATH=%PATH%;C:\Users\appveyor\.cargo\bin
   - rustc -V
@@ -24,6 +24,6 @@ deploy:
   auth_toke:
     secure: R5fzSpX4xEwv4pFtArqFTlI+sur+Vf/rU7fDYHSmz+r3/Ka3JfOhI9id4Yoqz7ys
   description: ''
-  on:
-    appveyor_repo_tag: true
+  # on:
+  #   appveyor_repo_tag: true
   provider: GitHub
