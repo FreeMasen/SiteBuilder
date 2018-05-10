@@ -7,7 +7,11 @@ use std::{env};
 #[cfg(windows)]
 fn main() {
     if let Ok(path) = env::current_dir() {
-        Build::new().compile(path.join("site-builder.rc")).unwrap();
+        let rc_path = path.join("site-builder.rc");
+        if !rc_path.exists() {
+            panic("site-builder.rs is not found at path {:?}", rc_path);
+        }
+        Build::new().compile(rc_path).unwrap();
     }
 }
 
