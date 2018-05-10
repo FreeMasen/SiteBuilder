@@ -3,12 +3,12 @@
         <base href="/" /> 
         <style>
             @font-face {
-                font-family: 'Nanami-Book';
-                src: url('/fonts/Nanami-Book.otf')
+                font-family: 'Bold';
+                src: url('/fonts/{{bold_font}}')
             }
             @font-face {
-                font-family: 'Nanami-Thin';
-                src: url('/fonts/Nanami-Thin.otf')
+                font-family: 'Normal';
+                src: url('/fonts/{{normal_font}}')
             }
         html, body {
             border: 0;
@@ -17,10 +17,10 @@
         }
         html > * {
             box-sizing: border-box;
-            font-family: 'Nanami-Thin', sans-serif;
+            font-family: 'Normal', sans-serif;
         }
         input, textarea {
-            font-family: 'Nanami-Thin', sans-serif !important;
+            font-family: 'Normal', sans-serif !important;
             font-size: 14pt;
         }
         #header {
@@ -35,7 +35,7 @@
             margin-right: 11vw;
         }
         #header > a {
-            font-family: 'Nanami-Book', sans-serif;
+            font-family: 'Normal', sans-serif;
             padding: 5px 0px;
             font-weight: bold;
             color: black;
@@ -58,7 +58,7 @@
             color: black;
             background: none;
             border: none;
-            font-family: 'Nanami-Thin', sans-serif;
+            font-family: 'Normal', sans-serif;
         }
         .button:visited {
             color: black;
@@ -87,7 +87,7 @@
     <body>
         <header id="header">
             <a href="/">
-                Joe Mollen
+                {{title}}
             </a>
             </svg>
             <nav id="nav">

@@ -1,42 +1,112 @@
 
 export default class AppState {
-    public selectedProject?: Project;
-    public lastBuilt?: Date; 
+    public site?: Site;
+    public siteOptions: SiteOption[];
     public message?: ServerMessage;
     constructor(
-        public source: string = '',
-        public destination: string = '',
-        public website: Website = new Website(),
-        public currentView: Route = Route.All,
-        selectedProject: Project = null,
-        lastBuilt: Date = null,
+        public currentView: Route = Route.Select,
+        site: Site = null,
+        siteOptions: SiteOption[] = [],
         message: ServerMessage = null,
     ) {
-        this.selectedProject = selectedProject;
-        this.lastBuilt = lastBuilt;
+        this.site = site;
+        this.siteOptions = siteOptions;
         this.message = message;
     }
 
     public static fromJson(json: any): AppState {
         return new AppState(
-            json.source,
-            json.destination,
-            Website.fromJson(json.website),
             json.currentView,
-            Project.fromJson(json.selectedProject),
-            json.lastBuilt ? new Date(json.lastBuilt) : null,
+            Site.fromJson(json.site),
+            json.siteOptions.map(SiteOption.fromJson),
             ServerMessage.fromJson(json.message),
         )
     }
+
+    public asJson(): any {
+        let site = this.site
+                ? this.site.asJson()
+                : null;
+        let message = this.message
+                ? this.message
+                : null;
+        return {
+            site,
+            options: this.siteOptions.map(o => o.asJson),
+            message,
+        };
+    }
+}
+
+export class Site {
+    public selectedProject?: Project;
+    public lastBuilt?: Date;
+    constructor(
+        public source: string = '',
+        public destination: string = '',
+        public website: Website = new Website(),
+        selectedProject: Project = null,
+        lastBuilt: Date = null,
+    ) {
+        this.selectedProject = selectedProject;
+        this.lastBuilt = lastBuilt;
+    }
+
+    public static fromJson(json: any): Site {
+        if (!json) return;
+        return new Site(
+            json.source,
+            json.destination,
+            Website.fromJson(json.website),
+            Project.fromJson(json.selectedProject),
+            json.lastBuilt ? new Date(json.lastBuilt) : null,
+        );
+    }
+    public asJson(): any {
+        return {
+            source: this.source,
+            destination: this.destination,
+            website: this.website.asJson(),
+            selectedProject: this.selectedProject,
+            lastBuilt: this.lastBuilt,
+        };
+    }
+}
+
+export class SiteOption {
+    constructor(
+        public id: number,
+        public title: string,
+        public path: string,
+    ) {}
+
+    public static fromJson(json: any): SiteOption {
+        if (!json) return;
+        return new SiteOption(
+            json.id,
+            json.title,
+            json.path,
+        );
+    }
+
+    public asJson(): any {
+        return {
+            id: this.id,
+            title: this.title,
+            path: this.path,
+        }
+    }
 }
 export enum Route {
-    All,
-    Project,
-    About,
+    All = 'All',
+    Project = 'Project',
+    About = 'About',
+    Select = 'Select',
 }
 
 export class Website {
     constructor(
+        public title: string = '',
         public portfolio: Project[] = [],
         public about: string = '',
         public image: string = '',
@@ -46,7 +116,9 @@ export class Website {
     }
 
     static fromJson(json: any): Website {
+        if (!json) return;
         return new Website(
+            json.title,
             json.portfolio.map(Project.fromJson),
             json.about,
             json.image,
@@ -56,6 +128,7 @@ export class Website {
 
     asJson(): any {
         return {
+            title: this.title,
             portfolio: this.portfolio.map(p => p.asJson()),
             about: this.about,
             image: this.image,

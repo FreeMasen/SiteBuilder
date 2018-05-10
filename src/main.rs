@@ -11,18 +11,18 @@ extern crate toml;
 extern crate web_view;
 extern crate walkdir;
 
-use std::path::PathBuf;
-use chrono::prelude::*;
+use std::{
+    path::{PathBuf},
+    process::{exit},
+};
 use nfd::{Response, open_pick_folder, open_file_dialog};
 use serde_json::{from_str, to_string};
 use web_view::{MyUnique ,WebView, Content, run};
 
-mod builder;
+mod messaging;
 mod state;
-mod fs;
+use messaging::Message;
 use state::*;
-use fs::*;
-use builder::*;
 
 const INDEX: &'static str = include_str!("assets/index.html");
 const JS: &'static str = include_str!("assets/app.js");
@@ -31,7 +31,13 @@ const CSS: &'static str = include_str!("assets/main.css");
 fn main() {
     println!("starting");
     let size = (800, 800);
-    let s = get_state();
+    let s = match State::get() {
+        Ok(m) => m,
+        Err(e) => {
+            println!("exiting: {:?}", e);
+            exit(1);
+        },
+    };
     run(
         "Site Builder",
         Content::Html(INDEX),
@@ -39,13 +45,13 @@ fn main() {
         true,
         true,
         true,
-        |_wv: MyUnique<WebView<AppState>>| {},
+        |_wv: MyUnique<WebView<State>>| {},
         event_handler,
         s,
     );
 }
 
-fn event_handler(wv: &mut WebView<AppState>, arg: &str, state: &mut AppState) {
+fn event_handler(wv: &mut WebView<State>, arg: &str, state: &mut State) {
     println!("event_handler {:?}", arg);
     match from_str::<Message>(arg) {
         Ok(msg) => {
@@ -65,26 +71,29 @@ fn event_handler(wv: &mut WebView<AppState>, arg: &str, state: &mut AppState) {
                 //When the app requests a refresh
                 //we refresh the state from the file system
                 Message::Refresh => {
-                    state.update_from_source();
+                    match state.update_site() {
+                        Ok(msg) => state.add_message(msg, false),
+                        Err(e) => state.add_message(format!("Error refreshing {:?}", e), true),
+                    }
                     cache_and_inject(wv, &state);
                 }
                 //When the app reports an error we
                 //print it to stdout
                 Message::Error {message} => {
-                    println!("Client Error: {}", message)
+                    state.add_message(message, true);
+                    cache_and_inject(wv, state);
                 },
                 //When the app requests a build
                 //we convert the input to the output
                 Message::Build => {
-                    // println!("Build: {:?}, {:?}", state.source, state.destination);
-                    if state.is_valid() {
-                        build(&state);
-                        state.last_built = Some(Local::now());
-                    } else {
-                        state.message = Some(ServerMessage {
-                            content: String::from("Unable to build site"),
-                            is_error: true
-                        });
+                    match state.site_valid() {
+                        Ok(_msg) => {
+                            match state.build_site() {
+                                Ok(msg) => state.add_message(msg, false),
+                                Err(e) => state.add_message(e.msg, true),
+                            }
+                        },
+                        Err(e) => state.add_message(format!("Error building site: {}", e.msg), true),
                     }
                     cache_and_inject(wv, &state);
                 },
@@ -93,162 +102,143 @@ fn event_handler(wv: &mut WebView<AppState>, arg: &str, state: &mut AppState) {
                 //and update the file system
                 Message::AddProject {name} => {
                     match state.add_project(name) {
-                        Ok(()) => cache_and_inject(wv, &state),
-                        Err(e) => println!("Add Error: {:?}", e),
+                        Ok(msg) => state.add_message(msg, false),
+                        Err(e) => state.add_message(format!("Error adding project{:?}", e), true),
                     }
+                    cache_and_inject(wv, state);
                 },
                 //When the app requests an update to a project
                 //we find that projected and replace it with the
                 //app's version and  re-write the folder/files
                 Message::UpdateProject {project} => {
-                    state.website.update_project(project);
-                    match write_input(state) {
-                        Ok(()) => {
-                            state.selected_project = None;
-                            state.current_view = 0;
-                            cache_and_inject(wv, &state)
-                        },
-                        Err(e) => {
-                            println!("Update Error: {:?}", e);
-                        }
+                    match state.update_project(project) {
+                        Ok(s) => state.add_message(s, false),
+                        Err(e) => state.add_message(e.msg, true),
                     }
+                    cache_and_inject(wv, state);
                 },
                 //When the app requests to update the about page's
                 //content, we update the file system
                 Message::UpdateAbout { content } => {
-                    let old_about = state.website.about.clone();
-                    state.website.about = content;
-                    match write_input(state) {
-                        Ok(()) => cache_and_inject(wv, &state),
-                        Err(e) => {
-                            println!("Error: {:?}", e);
-                            state.website.about = old_about;
-                        }
+                    match state.update_about(content) {
+                        Ok(s) => state.add_message(s, false),
+                        Err(e) => state.add_message(e.msg, true),
                     }
+                    cache_and_inject(wv, state);
                 },
                 Message::UpdateAboutImage => {
-                    if let Some(p) = open_dialog(state.source.to_str(), false) {
+                    if let Some(p) = open_dialog(state.source(), false) {
                         let path = PathBuf::from(p);
-                        match copy_file(&path, &state.source) {
-                            Ok(path) => {
-                                state.website.image = path;
-                                cache_and_inject(wv, &state);
-                            },
-                            Err(e) => println!("Error moving me image {:?}", e),
+                        match state.update_about_image(path) {
+                            Ok(msg) => state.add_message(msg, false),
+                            Err(e) => state.add_message(e.msg, true),
                         }
                     }
+                    cache_and_inject(wv, state);
                 }
                 //When the app wants to log some info
                 Message::Log { msg } => println!("Log: {}", msg),
                 Message::AddProjectImage => {
-                    if let Some(ref mut proj) = state.selected_project {
-                        if let Some(p) = open_dialog(state.source.to_str(), false) {
-                            let source = PathBuf::from(p);
-                            match copy_file(&source, &proj.path.join("img")) {
-                                Ok(path) => {
-                                    let img = Image {
-                                        position: proj.images.len() as u32,
-                                        path,
-                                    };
-                                    proj.images.push(img);
-                                    proj.sort_images();
-                                },
-                                Err(e) => println!("Error moving project image {:?}", e),
-                            } 
+                    if let Some(p) = open_dialog(state.source(), false) {
+                        let p = PathBuf::from(p);
+                        match state.add_project_image(p) {
+                            Ok(msg) => state.add_message(msg, false),
+                            Err(e) => state.add_message(e.msg, true),
                         }
                     }
                     cache_and_inject(wv, state);
                 },
                 Message::RemoveProjectImage { path } => {
-                    match remove(&path) {
-                        Ok(()) => {
-                            state.update_from_source();
-                            cache_and_inject(wv, state)
-                        },
-                        Err(e) => println!("Error removing file {:?}", e),
+                    match state.remove_project_image(path) {
+                        Ok(msg) => state.add_message(msg, false),
+                        Err(e) => state.add_message(e.msg, true)
                     }
+                    cache_and_inject(wv, state)
                 },
                 Message::UpdateSource => {
-                    if let Some(p) = open_dialog(state.source.to_str(), true) {
-                        let path = PathBuf::from(p);
-                        ensure_dir_defaults(&path);
-                        state.source = path;
-                        state.update_from_source();
-                        cache_and_inject(wv, state);
+                    if let Some(p) = open_dialog(state.source(), true) {
+                        let p = PathBuf::from(p);
+                        match state.update_source(p) {
+                            Ok(msg) => state.add_message(msg, false),
+                            Err(e) => state.add_message(e.msg, true),
+                        }
                     }
+                    cache_and_inject(wv, state);
                 },
                 Message::UpdateDest => {
-                    if let Some(p) = open_dialog(state.source.to_str(), true) {
-                        state.destination = PathBuf::from(p);
+                    if let Some(p) = open_dialog(state.source(), true) {
+                        let p = PathBuf::from(p);
+                        match state.update_dest(p) {
+                            Ok(msg) => state.add_message(msg, false),
+                            Err(e) => state.add_message(e.msg, true),
+                        }
                         cache_and_inject(wv, state);
                     }
                 },
                 Message::ChangeView { route, project } => {
-                    state.current_view = route;
-                    state.selected_project = project;
+                    state.change_view(route, project);
                     cache_and_inject(wv, &state);
                 },
                 Message::AddFont { bold } => {
-                    if let Some(p) = open_dialog(state.source.to_str(), false) {
+                    if let Some(p) = open_dialog(state.source(), false) {
                         let path = PathBuf::from(p);
-                        match copy_file(&path, &state.source) {
-                            Ok(p) => {
-                                if bold {
-                                    state.website.fonts.bold = Some(p);
-                                } else {
-                                    state.website.fonts.normal = Some(p);
-                                }
-                                cache_and_inject(wv, state)
-                            },
-                            Err(e) => println!("Error adding font {:?}", e),
+                        match state.add_font(&path, bold) {
+                            Ok(msg) => state.add_message(msg, false),
+                            Err(e) => state.add_message(e.msg, true),
                         }
                     }
+                    cache_and_inject(wv, state);
                 },
                 Message::RemoveFont { bold } => {
-                   let path = if bold {
-                       state.website.fonts.bold.clone()
-                   } else {
-                       state.website.fonts.normal.clone()
-                   };
-                    if let Some(ref path) = path {
-                        match remove(path) {
-                            Ok(()) => {
-                                if bold {
-                                    state.website.fonts.bold = None;
-                                } else {
-                                    state.website.fonts.normal = None;
-                                }
-                                cache_and_inject(wv, &state);
-                            },
-                            Err(e) => println!("{:?}", e),
-                        }
-                    }
+                   match state.remove_font(bold) {
+                       Ok(msg) => state.add_message(msg, false),
+                       Err(e) => state.add_message(e.msg, true),
+                   }
+                   cache_and_inject(wv, state);
                 },
                 Message::DeleteProject => {
-                    println!("Delete Project");
-                    if let Some(ref p) = state.selected_project {
-                        state.website.delete_project(p);
+                    match state.remove_project() {
+                        Ok(msg) => state.add_message(msg, false),
+                        Err(e) => state.add_message(e.msg, true),
                     }
-                    state.current_view = 0;
-                    state.selected_project = None;
                     cache_and_inject(wv, state);
                 },
                 Message::ClearMessage => {
-                    state.message = None;
+                    state.clear_message();
                     cache_and_inject(wv, state)
+                },
+                Message::ChooseSite { idx } => {
+                    match state.choose_site(idx) {
+                        Ok(_msg) => (),
+                        Err(e) => state.add_message(e.msg, true),
+                    }
+                    cache_and_inject(wv, state);
                 }
+                Message::ChangeSiteTitle { title } => {
+                    match state.update_site_title(title) {
+                        Ok(msg) => state.add_message(msg, false),
+                        Err(e) => state.add_message(e.msg, true),
+                    }
+                    cache_and_inject(wv, state);
+                },
+                Message::AddSite => {
+                    if let Some(p) = open_dialog(state.source(), true) {
+                        state.add_site(PathBuf::from(p));
+                        cache_and_inject(wv, state);
+                    }
+                },
             }
         },
         Err(e) => println!("Deserialize Error: {:?}", e),
     }
 }
 
-fn cache_and_inject(wv: &mut WebView<AppState>, app_state: &AppState) {
-    cache_state(app_state);
-    inject_event(wv, app_state);
+fn cache_and_inject(wv: &mut WebView<State>, state: &State) {
+    let _ = state.cache();
+    inject_event(wv, state);
 }
 
-fn inject_event(wv: &mut WebView<AppState>, app_state: &AppState) {
+fn inject_event(wv: &mut WebView<State>, app_state: &State) {
     let state_str = to_string(&app_state).unwrap_or(String::from("unable to serialize website"));
     wv.eval(&format!("window.dispatchEvent(new CustomEvent('state-change', {{detail: {}}}));", state_str));
 }

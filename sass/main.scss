@@ -312,3 +312,34 @@ button {
     align-items: center;
     width: 100%;
 }
+
+.toast-message {
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    animation: 1.5s 2 alternate toast;
+    background: $success;
+    color: $lighter;
+    font-size: 18pt;
+    text-align: center;
+    overflow: hidden;
+    padding-top: 5px;
+    &.error {
+        background: $warn;
+    }
+}
+
+@keyframes toast {
+    from {
+        height: 0px;
+    }
+    15% {
+        height: 38px;
+    }
+    85% {
+        height: 38px
+    }
+    to {
+        height: 38px;
+    }
+}

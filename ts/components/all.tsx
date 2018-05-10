@@ -8,6 +8,7 @@ interface IAllProps {
     destination: string;
     pages: Project[];
     fonts: Fonts;
+    title: string,
     updateRequested: () => void;
     sourceSelected: () => void;
     destSelected: () => void;
@@ -16,6 +17,7 @@ interface IAllProps {
     aboutSelected: () => void;
     generateSite: () => void;
     selectFontClicked: (bold: boolean) => void;
+    updateTitle: (title: String) => void;
 }
 
 export default class All extends React.Component<IAllProps, {}> {
@@ -23,25 +25,33 @@ export default class All extends React.Component<IAllProps, {}> {
     render() {
         return (
             <div className="all-container">
+                <div className="site-title">
+                    <InputGroup
+                        id="site-title"
+                        label="Site Title"
+                        value={this.props.title}
+                        onChange={ev => this.props.updateTitle(ev.currentTarget.value)}
+                    />
+                </div>
                 <div className="button-group">
-                <button 
-                    title="Refresh from the source folder"
-                    type="button" 
-                    onClick={ev => this.props.updateRequested()}
-                >Update
-                </button>
-                <button 
-                    title="Generate the html for this site"
-                    type="button" 
-                    onClick={ev => this.props.generateSite()}
-                >Generate
-                </button>
-                <button
-                    title="Add a new empty project to this site"
-                    type="button"
-                    onClick={ev => this.props.addPage()}
-                >Add Project</button>
-            </div>
+                    <button
+                        title="Refresh from the source folder"
+                        type="button" 
+                        onClick={ev => this.props.updateRequested()}
+                    >Update
+                    </button>
+                    <button 
+                        title="Generate the html for this site"
+                        type="button" 
+                        onClick={ev => this.props.generateSite()}
+                    >Generate
+                    </button>
+                    <button
+                        title="Add a new empty project to this site"
+                        type="button"
+                        onClick={ev => this.props.addPage()}
+                    >Add Project</button>
+                </div>
                 <div className="paths">
                     <InputGroup id="infile-input"
                         label="Input Directory"

@@ -84,6 +84,24 @@ export default class Comm {
             kind: 'deleteProject',
         })
     }
+    public newSite() {
+        this.sendMessage({
+            kind: "addSite"
+        })
+    }
+    public selectSite(idx: number) {
+        this.sendMessage({
+            kind: 'chooseSite',
+            idx,
+        })
+    }
+
+    public updateTitle(title: String) {
+        this.sendMessage({
+            kind: 'changeSiteTitle',
+            title,
+        });
+    }
 
     private clearMessage() {
         this.sendMessage({

@@ -5,7 +5,7 @@ interface IAboutEditorProps {
     imagePath: string;
     content: string;
     backHandler: () => void;
-    saveHandler: (image: string, content: string) => void;
+    saveHandler: (content: string) => void;
     imageHandler: () => void;
 }
 
@@ -49,11 +49,11 @@ export default class AboutEditor extends React.Component<IAboutEditorProps, IAbo
                 <div className="button-group">
                     <button
                         className="cancel"
-                        onClick={ev => {}}
+                        onClick={ev => this.props.backHandler()}
                     >Cancel</button>
                     <button
                         className="save"
-                        onClick={ev => {}}
+                        onClick={ev => this.props.saveHandler(this.state.content)}
                     >Save</button>
                 </div>
             </div>
