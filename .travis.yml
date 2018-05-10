@@ -22,8 +22,7 @@ before_deploy:
 - echo copying icon into .app
 - cp assets/SiteBuilder.icns SiteBuilder.app/Contents/Resources/SiteBuilder.icns
 - echo copying bin to .app
-- cp target/release/site-builder SiteBuilder.app/Contents/MacOS/
-- mv SiteBuilder.app/Content/MacOS/site-builder SiteBuilder.app/Content/MacOS/SiteBuilder
+- cp target/release/site-builder SiteBuilder.app/Contents/MacOS/SiteBuilder
 - echo zipping up .app
 - tar -czvf SiteBuilder.tar.gz SiteBuilder.app
 - ls -lh
@@ -32,7 +31,7 @@ deploy:
   skip_cleanup: true
   api_key:
     secure: EMGhLRoMFEOQ2dVAlYCGSAJEkbB3b/XwHtlojF1ONI65BRJOwk7Bbcebyo5pDgSTjq5eH7+8xXUKn5NnWV2LVN+GPdRPA7tKBvQhV6vkVsy5rI+3elEgXVX1VUZeCDmtAzmyJL3a2bSsapOHXvIgl22mEx5TR0O+vDtubl8NnklPgZYb/yrrAOtxnb+OLRkjQdP1nE4+oszdUG9tqghbInqURHxvq1Z/xzkQIwnfmmCLBbv4lc3j64muZ1QxBGbkv9WVP3HinCKt5pV9vJ3DU5kdDJE8CkLvroq4uDD9d65TS4Pyfq73IqURRf+DqVAFruU6p9lsszUW/Csw64fz8ft+WQXkqcQeJudRL4pk9WR81monhr8f0vzp5zjfO9B8X/FYTc5ut6D/lhf3tw85xVjz5d3Yf68Tx8c0l5WEeYuvUPwATrkzZlfErDfXwusPlVKc7NuFVZNrAX3Yfx4s7r3Cj5SeCRWU4NKqJ78WjaNVEsx61ZZn/EerhepdzfpEr6zkLXM75+woxUsw9FFRXPocuXxvpUzb0pR+XcOxZf5lLOFmTQ3cYncnnLyljhjAr+yP0gmKfoYDDDhJYRlEaYBcoEBvSR8deuMZIbc1XpDiNHFOQzZ4EIaSWH6QJqJtihKCJUSVr9lSGOiaVl444XRXXEUy0mY55snfkhku+dw=
-  file: 
+  file:
     - SiteBuilder.tar.gz
   on:
     # tag: true
