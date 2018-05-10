@@ -58,8 +58,8 @@ impl Website {
         let mut tmp_portfolio: Vec<Project> = vec!();
         for entry in WalkDir::new(path).min_depth(1).max_depth(1) {
             if let Ok(entry) = entry {
-                match self.portfolio.binary_search_by(|p| p.path().cmp(&entry.path().to_path_buf())) {
-                    Ok(idx) => {
+                match self.portfolio.iter().position(|p| p.path() == entry.path().to_path_buf()) {
+                    Some(idx) => {
                         let mut p = self.portfolio[idx].clone();
                         p.id = tmp_portfolio.len() as u32;
                         p.path = entry.path().to_path_buf();
@@ -67,7 +67,7 @@ impl Website {
                         tmp_portfolio.push(p);
 
                     },
-                    Err(_) => {
+                    None => {
                         let mut p = Project::default();
                         p.id = tmp_portfolio.len() as u32;
                         p.path = entry.path().to_path_buf();
@@ -83,7 +83,7 @@ impl Website {
             match project.delete_files() {
                 Ok(()) => {
                     self.portfolio = self.portfolio.clone().into_iter().filter(|p| p.id != project.id).collect();
-                    Ok("Successfully deleted proejct".into())
+                    Ok("Successfully deleted project".into())
                 },
                 Err(e) => Err(StateError::new(format!("{:?}", e))),
             }

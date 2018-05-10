@@ -52,7 +52,6 @@ class AppContainer extends React.Component<{}, AppState> {
     }
 
     render() {
-        console.log('App.render()');
         let title = this.state.currentView == Route.All ? 'Site Builder' :
                     this.state.currentView == Route.About ? 'About Editor' :
                     this.state.currentView == Route.Project ? `Project Editor` :

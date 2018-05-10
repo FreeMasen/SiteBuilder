@@ -1,3 +1,5 @@
+#![allow(unknown_lints)]
+#![warn(clippy)]
 extern crate bincode;
 extern crate chrono;
 extern crate nfd;
@@ -77,8 +79,8 @@ fn event_handler(wv: &mut WebView<State>, arg: &str, state: &mut State) {
                     }
                     cache_and_inject(wv, &state);
                 }
-                //When the app reports an error we
-                //print it to stdout
+                // When the app reports an error we
+                // display it in the toast
                 Message::Error {message} => {
                     state.add_message(message, true);
                     cache_and_inject(wv, state);

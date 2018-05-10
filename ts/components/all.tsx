@@ -20,18 +20,35 @@ interface IAllProps {
     updateTitle: (title: String) => void;
 }
 
-export default class All extends React.Component<IAllProps, {}> {
+interface IAllState {
+    title: string;
+}
+
+export default class All extends React.Component<IAllProps, IAllState> {
+    titleChangedTimeout?: number = null;
+    constructor(props: IAllProps) {
+        super(props);
+        this.state = {
+            title: props.title
+        }
+    }
+
+    componentWillReceiveProps(props) {
+        if (this.state.title != props.title) {
+            this.setState({title: props.title});
+        }
+    }
 
     render() {
         return (
             <div className="all-container">
                 <div className="site-title">
-                    <InputGroup
-                        id="site-title"
-                        label="Site Title"
-                        value={this.props.title}
-                        onChange={ev => this.props.updateTitle(ev.currentTarget.value)}
-                    />
+                <InputGroup
+                    id="site-title"
+                    label="Site Title"
+                    defaultValue={this.props.title}
+                    onBlur={ev => this.props.updateTitle(ev.currentTarget.value)}
+                />
                 </div>
                 <div className="button-group">
                     <button

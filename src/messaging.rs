@@ -3,6 +3,7 @@ use project::Project;
 use state::Route;
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(rename_all = "camelCase")]
+/// A message for the client to display
 pub struct ServerMessage {
     pub content: String,
     pub is_error: bool,
@@ -10,6 +11,8 @@ pub struct ServerMessage {
 
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase", tag = "kind")]
+/// The message received from the client regarding the 
+/// required changes to the state
 pub enum Message {
     /// Window loaded
     Load, 

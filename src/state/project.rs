@@ -58,13 +58,13 @@ impl Project {
                 if !entry.file_type().is_file() {
                     continue;
                 }
-                match self.images.binary_search_by(|i| i.path.cmp(&entry.path().to_path_buf())) {
-                    Ok(idx) => {
+                match self.images.iter().position(|i| i.path == entry.path().to_path_buf()) {
+                    Some(idx) => {
                         let mut img = self.images[idx].clone();
                         img.path = entry.path().to_path_buf();
                         tmp_images.push(img);
                     },
-                    Err(_) => {
+                    None => {
                         let img = Image {
                             position: self.images.len() as u32,
                             path: entry.path().to_path_buf(),

@@ -2,3 +2,8 @@
 /target
 **/*.rs.bk
 /node_modules
+.vscode
+.sass-cache
+/src/assets/*.css
+/src/assets/*.map
+/src/assets/*.js

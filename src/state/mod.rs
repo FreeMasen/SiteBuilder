@@ -68,9 +68,7 @@ impl State {
         let f = Self::get_cache_file()?;
         let ret = serialize_into(f, &self.site_options)?;
         if let Some(ref s) = self.site {
-            if let Ok(_) = s.is_valid() {
-                s.cache()
-            }
+            s.cache()
         }
         Ok(ret)
     }
@@ -87,23 +85,44 @@ impl State {
         Ok(())
     }
 
+    /// Add a new site to the global site's cache
     pub fn add_site(&mut self, path: PathBuf) {
-        let id = self.site_options.iter().map(|s| s.id).max().or(0);
+        //First, get the new id for this site in case we need it for the
+        //new site's title
+        let id = self.site_options.iter().map(|s| s.id).max().unwrap_or(0);
         let new_site = if let Ok(ss) = SiteState::get(&path) {
+            //If the folder already has a .site_builder file with a valid
+            //site state then we will just use that
             ss
         } else {
+            //If no .site_builder file is found we create a new one
+            //with a default title of Site-{id} and the path provided
             let s = SiteState::new(&format!("Site-{}", id), &path);
+            //Cache the site to make sure it is saved with this new data
             s.cache();
             s
         };
-        let new_cache = CachedSite {
-            id,
-            title: new_site.website.title.clone(),
-            path: path,
-        };
-        if !self.site_options.iter().any(|s| s.path == new_cache.path) {
+        
+        let idx = if let Some(idx) = self.site_options.iter().position(|s| s.path == path) {
+            // If the site already exists in our cache, we can just use the index
+            // to set the self.selected_idx property
+            idx
+        } else {
+            //If the site doesn't already exist, we can create a new
+            //SiteCache with out id, the title created above and 
+            //the path provided
+            let new_cache = CachedSite {
+                id,
+                title: new_site.website.title.clone(),
+                path: path,
+            };
+            //Add this to our cache
             self.site_options.push(new_cache);
-        }
+            //use the last index in our site_options
+            //as the selected index
+            self.site_options.len() - 1
+        };
+        self.selected_idx = Some(idx);
         self.current_view = Route::All;
         self.site = Some(new_site);
     }
@@ -123,6 +142,7 @@ impl State {
         {
             let s = self.site()?;
             s.update_title(title.clone());
+            s.cache()
         }
         self.update_cached_site(title)?;
         Ok(String::from("Successfully updated site title"))

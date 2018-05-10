@@ -81,6 +81,26 @@ button {
     }
     .all-container {
         width: 100%;
+        .site-title {
+            width: 100%;
+            .input-group {
+                display: flex;
+                flex-flow: column;
+                justify-content: flex-start;
+                align-items: center;
+                margin-bottom: 10px;
+                input {
+                    font-size: 16pt;
+                    border: none;
+                    border-bottom: 1px solid $dark;
+                    background: $lighter;
+                    text-align: center;
+                }
+                label {
+                    text-align: center;
+                }
+            }
+        }
         .button-group {
             display: flex;
             flex-flow: row;
@@ -105,6 +125,7 @@ button {
                     border: 0;
                     border-bottom: 1px solid $dark;
                     width: 250px;
+                    background: $lighter;
                 }
             }
             
@@ -121,11 +142,13 @@ button {
                 background: $dark;
                 padding: 5px;
                 margin: 5px 0;
-                color: white;
+                color: $lighter;
                 width: 100%;
-                box-shadow: 1px 1px 1px 1px $light;
                 font-size: 18pt;
-                cursor: pointer;
+                cursor: default;
+                &:hover {
+                    transform: translate(-1px, -1px);
+                }
                 &:active {
                     transform: translate(1px, 1px);
                     box-shadow: 0;
@@ -271,7 +294,6 @@ button {
             }
         }
     }
-
     .about-container {
         display: flex;
         flex-flow: column;
@@ -302,6 +324,35 @@ button {
             }
         }
 
+    }
+    .select-site-container {
+        width: 100%;
+        .site-list {
+            display: flex;
+            flex-flow: column;
+            justify-content: flex-start;
+            align-content: stretch;
+            align-items: flex-start;
+            .site-option {
+                background: $dark;
+                padding: 5px;
+                margin: 5px 0;
+                color: $lighter;
+                width: 100%;
+                font-size: 18pt;
+                cursor: default;
+                display: flex;
+                flex-flow: row;
+                justify-content: space-between;
+                align-items: center;
+                &:hover {
+                    transform: translate(-1px, -1px);
+                }
+                &:active {
+                    transform: translate(1px, 1px);
+                }
+            }
+        }
     }
 }
 
