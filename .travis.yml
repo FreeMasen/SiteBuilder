@@ -1,0 +1,52 @@
+language: rust
+rust: stable
+cache: cargo
+os: osx
+script: 
+  - webpack --env prod
+  - ./node_modules/.bin/node-sass ./sass/main.scss -o ./src/assets/
+  - cargo build --release
+notifications:
+- email: false
+install:
+  - curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.8/install.sh | bash
+  - source ~/.nvm/nvm.sh
+  - nvm install 10
+  - yarn
+before_deploy:
+- echo "building deploy package"
+- mkdir -p SiteBuilder.app/Contents/{MacOS,Resources}
+- |
+  cat > SiteBuilder.app/Contents/Info.plist << EOF
+  <?xml version="1.0" encoding="UTF-8"?>
+  <!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+  <plist version="1.0">
+  <dict>
+      <key>CFBundleExecutable</key>
+      <string>SiteBuilder</string>
+      <key>CFBundleGetInfoString</key>
+      <string>SiteBuilder</string>
+      <key>CFBundleIconFile</key>
+      <string>SiteBuilder</string>
+      <key>CFBundleIdentifier</key>
+      <string>com.robertmasen</string>
+      <key>CFBundleName</key>
+      <string>SiteBuilder</string>
+      <key>CFBundlePackageType</key>
+      <string>APPL</string>
+  </dict>
+  </plist>
+  EOF
+- cp SiteBuilder.icns SiteBuilder.app/Contents/Resources/SiteBuilder.icns
+- tar -czvf SiteBuilder.tar.gz SiteBuilder.app
+deploy:
+  provider: releases
+  draft: true
+  skip_cleanup: true
+  draft: true
+  api_key:
+    secure: "PAdIxRsvQqO+krBCQzg05HwFUTsjqwcKNdzel2bEvjhNRfN1Vwuqi+n4p+Etub+ZaVPVMXDgHqmjDX9ffliiBs6jj/Hklixd0adFEN6Jtn8CbjwdoJhyKr1ZO0uocB34Gsds6SBGfU2IiIBupg7m2r8HIsgsxe0xjgXumJsFhcyzssObyPoGEVuMSTe18xop5vMNuzwhTlgPU92vNz4Yq+5KAahhzCtgviuXSR9FycAwm5jCUmXlY7S1J8Q8ykhZaH+q4IftMi35ZO4kCmlt5Rh7Rb4FSo8jRr3sN/5tIXe14bIuIu8s582xqouDU7ef2bipCC2/qs8jrWM3R3fzfjiufzEjxUrkIm3w9woOx6ebk09cuOY0O1tNRkuoam/JeKIHfu8j5zrRx4FbMvASdqFg1DoahZw6WmSEUhrz+6MhUE9MJ7ioaMGdmpswWpaUnl/dYcU1ujPmIA74TlF0AfxqBFUnFsWsIK4bqyx5Otjk65/Te/sfD6XwaVsk2RSecbPtlTzZjJeZsDIKCKr4dw3sBWezysVzqfPKgtrvONtlLv8XmUufvS/ws39uM4UpVOeSdj8JBFhVF3+WbL3E9JW1G72kNe5/dc1HxQQ85AwZPT9XUim924IkLLNZeTQCHIvPeTtzME+TPsJG27yC2xNnkBYZe4LnaECMO3FJymE="
+  file: SiteBuilder.tar.gz
+  on:
+    tags: true
+    repo: FreeMasen/SiteBuilder

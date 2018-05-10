@@ -1,0 +1,29 @@
+environment:
+  matrix:
+    - TARGET: x86_64-pc-windows-msvc
+      DEPLOY: 1
+install:
+  - ps: InstallProduct node 10
+  - appveyor-retry appveyor DownloadFile https://win.rustup.rs/ -FileName rustup-init.exe
+  - set PATH=%PATH%;C:\Users\appveyor\.cargo\bin
+  - rustc -V
+  - cargo -V
+
+build: false
+
+test_script:
+  - yarn
+  - webpack
+  - .\node_modules\.bin\node-sass .\sass\main.scss --output-style compressed -o .\src\assets
+  - cargo build --release
+before_deploy:
+- ps: |
+      
+deploy:
+  artifact: .\target\src\release\site-builder.exe
+  auth_toke:
+    secure: R5fzSpX4xEwv4pFtArqFTlI+sur+Vf/rU7fDYHSmz+r3/Ka3JfOhI9id4Yoqz7ys
+  description: ''
+  on:
+    appveyor_repo_tag: true
+  provider: GitHub
