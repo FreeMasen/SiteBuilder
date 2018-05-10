@@ -21,7 +21,8 @@ test_script:
   # - node_modules\.bin\node-sass .\sass\main.scss --output-style compressed -o .\src\assets
   - cargo build #--release
 before_deploy:
-- ps: |
+  - ps: $env:cwd=(Get-Item -Path ".\" -Verbose).FullName
+  - ps: echo "1 ICON $env:cwd\assets\site-builder.ico" > assets/site-builder.rc
       
 deploy:
   artifact: .\target\src\release\site-builder.exe

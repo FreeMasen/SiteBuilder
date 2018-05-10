@@ -17,30 +17,12 @@ before_deploy:
 - echo "building deploy package"
 - echo making .app folder
 - mkdir -p SiteBuilder.app/Contents/{MacOS,Resources}
-- echo writing plist
-- |
-  cat > SiteBuilder.app/Contents/Info.plist << EOF
-  <?xml version="1.0" encoding="UTF-8"?>
-  <!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-  <plist version="1.0">
-  <dict>
-      <key>CFBundleExecutable</key>
-      <string>SiteBuilder</string>
-      <key>CFBundleGetInfoString</key>
-      <string>SiteBuilder</string>
-      <key>CFBundleIconFile</key>
-      <string>SiteBuilder</string>
-      <key>CFBundleIdentifier</key>
-      <string>com.robertmasen</string>
-      <key>CFBundleName</key>
-      <string>SiteBuilder</string>
-      <key>CFBundlePackageType</key>
-      <string>APPL</string>
-  </dict>
-  </plist>
-  EOF
+- echo Copying plist
+- cp assets/Info.plist SiteBuilder.app/Contents/Info.plist 
 - echo copying icon into .app
-- cp SiteBuilder.icns SiteBuilder.app/Contents/Resources/SiteBuilder.icns
+- cp assets/SiteBuilder.icns SiteBuilder.app/Contents/Resources/SiteBuilder.icns
+- echo copying bin to .app
+- cp target/release/site-builder SiteBuilder.app/Content/MacOS/SiteBuilder
 - echo zipping up .app
 - tar -czvf SiteBuilder.tar.gz SiteBuilder.app
 - ls -lh
@@ -52,5 +34,5 @@ deploy:
   file: 
     - SiteBuilder.tar.gz
   on:
-    tag: true
+    # tag: true
     repo: FreeMasen/SiteBuilder
