@@ -6,7 +6,7 @@ use windres::Build;
 use std::{env::var_os, path::PathBuf};
 #[cfg(windows)]
 fn main() {
-    if Some(arg) = var_os("APPVEYOR_BUILD_FOLDER") {
+    if let Some(arg) = var_os("APPVEYOR_BUILD_FOLDER") {
         let path = PathBuf::from(arg);
         Build::new().compile(path.join("site-builder.rc")).unwrap();
     }
