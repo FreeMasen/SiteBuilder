@@ -16,6 +16,8 @@ install:
   # - ls
   - ps: $env:cwd=(Get-Item -Path ".\" -Verbose).FullName
   - ps: echo $env:cwd
+  - ps: cd assets
+  - ps: ls
   - ps: echo "1 ICON $env:cwd\assets\site-builder.ico" > assets/site-builder.rc
 
 build: false
