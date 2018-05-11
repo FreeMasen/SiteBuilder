@@ -26,6 +26,7 @@ impl Valid for SiteState {
 impl Valid for Project {
     fn is_valid(&self) -> StateResult {
         if !self.path.exists() {
+            println!("Error finding path for project: {:?}", &self.path);
             return Err(StateError::new(&format!("Path for {} was not found", &self.meta.title)));
         }
         for i in self.images.iter() {

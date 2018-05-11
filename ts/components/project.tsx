@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { Project, Meta, Image } from '../appState';
+import { Image, Meta, Project } from '../appState';
+import StringHandler from '../services/stringHandler';
 import InputGroup from './inputGroup';
 import ListBox from './listBox';
-import StringHandler from '../services/stringHandler';
 
 interface IProjectEditorProps {
     project: Project;
@@ -42,6 +42,7 @@ export default class ProjectEditor extends React.Component<IProjectEditorProps, 
         }
     }
     pageSaved() {
+        console.log("pageSaved", this.state);
         let p = new Project(
             this.props.project.id,
             this.props.project.path,

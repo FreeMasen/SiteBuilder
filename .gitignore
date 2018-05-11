@@ -7,3 +7,4 @@
 /src/assets/*.css
 /src/assets/*.map
 /src/assets/*.js
+assets/*.rc

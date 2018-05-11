@@ -293,4 +293,9 @@ impl SiteState {
             Err(StateError::new("No project selected"))
         }
     }
+
+    pub fn add_project_image(&mut self, path: &PathBuf) -> Result<(), StateError> {
+        let proj = self.selected_project()?;
+        proj.add_image(path)
+    }
 }

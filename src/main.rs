@@ -32,7 +32,7 @@ const CSS: &'static str = include_str!("assets/main.css");
 
 fn main() {
     println!("starting");
-    let size = (800, 800);
+    let size = (1000, 1000);
     let s = match State::get() {
         Ok(m) => m,
         Err(e) => {
@@ -82,6 +82,7 @@ fn event_handler(wv: &mut WebView<State>, arg: &str, state: &mut State) {
                 // When the app reports an error we
                 // display it in the toast
                 Message::Error {message} => {
+                    println!("Message::Error: {:?}", message);
                     state.add_message(message, true);
                     cache_and_inject(wv, state);
                 },

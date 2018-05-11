@@ -181,10 +181,11 @@ impl State {
     }
 
     pub fn update_project(&mut self, project: Project) -> StateResult {
-        let s = self.site()?;
+        {let s = self.site()?;
         s.update_project(project);
         s.write_input()?;
-        s.selected_project = None;
+        s.selected_project = None;}
+        self.current_view = Route::All;
         Ok(String::from("Successfully updated project"))
     }
 
@@ -256,8 +257,7 @@ impl State {
 
     pub fn add_project_image(&mut self, path: PathBuf) -> StateResult {
         let s = self.site()?;
-        let proj = s.selected_project()?;
-        copy_file(&path, &proj.path)?;
+        s.add_project_image(&path)?;
         Ok(String::from("Successfully added project image"))
     }
 

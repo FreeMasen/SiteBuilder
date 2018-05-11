@@ -1,4 +1,4 @@
-import AppState, {Website, Project, Meta, Route} from '../appState';
+import AppState, { Project, Route } from '../appState';
 
 
 export default class Comm {
@@ -110,9 +110,10 @@ export default class Comm {
     }
 
     private stateChange(ev: CustomEvent) {
-        console.log('Comm.stateChange ', ev.detail);
+        console.log('Comm.stateChange ');
         try {
             let parsedState = AppState.fromJson(ev.detail);
+            console.log('parsed state', parsedState);
             if (!this.stateChangeCb) return this.sendMessage(Message.Error('Cannot change state w/o state change callback'));
             if (parsedState.message) setTimeout(() => this.clearMessage(), 3000);
             this.stateChangeCb(parsedState);

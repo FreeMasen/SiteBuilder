@@ -1,32 +1,29 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-
-import AppState, {Website, Project, Meta, Route} from './appState';
-import Communicator from './services/communicator';
-
-import TitleBar from './components/titleBar';
+import AppState, { Project, Route } from './appState';
+import About from './components/about';
 import All from './components/all';
 import ProjectEditor from './components/project';
-import About from './components/about';
-import Toast from './components/toast';
 import SelectSite from './components/selectSite';
+import TitleBar from './components/titleBar';
+import Toast from './components/toast';
+import Communicator from './services/communicator';
+
+
 
 class AppContainer extends React.Component<{}, AppState> {
     private comm: Communicator;
     constructor(props) {
         super(props);
-        console.log('AppContainer.constructor');
         this.state = new AppState();
         this.comm = new Communicator(s => this.communicatorCallback(s));
     }
 
     componentDidMount() {
-        console.log('AppContainer.componentDidMount')
         this.comm.init();
     }
 
     communicatorCallback(s: AppState) {
-        console.log('communicatorCallback', s)
         this.setState((prev, props) => {
             return s
         })
@@ -83,7 +80,6 @@ class AppContainer extends React.Component<{}, AppState> {
     }
 
     renderBody() {
-        console.log('AppContainer.renderBody()');
         switch (this.state.currentView) {
             case Route.All:
                 return (
