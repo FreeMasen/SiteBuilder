@@ -14,8 +14,8 @@ install:
   - node_modules\.bin\node-sass -v
   - ps: echo $env:APPVEYOR_BUILD_FOLDER
   - ps: $env:cwd=(Get-Item -Path ".\" -Verbose).FullName
-  - ps: echo "1 ICON $env:cwd\assets\site-builder.ico"
-  - ps: echo "1 ICON $env:cwd\assets\site-builder.ico" > assets/site-builder.rc
+  - ps: echo "1 \"ICON $env:cwd\assets\site-builder.ico\""
+  - ps: echo "1 \"ICON $env:cwd\assets\site-builder.ico\"" > assets/site-builder.rc
   - ps: cd assets; ls; cd ..
 
 build: false
