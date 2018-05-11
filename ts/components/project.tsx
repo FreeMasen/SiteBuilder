@@ -136,6 +136,7 @@ export default class ProjectEditor extends React.Component<IProjectEditorProps, 
                                             className="contributor" 
                                             key={`contributor-${i}`}
                                             onClick={ev => this.removeContributor(i)}
+                                            title="Click to remove"
                                         >{t}</span>
                                     )
                                 })
@@ -157,7 +158,7 @@ export default class ProjectEditor extends React.Component<IProjectEditorProps, 
                             >Delete</button>
                         </div>
                         <ListBox
-                            options={this.props.project.images.map(i => StringHandler.fileName(i.path))}
+                            options={this.state.images.map(i => StringHandler.fileName(i.path))}
                             selected={this.state.selectedImage ? this.state.selectedImage.position : null}
                             onChange={i => this.setState({selectedImage: this.state.images[i]})}
                         />

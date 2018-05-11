@@ -23,9 +23,10 @@ impl Website {
             ..Website::default()
         }
     }
-    pub fn add_project(&mut self, name: String) {
+    pub fn add_project(&mut self, path_root: &PathBuf, name: String) {
         let new_project = Project {
             id: self.portfolio.len() as u32,
+            path: path_root.join("portfolio").join(&name),
             meta: Meta {
                 title: name,
                 ..Meta::default()

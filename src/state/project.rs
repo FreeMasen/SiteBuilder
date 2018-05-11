@@ -87,7 +87,8 @@ impl Project {
     }
 
     pub fn add_image(&mut self, path: &PathBuf) -> Result<(), StateError> {
-        super::copy_file(&path, &self.path)?;
+        println!("add_image {:?}", &path);
+        super::copy_file(&path, &self.path.join("img"))?;
         let img = Image {
             position: self.images.iter().map(|i| i.position).max().unwrap_or(0),
             path: path.clone(),

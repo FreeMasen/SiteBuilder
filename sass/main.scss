@@ -252,6 +252,7 @@ button {
                         height: 25px;
                         padding: 0 5px;
                         border-bottom: 1px solid $light;
+                        cursor: default;
                         &.selected {
                             background: $dark;
                             color: white;
