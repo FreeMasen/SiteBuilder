@@ -1,5 +1,5 @@
 use std::{
-    fs::{DirBuilder, File, remove_dir_all, remove_file},
+    fs::{File, remove_dir_all, remove_file},
     path::{PathBuf},
 };
 
@@ -43,13 +43,16 @@ impl SiteState {
         let p = path.join(".site_builder");
         let f = super::get_cache_file(&p)?;
         if f.metadata()?.len() == 0 {
-            return Ok(SiteState {
+            let s = 
+            SiteState {
                 source: path.clone(),
                 destination: PathBuf::default(),
                 website: Website::default(),
                 selected_project: None,
                 last_built: None,
-            })
+            };
+            s.ensure_dir_defaults();
+            return Ok(s)
         }
         let ret = deserialize_from(f)?;
         Ok(ret)
@@ -72,7 +75,7 @@ impl SiteState {
     }
 
     pub fn add_project(&mut self, name: String) -> StateResult {
-        self.website.add_project(name);
+        self.website.add_project(&self.source, name);
         match self.write_input() {
             Ok(()) => Ok(String::from("Successfully added project")),
             Err(e) => Err(StateError::new(&format!("Unable to create project, {:?}", e))),
@@ -112,8 +115,8 @@ impl SiteState {
 
     pub fn write_input(&self) -> ::std::io::Result<()> {
         for project in self.website.portfolio.iter() {
-            let path = self.source.join("portfolio").join(&project.meta.title);
-            super::ensure_folder(&path)?;
+            let path = &project.path;
+            super::ensure_folder(path)?;
             super::write_file(&mut project.description.clone(), path.join("content.md"))?;
             if let Ok(mut m) = toml::to_string(&project.meta) {
                 super::write_file(&mut m, path.join("meta.toml"))?;
@@ -126,24 +129,23 @@ impl SiteState {
     /// Ensure that all of the top level files and folders are
     /// included in the source dir
     pub fn ensure_dir_defaults(&self) {
+        println!("Ensuring Fonts Folder");
         if let Err(e) = super::ensure_folder(&self.source.join("fonts")) {
             println!("Error ensuring folder: {:?}", e);
         }
+        println!("Ensuring Portfolio Folder");
         if let Err(e) = super::ensure_folder(&self.source.join("portfolio")) {
             println!("Error ensuring folder: {:?}", e);
         }
-        if let Err(e) = super::ensure_folder(&self.source.join("about.md")) {
-            println!("Error ensuring folder: {:?}", e);
-        }
-        if let Err(e) = super::ensure_folder(&self.source.join("me.jpg")) {
-            println!("Error ensuring folder: {:?}", e);
+        println!("Ensuring about.md");
+        if let Err(e) = super::write_file("", self.source.join("about.md")) {
+            println!("Error ensuring about.md: {:?}", e);
         }
     }
     /// Delete and recreate the output directory
     /// we don't want to have any old files laying around
     /// so we want to wipe everything first
     pub fn ensure_out_dir_defaults(&self) -> StateResult {
-        let db = DirBuilder::new();
         super::ensure_folder(&self.destination)?;
         for entry in WalkDir::new(&self.destination).max_depth(1).min_depth(1) {
             let entry = entry?;
@@ -153,10 +155,10 @@ impl SiteState {
                 remove_file(&entry.path())?;
             }
         }
-        db.create(&self.destination.join("fonts"))?;
-        db.create(&self.destination.join("portfolio"))?;
-        db.create(&self.destination.join("contact"))?;
-        db.create(&self.destination.join("about"))?;
+        super::ensure_folder(&self.destination.join("fonts"))?;
+        super::ensure_folder(&self.destination.join("portfolio"))?;
+        super::ensure_folder(&self.destination.join("contact"))?;
+        super::ensure_folder(&self.destination.join("about"))?;
         Ok(String::from("Successfully removed and created output directories"))
     }
 
@@ -249,8 +251,7 @@ impl SiteState {
     fn build_portfolio(&self, t: &Tera) -> StateResult {
         for proj in self.website.portfolio.iter() {
             let page = Page::from(proj);
-            self.ensure_project_folder(&page.project_folder)?;
-            let project_dest = self.destination.join("portfolio").join(&page.project_folder);
+            let project_dest = self.ensure_project_folder(&page.project_folder)?;
             for img in proj.images.iter() {
                 super::copy_file(&img.path, &project_dest.join("img"))?;
             }
@@ -261,11 +262,8 @@ impl SiteState {
 
     fn ensure_project_folder(&self, folder_name: &String) -> Result<PathBuf, StateError> {
         let project_path = self.destination.join("portfolio").join(folder_name);
-        if project_path.exists() {
-            remove_dir_all(&project_path)?;
-        }
-        let db = DirBuilder::new();
-        db.create(&project_path)?;
+        let img_path = project_path.join("img");
+        super::ensure_folder(&img_path)?;
         Ok(project_path)
     }
 
@@ -292,5 +290,10 @@ impl SiteState {
         } else {
             Err(StateError::new("No project selected"))
         }
+    }
+
+    pub fn add_project_image(&mut self, path: &PathBuf) -> Result<(), StateError> {
+        let proj = self.selected_project()?;
+        proj.add_image(path)
     }
 }

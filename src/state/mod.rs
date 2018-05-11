@@ -50,11 +50,12 @@ pub struct CachedSite {
 impl State {
     pub fn get() -> Result<State, StateError> {
         let f = Self::get_cache_file()?;
-        let site_options = if let Ok(opts) = deserialize_from(f) {
+        let mut site_options: Vec<CachedSite> = if let Ok(opts) = deserialize_from(f) {
             opts
         } else {
             vec!()
         };
+        site_options.retain(|o| o.path.exists());
         Ok(State {
             site_options,
             selected_idx: None,
@@ -128,6 +129,9 @@ impl State {
     }
 
     pub fn add_message<T: ToString>(&mut self, content: T, is_error: bool) {
+        if is_error {
+            println!("Error: {}", &content.to_string());
+        }
         self.message = Some(ServerMessage {
             content: content.to_string(),
             is_error,
@@ -181,21 +185,22 @@ impl State {
     }
 
     pub fn update_project(&mut self, project: Project) -> StateResult {
-        let s = self.site()?;
+        {let s = self.site()?;
         s.update_project(project);
         s.write_input()?;
-        s.selected_project = None;
+        s.selected_project = None;}
+        self.current_view = Route::All;
         Ok(String::from("Successfully updated project"))
     }
 
     pub fn remove_project(&mut self) -> StateResult {
-        let s = self.site()?;
+        {let s = self.site()?;
         let p = {
             let p = s.selected_project()?;
             p.clone()
         };
-        s.website.delete_project(&p)?;
-        s.selected_project = None;
+        s.website.delete_project(&p)?;}
+        self.change_view(Route::All, None);
         Ok(String::from("Successfully deleted project"))
     }
 
@@ -241,9 +246,10 @@ impl State {
     }
 
     pub fn update_about(&mut self, content: String) -> StateResult {
-        let s = self.site()?;
+        {let s = self.site()?;
         s.website.about = content;
-        s.write_input()?;
+        s.write_input()?;}
+        self.change_view(Route::All, None);
         Ok(String::from("Successfully update about"))
     }
 
@@ -256,8 +262,7 @@ impl State {
 
     pub fn add_project_image(&mut self, path: PathBuf) -> StateResult {
         let s = self.site()?;
-        let proj = s.selected_project()?;
-        copy_file(&path, &proj.path)?;
+        s.add_project_image(&path)?;
         Ok(String::from("Successfully added project image"))
     }
 
@@ -346,19 +351,30 @@ pub fn ensure_folder(path: &PathBuf) -> ::std::io::Result<()> {
     if path.exists() {
         return Ok(())
     }
-    let db = DirBuilder::new();
-    db.create(path)//map_err(|e| format!("{:?}", e))
+    let mut db = DirBuilder::new();
+    db.recursive(true);
+    db.create(path)
 }
 
 /// Write the contents to a file
 pub fn write_file(content: &str, path: PathBuf) -> ::std::io::Result<()> {
-    let mut f = File::create(&path)?;
+    println!("Attempting to create file at {:?}", &path);
+    let mut f = OpenOptions::new().read(true).write(true).create(true).open(&path)?;
     f.write_all(content.as_bytes())
 }
 
 pub fn copy_file(source: &PathBuf, dest_dir: &PathBuf) -> Result<PathBuf, String> {
+    println!("copy_file {:?} to {:?}", source, dest_dir);
     if let Some(file_name) = source.file_name() {
-        let dest = dest_dir.join(file_name);
+        let mut dest = dest_dir.join(&file_name);
+        let mut counter = 0;
+        while dest.exists() {
+            counter += 1;
+            let fn_str = file_name.to_string_lossy();
+            let new_fn = fn_str.replace(".", &format!("{}.", counter));
+            dest.set_file_name(new_fn);
+        }
+        println!("copying file from {:?} to {:?}", &source, &dest);
         let mut i_f = File::open(source).map_err(map_e)?;
         let mut buf = vec!();
         i_f.read_to_end(&mut buf).map_err(map_e)?;

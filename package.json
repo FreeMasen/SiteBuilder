@@ -6,7 +6,7 @@
   "author": "Robert Masen <r.f.masen@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "build": "./node_modules/.bin/webpack & sass ./sass/main.scss ./src/assets/main.css",
+    "build": "cargo build",
     "run": "./node_modules/.bin/webpack & sass ./sass/main.scss ./src/assets/main.css & cargo run",
     "start": "cargo run",
     "sass": "sass ./sass/main.scss ./src/assets/main.css",

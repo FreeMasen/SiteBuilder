@@ -26,6 +26,7 @@
 
         #main {
             max-width: 800px;
+            max-height: 800px;
             margin: auto;
             background: whitesmoke;
         }
@@ -83,6 +84,8 @@
         #app-container {
             animation-duration: 1s;
             animation-name: fade-in;
+            height: 800px;
+            overflow: scroll;
         }
     </style>
 </head>
@@ -100,6 +103,97 @@
     <script>window.addEventListener('DOMContentLoaded', function () { a() }); var b = false; function a() { if (b) { return } b = true; send(JSON.stringify({ kind: 'load' })) } function c() { var div = document.getElementById('main'); if (!div) { return setTimeout(c, 0) } a() }</script>
     <script>var CustomEvent; CustomEvent = function (a, b) { var c; b = b || { bubbles: false, cancelable: false, detail: undefined }; c = document.createEvent("CustomEvent"); c.initCustomEvent(a, b.bubbles, b.cancelable, b.detail); return c }; CustomEvent.prototype = window.Event.prototype; window.CustomEvent = CustomEvent;</script>
     <script>if (!Array.prototype.map) { Array.prototype.map = function (callback) { var T, A, k; if (this == null) { throw new TypeError('this is null or not defined') } var O = Object(this); var len = O.length >>> 0; if (typeof callback !== 'function') { throw new TypeError(callback + ' is not a function') } if (arguments.length > 1) { T = arguments[1] } A = [len]; k = 0; while (k < len) { var kValue, mappedValue; if (k in O) { kValue = O[k]; mappedValue = callback.call(T, kValue, k, O); A[k] = mappedValue } k += 1 } return A } }</script>
+    <script type='text/javascript' 
+        src='http://getfirebug.com/releases/lite/1.2/firebug-lite-compressed.js'></script>
+    <script>
+        //window.addEventListener('DOMContentLoaded', function() {
+        //    if (navigator.userAgent.indexOf("ms")) {
+        //        setupConsole();
+        //    }
+        //});
+//
+        //function setupConsole() {
+        //    var o = document.createElement('div');
+        //    o.style.position = 'absolute';
+        //    o.style.bottom = '0';
+        //    o.style.width = '100%';
+        //    o.style['z-position'] = '10';
+        //    o.style.background = 'white';
+        //    var c = document.createElement("div");
+        //    c.setAttribute("id", "console-container");
+        //    c.style.display = "flex";
+        //    c.style["flex-flow"] = "column"; 
+        //    c.style.position = 'relative';
+        //    o.appendChild(c);
+        //    document.body.appendChild(o);
+        //    window.console.log = log;
+        //    window.console.warn = warn;
+        //    window.console.error = error;
+        //}
+//
+        //function log() {
+        //    write(createConsoleMessage(getArgs(arguments), 0))
+        //}
+        //
+        //function warn() {
+        //    write(createConsoleMessage(getArgs(arguments), 1))
+        //}
+        //
+        //function error() {
+        //    write(createConsoleMessage(getArgs(arguments), 2))
+        //}
+//
+        //function getArgs(args) {
+        //    let ret = [];
+        //    for (var i = 0;i < args.length;i++) {
+        //        ret.push(JSON.stringify(args[i]));
+        //    }
+        //    return ret;
+        //}
+//
+        //function createConsoleMessage(messageList, level) {
+        //    var container = document.createElement('div');
+        //    container.style.width = '100%';
+        //    container.style.display = 'flex';
+        //    container.style['flex-flow'] = 'row wrap';
+        //    container.style['align-items'] = 'center';
+        //    container.style['justify-content'] = 'flex-start';
+        //    container.style['align-content'] = 'flex-start';
+        //    container.style['border-bottom'] = '1px solid grey';
+        //    container.style['min-height'] = '25px';
+//
+        //    switch (level) {
+        //        case 1:
+        //            container.style.background = 'orange';
+        //        break;
+        //        case 2:
+        //            container.style.background = 'pink';
+        //    }
+        //    for (var i = 0; i < messageList.length;i++) {
+        //        container.appendChild(consoleSpan(messageList[i]));
+        //    }
+        //    return container;
+        //}
+//
+        //function consoleSpan(text) {
+        //    var ret = document.createElement('span');
+        //    ret.style['margin-left'] = '5px';
+        //    ret.style.display = 'block';
+        //    ret.style.overflow = 'hidden';
+        //    ret.style['word-wrap'] = 'break-word';
+        //    ret.appendChild(document.createTextNode(text));
+        //    return ret;
+        //}
+//
+        //function write(entry) {
+        //    var c = document.getElementById("console-container");
+        //    if (!c) throw new Error("Unable to find console container");
+        //    c.appendChild(entry);
+        //    while (c.childElementCount > 15) {
+        //        c.removeChild(c.firstChild);
+        //    }
+        //}
+    </script>
 </body>
 
 </html>

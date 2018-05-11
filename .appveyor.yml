@@ -1,7 +1,6 @@
 environment:
   matrix:
     - TARGET: x86_64-pc-windows-msvc
-      DEPLOY: 1
 install:
   - ps: Install-Product node 10
   - appveyor-retry appveyor DownloadFile https://win.rustup.rs/ -FileName rustup-init.exe
@@ -12,19 +11,13 @@ install:
   - npm install
   - node_modules\.bin\webpack -v
   - node_modules\.bin\node-sass -v
-  - ps: echo $env:APPVEYOR_BUILD_FOLDER
-  - ps: $env:cwd=(Get-Item -Path ".\" -Verbose).FullName
-  - ps: echo "1 \"ICON $env:cwd\assets\site-builder.ico\""
-  - ps: echo "1 \"ICON $env:cwd\assets\site-builder.ico\"" > assets/site-builder.rc
-  - ps: cd assets; ls; cd ..
 
 build: false
 
 test_script:
-  # - node_modules\.bin\webpack  --env prod
-  # - node_modules\.bin\node-sass .\sass\main.scss --output-style compressed -o .\src\assets
-  - cargo build #--release
-before_deploy:
+  - node_modules\.bin\webpack  --env prod
+  - node_modules\.bin\node-sass .\sass\main.scss --output-style compressed -o .\src\assets
+  - cargo build --release
       
 deploy:
   artifact: .\target\src\release\site-builder.exe

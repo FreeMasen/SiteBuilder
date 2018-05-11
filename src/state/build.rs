@@ -12,6 +12,7 @@ impl IndexProject {
     pub fn from(proj: &Project) -> IndexProject {
         let project_folder = proj.meta.title.replace(" ", "-");
         let id = String::from("project-") + &project_folder.to_lowercase();
+        println!("creating index project with images {:?}", proj.images);
         let image_name = match proj.images.iter().next() {
             Some(i) => super::file_name(&i.path),
             None => String::new(),
@@ -37,7 +38,7 @@ pub struct Page {
 
 impl Page {
     pub fn from(project: &Project) -> Page {
-        println!("Project::from: {:?}", project.images.len());
+        println!("Page::from: {:?}", project.images.len());
         let title = project.meta.title.clone();
         let sub_title = project.meta.context.clone();
         let teammates = project.meta.teammates.clone();

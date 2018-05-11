@@ -9,6 +9,7 @@ use walkdir::WalkDir;
 
 use meta::Meta;
 use image::Image;
+use state::error::StateError;
 
 #[derive(Serialize, Deserialize, Debug, Default, Clone, Eq, PartialEq)]
 pub struct Project {
@@ -83,6 +84,17 @@ impl Project {
             Ok(()) => Ok(()),
             Err(e) => Err(format!("Error deleting files: {:?}", e)),
         }
+    }
+
+    pub fn add_image(&mut self, path: &PathBuf) -> Result<(), StateError> {
+        println!("add_image {:?}", &path);
+        super::copy_file(&path, &self.path.join("img"))?;
+        let img = Image {
+            position: self.images.iter().map(|i| i.position).max().unwrap_or(0),
+            path: path.clone(),
+        };
+        self.images.push(img);
+        Ok(())
     }
 }
 

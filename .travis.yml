@@ -34,5 +34,5 @@ deploy:
   file:
     - SiteBuilder.tar.gz
   on:
-    # tag: true
+    tag: true
     repo: FreeMasen/SiteBuilder
