@@ -32,7 +32,7 @@ const CSS: &'static str = include_str!("assets/main.css");
 
 fn main() {
     println!("starting");
-    let size = (1000, 1000);
+    let size = (800, 800);
     let s = match State::get() {
         Ok(m) => m,
         Err(e) => {

@@ -148,6 +148,14 @@ export default class ProjectEditor extends React.Component<IProjectEditorProps, 
                                 defaultValue={this.state.description}
                                 onChange={ev => this.setState({ description: ev.currentTarget.value })}></textarea>
                         </div>
+                        <div className="button-group">
+                            <button className="cancel"
+                                onClick={ev => { this.props.cancelHandler() }}
+                            >Cancel</button>
+                            <button className="save"
+                                onClick={ev => { this.pageSaved() }}
+                            >Save</button>
+                        </div>
                     </div>
                     <div className="image-editor">
                         <div className="image-editor-title">
@@ -182,14 +190,7 @@ export default class ProjectEditor extends React.Component<IProjectEditorProps, 
                         </div>
                     </div>
                 </div>
-                <div className="button-group">
-                    <button className="cancel"
-                        onClick={ev => { this.props.cancelHandler() }}
-                    >Cancel</button>
-                    <button className="save"
-                        onClick={ev => { this.pageSaved() }}
-                    >Save</button>
-                </div>
+
             </div>
         )
     }

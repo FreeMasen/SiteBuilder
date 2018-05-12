@@ -35,9 +35,6 @@ export default class AboutEditor extends React.Component<IAboutEditorProps, IAbo
                         onFocus={ev => this.props.imageHandler()}
                         value={this.props.imagePath}
                     />
-                    <button 
-                        onClick={ev => {}}
-                    >Browse</button>
                 </div>
                 <div className="input-group content-editor">
                     <label>About Content</label>
