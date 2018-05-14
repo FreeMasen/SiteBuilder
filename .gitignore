@@ -8,3 +8,4 @@
 /src/assets/*.map
 /src/assets/*.js
 assets/*.rc
+.DS_Store

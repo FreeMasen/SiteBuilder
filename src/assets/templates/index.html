@@ -23,14 +23,14 @@
     .project-link:hover {
         filter: none;
     }
-    #project-2017-st-paul-prize-competition:hover {
+    .project-link.b-w:hover {
         filter: sepia(1) hue-rotate(165deg);
     }
 </style>
 {% endblock head %}
 {% block content %}
     {% for page in pages %}
-        <a id="{{page.id}}" href="/portfolio/{{page.project_folder}}/index.html" class="project-link" style="background-image: url('portfolio/{{page.project_folder}}/img/{{page.image_name}}')" title="{{page.title}}" />
+        <a id="{{page.id}}" href="/portfolio/{{page.project_folder}}/index.html" class="project-link{% if page.b_w %} b-w{% endif %}" style="background-image: url('portfolio/{{page.project_folder}}/img/{{page.image_name}}')" title="{{page.title}}" />
         </a>
     {% endfor %}
 {% endblock content %}

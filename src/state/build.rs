@@ -5,6 +5,7 @@ pub struct IndexProject {
     pub id: String,
     pub project_folder: String,
     pub image_name: String,
+    pub b_w: bool,
     pub title: String,
 }
 
@@ -13,15 +14,16 @@ impl IndexProject {
         let project_folder = proj.meta.title.replace(" ", "-");
         let id = String::from("project-") + &project_folder.to_lowercase();
         println!("creating index project with images {:?}", proj.images);
-        let image_name = match proj.images.iter().next() {
-            Some(i) => super::file_name(&i.path),
-            None => String::new(),
+        let (image_name, b_w) = match proj.images.iter().next() {
+            Some(i) => (super::file_name(&i.path), i.b_w),
+            None => (String::new(), false),
         };
         let title = proj.meta.title.clone();
         IndexProject {
             id,
             project_folder,
             image_name,
+            b_w,
             title,
         }
     }

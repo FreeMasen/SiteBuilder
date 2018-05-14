@@ -69,6 +69,7 @@ impl Project {
                         let img = Image {
                             position: self.images.len() as u32,
                             path: entry.path().to_path_buf(),
+                            b_w: false,
                         };
                         tmp_images.push(img);
                     }
@@ -87,12 +88,14 @@ impl Project {
     }
 
     pub fn add_image(&mut self, path: &PathBuf) -> Result<(), StateError> {
-        println!("add_image {:?}", &path);
         super::copy_file(&path, &self.path.join("img"))?;
         let img = Image {
             position: self.images.iter().map(|i| i.position).max().unwrap_or(0),
             path: path.clone(),
+            b_w: false,
         };
+        println!("add_image{:?}", &super::super::serde_json::to_string(&img));
+
         self.images.push(img);
         Ok(())
     }

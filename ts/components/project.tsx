@@ -159,14 +159,22 @@ export default class ProjectEditor extends React.Component<IProjectEditorProps, 
                     </div>
                     <div className="image-editor">
                         <div className="image-editor-title">
-                            <span>Images</span>
+                            <span
+                            onDoubleClick={ev => this.state.selectedImage.bW = !this.state.selectedImage.bW}
+                            >Images</span>
                             <button
                                 className="remove cancel"
                                 onClick={ev => this.props.deleteProject()}
                             >Delete</button>
                         </div>
                         <ListBox
-                            options={this.state.images.map(i => StringHandler.fileName(i.path))}
+                            options={this.state.images.map(i => {
+                                let ret = StringHandler.fileName(i.path);
+                                if (i.bW) {
+                                    ret += ' (B&W)'
+                                }
+                                return ret;
+                            })}
                             selected={this.state.selectedImage ? this.state.selectedImage.position : null}
                             onChange={i => this.setState({selectedImage: this.state.images[i]})}
                         />

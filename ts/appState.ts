@@ -170,13 +170,15 @@ export class Project {
 export class Image {
     constructor(
         public position: number = null,
-        public path: string = null
+        public path: string = null,
+        public bW: boolean =  false,
     ) { }
 
     public static fromJson(json): Image {
         return new Image(
             json.position,
             json.path,
+            json.bW,
         );
     }
 
@@ -184,6 +186,7 @@ export class Image {
         return {
             position: this.position,
             path: this.path,
+            bW: this.bW
         }
     }
 }
