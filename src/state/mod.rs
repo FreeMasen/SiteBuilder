@@ -36,8 +36,9 @@ pub struct State {
     pub site_options: Vec<CachedSite>,
     selected_idx: Option<usize>,
     pub site: Option<SiteState>,
-    pub message: Option<ServerMessage>,
+    pub message: Vec<ServerMessage>,
     pub current_view: Route,
+    next_msg_id: u32,
 }
 
 #[derive(Serialize, Deserialize, Debug, Default, Clone)]
@@ -61,8 +62,9 @@ impl State {
             site_options,
             selected_idx: None,
             site: None,
-            message: None,
+            message: vec!(),
             current_view: Route::Select,
+            next_msg_id: 0,
         })
     }
 
@@ -129,18 +131,21 @@ impl State {
         self.site = Some(new_site);
     }
 
-    pub fn add_message<T: ToString>(&mut self, content: T, is_error: bool) {
+    pub fn add_message(&mut self, content: impl ToString, is_error: bool) {
         if is_error {
             println!("Error: {}", &content.to_string());
         }
-        self.message = Some(ServerMessage {
+        let id = self.next_msg_id;
+        self.message.push(ServerMessage {
+            id,
             content: content.to_string(),
             is_error,
         });
+        self.next_msg_id += 1;
     }
 
-    pub fn clear_message(&mut self) {
-        self.message = None;
+    pub fn clear_message(&mut self, id: u32) {
+        self.message.retain(|m| m.id != id);
     }
 
     pub fn update_site_title(&mut self, title: String) -> StateResult {
@@ -332,7 +337,6 @@ impl State {
         }
     }
 }
-
 
 /// extract the contents of content.md for editing
 fn content(path: &Path) -> String {

@@ -103,9 +103,10 @@ export default class Comm {
         });
     }
 
-    private clearMessage() {
+    public clearMessage(id: number) {
         this.sendMessage({
             kind: 'clearMessage',
+            id,
         })
     }
 
@@ -115,7 +116,6 @@ export default class Comm {
             let parsedState = AppState.fromJson(ev.detail);
             console.log('parsed state', parsedState);
             if (!this.stateChangeCb) return this.sendMessage(Message.Error('Cannot change state w/o state change callback'));
-            if (parsedState.message) setTimeout(() => this.clearMessage(), 3000);
             this.stateChangeCb(parsedState);
         } catch(e) {
             console.error(e)

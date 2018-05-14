@@ -4,5 +4,4 @@ use std::path::PathBuf;
 pub struct Image {
     pub path: PathBuf,
     pub position: u32,
-    pub b_w: bool,
 }

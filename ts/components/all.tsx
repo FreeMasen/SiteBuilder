@@ -1,7 +1,9 @@
 import * as React from 'react';
-import AppState, {Project, Fonts} from '../appState';
-import InputGroup from './inputGroup';
+import { Fonts, Project } from '../appState';
 import StringHandler from '../services/stringHandler';
+import ColorPicker from './colorPicker';
+import InputGroup from './inputGroup';
+
 
 interface IAllProps {
     source: string;
@@ -115,6 +117,12 @@ export default class All extends React.Component<IAllProps, IAllState> {
                         <span className="font-name">Bold: {StringHandler.fileName(this.props.fonts.bold)}</span>
                     </div>
                 </div>
+                <ColorPicker
+                    red={150}
+                    blue={200}
+                    green={65}
+                    alpha={1}
+                />
             </div>
         )
     }

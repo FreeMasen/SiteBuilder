@@ -1,10 +1,12 @@
 use std::path::PathBuf;
 use project::Project;
 use state::Route;
+
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(rename_all = "camelCase")]
 /// A message for the client to display
 pub struct ServerMessage {
+    pub id: u32,
     pub content: String,
     pub is_error: bool,
 }
@@ -51,7 +53,7 @@ pub enum Message {
     /// Delete the selected project
     DeleteProject,
     /// Clear the message after a js setTimeout
-    ClearMessage,
+    ClearMessage { id: u32 },
     /// Select a site
     ChooseSite { idx: usize },
     /// Change the site's title

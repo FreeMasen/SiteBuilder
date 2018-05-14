@@ -206,8 +206,8 @@ fn event_handler(wv: &mut WebView<State>, arg: &str, state: &mut State) {
                     }
                     cache_and_inject(wv, state);
                 },
-                Message::ClearMessage => {
-                    state.clear_message();
+                Message::ClearMessage { id } => {
+                    state.clear_message(id);
                     cache_and_inject(wv, state)
                 },
                 Message::ChooseSite { idx } => {

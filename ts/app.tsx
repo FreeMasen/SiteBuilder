@@ -49,6 +49,7 @@ class AppContainer extends React.Component<{}, AppState> {
     }
 
     render() {
+        console.log('app.render', this.state.message);
         let title = this.state.currentView == Route.All ? 'Site Builder' :
                     this.state.currentView == Route.About ? 'About Editor' :
                     this.state.currentView == Route.Project ? `Project Editor` :
@@ -66,14 +67,10 @@ class AppContainer extends React.Component<{}, AppState> {
                     {this.renderBody()}
                 </div>
                 {
-                    this.state.message ? 
-                    (
-                        <Toast
-                            message={this.state.message.content}
-                            isError={this.state.message.isError}
-                        />
-                    )
-                    : null
+                    <Toast
+                        message={this.state.message[0]}
+                        clearMessage={id => this.comm.clearMessage(id)}
+                    />
                 }
             </div>
         )

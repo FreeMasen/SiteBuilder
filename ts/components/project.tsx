@@ -21,6 +21,7 @@ interface IProjectEditorState {
     images: Image[];
     selectedImage?: Image;
     newContributor: string;
+    bwTitleImage: boolean;
 }
 
 export default class ProjectEditor extends React.Component<IProjectEditorProps, IProjectEditorState> {
@@ -34,6 +35,7 @@ export default class ProjectEditor extends React.Component<IProjectEditorProps, 
             images,
             description,
             newContributor: '',
+            bwTitleImage: props.project.bwTitleImage || false,
         }
     }
     componentWillReceiveProps(props: IProjectEditorProps) {
@@ -48,7 +50,8 @@ export default class ProjectEditor extends React.Component<IProjectEditorProps, 
             this.props.project.path,
             new Meta(this.state.title, this.state.subtitle, this.state.teammates),
             this.state.images,
-            this.state.description
+            this.state.description,
+            this.state.bwTitleImage,
         );
         this.props.saveHandler(p);
     }
@@ -102,52 +105,76 @@ export default class ProjectEditor extends React.Component<IProjectEditorProps, 
     render() {
         return (
             <div className="project-view-container">
-                <div className="editors">
-                    <div className="text-editors">
-                        <div className="inputs">
-                            <InputGroup
-                                id="title"
-                                label="Title"
-                                value={this.state.title}
-                                onChange={ev => this.setState({ title: ev.currentTarget.value })}
+                <div className="top-bar">
+                    <div className="inputs">
+                        <InputGroup
+                            id="title"
+                            label="Title"
+                            value={this.state.title}
+                            onChange={ev => this.setState({ title: ev.currentTarget.value })}
+                        />
+                        <InputGroup
+                            id="sub-title"
+                            label="Subtitle"
+                            value={this.state.subtitle}
+                            onChange={ev => this.setState({ subtitle: ev.currentTarget.value })}
+                        />
+                        <InputGroup
+                                id="new-contributor"
+                                label="New Contributor"
+                                value={this.state.newContributor}
+                                onChange={ev => this.setState({newContributor: ev.currentTarget.value})}
                             />
-                            <InputGroup
-                                id="sub-title"
-                                label="Subtitle"
-                                value={this.state.subtitle}
-                                onChange={ev => this.setState({ subtitle: ev.currentTarget.value })}
-                            />
-                            <InputGroup
-                                    id="new-contributor"
-                                    label="Contributor"
-                                    value={this.state.newContributor}
-                                    onChange={ev => this.setState({newContributor: ev.currentTarget.value})}
-                                />
-                            <button 
-                                className="save"
-                                onClick={ev => this.addContributor()}
-                            >+</button>
-                        </div>
-                        <div className="contributors">
-                            {
-                                this.state.teammates.map((t, i) => {
-                                    return (
+                        <button 
+                            className="save"
+                            onClick={ev => this.addContributor()}
+                        >+</button>
+                        <button
+                            onClick={ev => this.setState((prev, props) => { 
+                                return {
+                                    bwTitleImage: !prev.bwTitleImage
+                                };
+                            })}
+                        >{`Title Image ${this.state.bwTitleImage ? 'B&W' : 'Color'}`}</button>
+                        <button
+                            className="remove cancel"
+                            onClick={ev => this.props.deleteProject()}
+                        >Delete Project</button>
+                    </div>
+                    <div className="contributors">
+                    <span>Contributors</span>
+                    <div className="contributors-list">
+                        {
+                            this.state.teammates.length > 0 ?
+                            this.state.teammates.map((t, i) => {
+                                return (
+                                    <div 
+                                        className="contributor-group"
+                                        key={`contributor-${i}`}
+                                    >
                                         <span 
                                             className="contributor" 
-                                            key={`contributor-${i}`}
+                                            >{t}</span>
+                                        <button
                                             onClick={ev => this.removeContributor(i)}
                                             title="Click to remove"
-                                        >{t}</span>
-                                    )
-                                })
-                            }
-                        </div>
-                        <div className="content-editor">
-                            <textarea
-                                id="description"
-                                defaultValue={this.state.description}
-                                onChange={ev => this.setState({ description: ev.currentTarget.value })}></textarea>
-                        </div>
+                                            className="cancel remove"
+                                        >X</button>
+                                    </div>
+                                )
+                            })
+                            : <div className="contributor-group"><span className="contributor">None</span></div>
+                        }
+                    </div>
+                    </div>
+                </div>
+                <div className="editors">
+                    <div className="content-editor">
+                        <span>Content</span>
+                        <textarea
+                            id="description"
+                            defaultValue={this.state.description}
+                            onChange={ev => this.setState({ description: ev.currentTarget.value })}></textarea>
                         <div className="button-group">
                             <button className="cancel"
                                 onClick={ev => { this.props.cancelHandler() }}
@@ -159,22 +186,10 @@ export default class ProjectEditor extends React.Component<IProjectEditorProps, 
                     </div>
                     <div className="image-editor">
                         <div className="image-editor-title">
-                            <span
-                            onDoubleClick={ev => this.state.selectedImage.bW = !this.state.selectedImage.bW}
-                            >Images</span>
-                            <button
-                                className="remove cancel"
-                                onClick={ev => this.props.deleteProject()}
-                            >Delete</button>
+                            <span>Images</span>
                         </div>
                         <ListBox
-                            options={this.state.images.map(i => {
-                                let ret = StringHandler.fileName(i.path);
-                                if (i.bW) {
-                                    ret += ' (B&W)'
-                                }
-                                return ret;
-                            })}
+                            options={this.state.images.map(i => StringHandler.fileName(i.path))}
                             selected={this.state.selectedImage ? this.state.selectedImage.position : null}
                             onChange={i => this.setState({selectedImage: this.state.images[i]})}
                         />
@@ -198,7 +213,6 @@ export default class ProjectEditor extends React.Component<IProjectEditorProps, 
                         </div>
                     </div>
                 </div>
-
             </div>
         )
     }

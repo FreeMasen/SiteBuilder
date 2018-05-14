@@ -12,12 +12,14 @@ use image::Image;
 use state::error::StateError;
 
 #[derive(Serialize, Deserialize, Debug, Default, Clone, Eq, PartialEq)]
+#[serde(rename_all = "camelCase")]
 pub struct Project {
     pub id: u32,
     pub path: PathBuf,
     pub meta: Meta,
     pub images: Vec<Image>,
     pub description: String,
+    pub bw_title_image: bool,
 }
 
 impl Project {
@@ -69,7 +71,6 @@ impl Project {
                         let img = Image {
                             position: self.images.len() as u32,
                             path: entry.path().to_path_buf(),
-                            b_w: false,
                         };
                         tmp_images.push(img);
                     }
@@ -92,7 +93,6 @@ impl Project {
         let img = Image {
             position: self.images.iter().map(|i| i.position).max().unwrap_or(0),
             path: path.clone(),
-            b_w: false,
         };
         println!("add_image{:?}", &super::super::serde_json::to_string(&img));
 

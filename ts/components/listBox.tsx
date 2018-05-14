@@ -25,7 +25,7 @@ export default class ListBox extends React.Component<IListBoxProps, IListBoxStat
                             <div
                                 key={`${i}-option`}
                                 onClick={ev => this.props.onChange(i)}
-                                className={this.props.selected == i ? 'list-box-option selected' : 'list-box-option'}
+                                className={'list-box-option' + (this.props.selected == i ? ' selected' : '')}
                             >
                                 <span className="list-box-option-text">{o}</span>
                             </div>

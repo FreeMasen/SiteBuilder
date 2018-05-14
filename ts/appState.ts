@@ -2,12 +2,12 @@
 export default class AppState {
     public site?: Site;
     public siteOptions: SiteOption[];
-    public message?: ServerMessage;
+    public message: ServerMessage[];
     constructor(
         public currentView: Route = Route.Select,
         site: Site = null,
         siteOptions: SiteOption[] = [],
-        message: ServerMessage = null,
+        message: ServerMessage[] = [],
     ) {
         this.site = site;
         this.siteOptions = siteOptions;
@@ -19,7 +19,7 @@ export default class AppState {
             json.currentView,
             Site.fromJson(json.site),
             json.siteOptions.map(SiteOption.fromJson),
-            ServerMessage.fromJson(json.message),
+            json.message.map(ServerMessage.fromJson),
         )
     }
 
@@ -33,7 +33,7 @@ export default class AppState {
         return {
             site,
             options: this.siteOptions.map(o => o.asJson),
-            message,
+            message: this.message.map(m => m.asJson()),
         };
     }
 }
@@ -143,6 +143,7 @@ export class Project {
         public meta: Meta = new Meta(),
         public images: Image[] = [],
         public description: string,
+        public bwTitleImage: boolean,
     ) { }
 
     public static fromJson(json: any): Project {
@@ -152,7 +153,8 @@ export class Project {
             json.path,
             Meta.fromJson(json.meta),
             json.images.map(Image.fromJson),
-            json.description
+            json.description,
+            json.bwTitleImage,
         )
     }
 
@@ -163,6 +165,7 @@ export class Project {
             meta: this.meta.asJson(),
             images: this.images.map(i => i.asJson()),
             description: this.description,
+            bwTitleImage: this.bwTitleImage,
         }
     }
 }
@@ -171,14 +174,12 @@ export class Image {
     constructor(
         public position: number = null,
         public path: string = null,
-        public bW: boolean =  false,
     ) { }
 
     public static fromJson(json): Image {
         return new Image(
             json.position,
             json.path,
-            json.bW,
         );
     }
 
@@ -186,7 +187,6 @@ export class Image {
         return {
             position: this.position,
             path: this.path,
-            bW: this.bW
         }
     }
 }
@@ -238,6 +238,7 @@ export class Meta {
 
 export class ServerMessage {
     constructor(
+        public id: number = 0,
         public content: string = '',
         public isError: boolean = false
     ) {}
@@ -245,6 +246,7 @@ export class ServerMessage {
     public static fromJson(json: any): ServerMessage {
         if (!json) return;
         return new ServerMessage(
+            json.id,
             json.content,
             json.isError,
         );
@@ -252,6 +254,7 @@ export class ServerMessage {
 
     public asJson(): any {
         return {
+            id: this.id,
             content: this.content,
             isError: this.isError,
         }
