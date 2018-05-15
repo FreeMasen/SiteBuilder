@@ -95,29 +95,30 @@ class Slider extends React.Component<ISliderProps, ISliderState> {
     }
 
     render() {
-        let barHeight = 35;
+        let barHeight = 15;
         let height = 150;
         let valuePercent = this.props.value / this.props.max;
         let valuePixels = valuePercent * height;
-        let top = height - valuePixels;
+        let top = (height - valuePixels) - (barHeight / 2);
         return (
-            <div 
+            <div
                 className="slider-container"
                 style={{
                     position: 'relative',
                     width: 50,
                     height,
                 }}
-                >
-                <div 
-                className="slider-bar"
-                style={{
-                    position: 'relative',
-                    margin: 'auto',
-                    width: 1,
-                    height: '100%',
-                    background: 'lightgrey'
-                }}
+                onMouseMove={ev => this.move(ev)}
+            >
+                <div
+                    className="slider-bar"
+                    style={{
+                        position: 'relative',
+                        margin: 'auto',
+                        width: 1,
+                        height: '100%',
+                        background: 'lightgrey'
+                    }}
                 >
                 </div>
                 <div 
@@ -129,26 +130,34 @@ class Slider extends React.Component<ISliderProps, ISliderState> {
                         width: '100%',
                         background: 'green',
                     }}
-                    onMouseDown={ev => {console.log('mouseDown', ev);this.setState({captured: true, mouseY: ev.clientY})}}
-                    onMouseMove={ev => this.move(ev)}
-                    onMouseUp={ev => { console.log('mouseUp', ev); this.setState({captured: false, mouseY: 0})}}
+                    onMouseDown={ev => {this.setState({captured: true, mouseY: ev.clientY})}}
+                    onMouseUp={ev => {this.setState({captured: false, mouseY: 0})}}
                     onMouseLeave={ev => this.setState({captured: false, mouseY: 0})}
                 ></div>
             </div>
         )
     }
 
-    move(ev: React.MouseEvent<HTMLDivElement>) {
-        console.log(ev.nativeEvent.movementY)
+    moveStart(ev: React.MouseEvent<HTMLDivElement>) {
+        this.setState({captured: true});
+        window.onmousemove = ev => this.move(ev);
+        window.onmouseup = ev => this.moveEnd(ev);
+    }
+
+    moveEnd(ev: MouseEvent) {
+        this.setState({captured: false});
+        window.onmousemove = null;
+
+    }
+
+    move(ev: MouseEvent) {
         if (!this.state.captured) return;
-        let newY = ev.clientY;
-        let movedY = (this.state.mouseY - newY);
+        let movedY = -ev.movementY;
         let percent = movedY / 150;
         let value = this.props.value + (this.props.value * percent);
         if (value >= this.props.max) value = this.props.max;
         if (value <= 0) value = 0;
         console.log(`prev: ${this.props.value}, percent: ${percent}, new: ${value}`);
         this.props.slideHandler(value);
-        this.setState({mouseY: newY});
     }
 }
