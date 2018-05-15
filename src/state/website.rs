@@ -8,12 +8,14 @@ use project::Project;
 use error::{StateError, StateResult};
 
 #[derive(Serialize, Deserialize, Debug, Default, Clone)]
+#[serde(rename_all = "camelCase")]
 pub struct Website {
     pub title: String,
     pub portfolio: Vec<Project>,
     pub about: String,
     pub image: PathBuf,
     pub fonts: Fonts,
+    pub accent_color: Color,
 }
 
 impl Website {
@@ -89,4 +91,13 @@ impl Website {
                 Err(e) => Err(StateError::new(format!("{:?}", e))),
             }
     }
+}
+
+#[derive(Serialize, Deserialize, Debug, Default, Clone)]
+#[serde(rename_all = "camelCase")]
+pub struct Color {
+    pub red: u8,
+    pub green: u8,
+    pub blue: u8,
+    pub alpha: f32,
 }

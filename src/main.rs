@@ -230,6 +230,13 @@ fn event_handler(wv: &mut WebView<State>, arg: &str, state: &mut State) {
                         cache_and_inject(wv, state);
                     }
                 },
+                Message::ChangeColor { color } => {
+                    match state.change_color(&color) {
+                        Ok(msg) => state.add_message(msg, false),
+                        Err(e) => state.add_message(e.msg, true),
+                    }
+                    cache_and_inject(wv, state);
+                }
             }
         },
         Err(e) => println!("Deserialize Error: {:?}", e),

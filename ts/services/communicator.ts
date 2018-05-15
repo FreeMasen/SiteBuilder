@@ -1,4 +1,4 @@
-import AppState, { Project, Route } from '../appState';
+import AppState, { Color, Project, Route } from '../appState';
 
 
 export default class Comm {
@@ -103,6 +103,13 @@ export default class Comm {
         });
     }
 
+    public updateColor(color: Color) {
+        this.sendMessage({
+            kind: 'changeColor',
+            color,
+        })
+    }
+
     public clearMessage(id: number) {
         this.sendMessage({
             kind: 'clearMessage',
@@ -111,7 +118,7 @@ export default class Comm {
     }
 
     private stateChange(ev: CustomEvent) {
-        console.log('Comm.stateChange ');
+        console.log('Comm.stateChange ', ev.detail);
         try {
             let parsedState = AppState.fromJson(ev.detail);
             console.log('parsed state', parsedState);

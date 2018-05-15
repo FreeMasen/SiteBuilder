@@ -5,7 +5,7 @@ use image::Image;
 use meta::Meta;
 use project::Project;
 use state::SiteState;
-use website::Website;
+use website::{Website};
 
 pub trait Valid {
     fn is_valid(&self) -> StateResult;

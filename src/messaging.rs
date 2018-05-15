@@ -1,6 +1,6 @@
 use std::path::PathBuf;
 use project::Project;
-use state::Route;
+use state::{Route, Color};
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(rename_all = "camelCase")]
@@ -60,4 +60,6 @@ pub enum Message {
     ChangeSiteTitle { title: String },
     /// Add a new site
     AddSite,
+    // Change the webiste's accent color
+    ChangeColor { color: Color }
 }

@@ -11,7 +11,8 @@
     "start": "cargo run",
     "sass": "sass ./sass/main.scss ./src/assets/main.css",
     "webpack": "./node_modules/.bin/webpack",
-    "browser": "sass ./sass/main.scss ./main.css & ./node_modules/.bin/webpack-dev-server"
+    "browser": "sass ./sass/main.scss ./main.css & ./node_modules/.bin/webpack-dev-server",
+    "release": "sass ./sass/main.scss -s compressed ./main.css & webpack --env prod & cargo build --release"
   },
   "dependencies": {
     "react": "^16.3.2",

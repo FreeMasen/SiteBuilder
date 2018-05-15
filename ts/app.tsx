@@ -93,8 +93,10 @@ class AppContainer extends React.Component<{}, AppState> {
                         generateSite={() => this.comm.build()}
                         updateRequested={() => this.comm.requestUpdate()}
                         fonts={this.state.site ? this.state.site.website.fonts: null}
+                        color={this.state.site.website.accentColor}
                         selectFontClicked={bold => this.comm.selectFont(bold)}
                         updateTitle={title => this.comm.updateTitle(title)}
+                        colorSaved={color => this.comm.updateColor(color)}
                     />
                 );
             case Route.Project:

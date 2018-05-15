@@ -1,13 +1,13 @@
-#[cfg(windows)]
+#[cfg(all(windows, feature = "release"))]
 extern crate windres;
-#[cfg(windows)]
+#[cfg(all(windows, feature = "release"))]
 use windres::Build;
-#[cfg(windows)]
+#[cfg(all(windows, feature = "release"))]
 use std::{env,
     fs::{File},
     io::{Write},
 };
-#[cfg(windows)]
+#[cfg(all(windows, feature = "release"))]
 fn main() {
     if let Ok(path) = env::current_dir() {
         let rc_path = path.join("assets").join("site-builder.rc");
@@ -32,5 +32,5 @@ fn main() {
     }
 }
 
-#[cfg(not(windows))]
+#[cfg(any(not(windows), not(feature = "release")))]
 fn main() {}

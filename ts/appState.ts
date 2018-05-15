@@ -111,6 +111,7 @@ export class Website {
         public about: string = '',
         public image: string = '',
         public fonts: Fonts = new Fonts(),
+        public accentColor: Color = new Color(),
     ) {
 
     }
@@ -123,6 +124,7 @@ export class Website {
             json.about,
             json.image,
             Fonts.fromJson(json.fonts),
+            Color.fromJson(json.accentColor),
         )
     }
 
@@ -132,6 +134,8 @@ export class Website {
             portfolio: this.portfolio.map(p => p.asJson()),
             about: this.about,
             image: this.image,
+            fonts: this.fonts.asJson(),
+            accentColor: this.accentColor.asJson(),
         }
     }
 }
@@ -257,6 +261,34 @@ export class ServerMessage {
             id: this.id,
             content: this.content,
             isError: this.isError,
+        }
+    }
+}
+
+export class Color {
+    constructor(
+        public red: number = 0,
+        public green: number = 0,
+        public blue: number = 0,
+        public alpha: number = 1,
+    ) {}
+
+    static fromJson(json: any): Color {
+        if (!json) return new Color();
+        return new Color (
+            json.red,
+            json.green,
+            json.blue,
+            json.alpha
+        )
+    }
+
+    asJson(): any {
+        return {
+            red: this.red,
+            green: this.green,
+            blue: this.blue,
+            alpha: this.alpha,
         }
     }
 }

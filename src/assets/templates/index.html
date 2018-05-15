@@ -9,28 +9,52 @@
         justify-content: center;
         margin: auto;
     }
-    .project-link {
+    .project-container {
         width: 25vw;
         height: 25vw;
-        overflow: hidden;
-        display: block;
         margin: 10px;
+        position: relative;
+    }
+    .project-image {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
         background-position: 50% 50%;
         background-size: cover;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 1;
         filter: grayscale(100);
-        
     }
-    .project-link:hover {
+    .project-image:hover {
         filter: none;
     }
-    .project-link.b-w:hover {
-        filter: sepia(1) hue-rotate(165deg);
+    .project-overlay {
+        display: none;
     }
+    .project-overlay.b-w {
+        width: 100%;
+        height: 100%;
+        display: block;
+        background: transparent;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 2;
+    }
+
+    .project-overlay.b-w:hover {
+        background: rgba({{color.red}}, {{color.green}}, {{color.blue}}, 0.25);
+    }
+    
 </style>
 {% endblock head %}
 {% block content %}
     {% for page in pages %}
-        <a id="{{page.id}}" href="/portfolio/{{page.project_folder}}/index.html" class="project-link{% if page.b_w %} b-w{% endif %}" style="background-image: url('portfolio/{{page.project_folder}}/img/{{page.image_name}}')" title="{{page.title}}" />
-        </a>
+    <div class="project-container">
+        <a href="/portfolio/{{page.project_folder}}/index.html" class="project-overlay{% if page.b_w %} b-w{% endif %}" title="{{page.title}}"></a>
+        <a href="/portfolio/{{page.project_folder}}/index.html" id="{{page.id}}" class="project-image" style="background-image: url('portfolio/{{page.project_folder}}/img/{{page.image_name}}')" title="{{page.title}}"></a>
+    </div>
     {% endfor %}
 {% endblock content %}

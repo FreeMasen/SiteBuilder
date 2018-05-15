@@ -11,7 +11,7 @@ use walkdir::WalkDir;
 
 use project::{Project};
 use error::{StateError, StateResult};
-use website::Website;
+use website::{Website, Color};
 use build::{IndexProject, Page};
 
 const ABOUT: &'static str = include_str!("../assets/templates/about.html");
@@ -71,7 +71,7 @@ impl SiteState {
                 self.website.image = entry.path().to_path_buf();
             }
         }
-        Ok(String::new())
+        Ok(String::from("Successfully refreshed site from folder"))
     }
 
     pub fn add_project(&mut self, name: String) -> StateResult {
@@ -280,6 +280,7 @@ impl SiteState {
         ctx.add("route", route);
         ctx.add("bold_font", &self.website.fonts.bold_file());
         ctx.add("normal_font", &self.website.fonts.normal_file());
+        ctx.add("color", &self.website.accent_color);
         ctx.add("title", &self.website.title);
         ctx
     }
@@ -295,5 +296,9 @@ impl SiteState {
     pub fn add_project_image(&mut self, path: &PathBuf) -> Result<(), StateError> {
         let proj = self.selected_project()?;
         proj.add_image(path)
+    }
+    pub fn change_color(&mut self, color: &Color) -> StateResult {
+        self.website.accent_color = color.clone();
+        Ok(String::from("Successfully updated color"))
     }
 }

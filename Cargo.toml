@@ -3,6 +3,9 @@ name = "site-builder"
 version = "1.0.0"
 authors = ["Robert Masen <r.f.masen@gmail.com>"]
 
+[features]
+release = []
+
 [dependencies]
 bincode = "1"
 chrono = { version = "0.4", features = ["serde"] }
@@ -19,3 +22,5 @@ web-view = { git = "https://github.com/huytd/web-view" }
 [target.'cfg(windows)'.build-dependencies]
 windres = "0.1.0"
 
+[profile.release]
+features = ["release"]

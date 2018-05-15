@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Fonts, Project } from '../appState';
+import { Color, Fonts, Project } from '../appState';
 import StringHandler from '../services/stringHandler';
 import ColorPicker from './colorPicker';
 import InputGroup from './inputGroup';
@@ -11,6 +11,7 @@ interface IAllProps {
     pages: Project[];
     fonts: Fonts;
     title: string,
+    color: Color,
     updateRequested: () => void;
     sourceSelected: () => void;
     destSelected: () => void;
@@ -20,6 +21,7 @@ interface IAllProps {
     generateSite: () => void;
     selectFontClicked: (bold: boolean) => void;
     updateTitle: (title: String) => void;
+    colorSaved: (color: Color) => void;
 }
 
 interface IAllState {
@@ -30,6 +32,7 @@ export default class All extends React.Component<IAllProps, IAllState> {
     titleChangedTimeout?: number = null;
     constructor(props: IAllProps) {
         super(props);
+        console.log('new All', props);
         this.state = {
             title: props.title
         }
@@ -57,7 +60,7 @@ export default class All extends React.Component<IAllProps, IAllState> {
                         title="Refresh from the source folder"
                         type="button" 
                         onClick={ev => this.props.updateRequested()}
-                    >Update
+                    >Refresh
                     </button>
                     <button 
                         title="Generate the html for this site"
@@ -118,10 +121,11 @@ export default class All extends React.Component<IAllProps, IAllState> {
                     </div>
                 </div>
                 <ColorPicker
-                    red={150}
-                    blue={200}
-                    green={65}
-                    alpha={1}
+                    red={this.props.color.red}
+                    green={this.props.color.green}
+                    blue={this.props.color.blue}
+                    alpha={this.props.color.alpha}
+                    colorSaved={color => this.props.colorSaved(color)}
                 />
             </div>
         )

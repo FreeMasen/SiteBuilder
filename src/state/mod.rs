@@ -19,7 +19,7 @@ pub mod meta;
 pub mod build;
 
 pub use site_state::SiteState;
-pub use website::Website;
+pub use website::{Website, Color};
 pub use error::{StateError, StateResult};
 pub use fonts::Fonts;
 pub use image::Image;
@@ -309,6 +309,11 @@ impl State {
         let s = self.site()?;
         s.destination = path;
         Ok(String::from("Successfully updated destination folder"))
+    }
+
+    pub fn change_color(&mut self, color: &Color) -> StateResult {
+        let s = self.site()?;
+        s.change_color(&color)
     }
 
     fn site(&mut self) -> Result<&mut SiteState, StateError> {
