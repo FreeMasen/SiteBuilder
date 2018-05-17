@@ -1,0 +1,195 @@
+<html>
+    <head>
+        <base href="/" /> 
+        <style>
+            @font-face {
+                font-family: 'Bold';
+                src: url('/fonts/Roboto-Bold.ttf')
+            }
+            @font-face {
+                font-family: 'Normal';
+                src: url('/fonts/Roboto-Regular.ttf')
+            }
+        html, body {
+            border: 0;
+            padding: 0;
+            margin: 0;
+        }
+        html > * {
+            box-sizing: border-box;
+            font-family: 'Normal', sans-serif;
+        }
+        input, textarea {
+            font-family: 'Normal', sans-serif !important;
+            font-size: 14pt;
+        }
+        #header {
+            margin-top: 10px;
+            font-size: 18pt;
+            display: flex;
+            flex-flow: row;
+            justify-content: space-between;
+            align-items: center;
+            align-content: flex-start;
+            margin-left: 11vw;
+            margin-right: 11vw;
+        }
+        #header > a {
+            font-family: 'Normal', sans-serif;
+            padding: 5px 0px;
+            font-weight: bold;
+            color: black;
+            text-decoration: none;
+        }
+        #header > a:visited {
+            color: black;
+        }
+        #nav {
+            display: flex;
+            flex-flow: row;
+            justify-content: center;
+            align-items: center;
+            align-content: flex-start;
+        }
+        .button {
+            display: block;
+            padding: 5px 10px;
+            text-decoration: none;
+            color: black;
+            background: none;
+            border: none;
+            font-family: 'Normal', sans-serif;
+        }
+        .button:visited {
+            color: black;
+        }
+        .button:hover,
+        .button.selected {
+            color: rgb(210, 72, 4, 1);
+        }
+        .button.selected:hover {
+            color: black;
+        }
+        @media (max-width: 550px) {
+            #header {
+                font-size: 14pt;
+            }
+        }
+        @media (max-width: 375px) {
+            #header {
+                font-size: 12pt;
+            }
+        }
+        </style>
+        
+<style>
+    .page-wrapper {
+        display: flex;
+        flex-flow: row;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin: 6vw;
+    }
+    article {
+        width: calc(40% - 10px);
+        margin: 0 5px;
+    }
+    article > h1 {
+        font-size: 18pt;
+        font-family: "Bold" sans-serif;
+        font-weight: bold;
+    }
+    article > h2 {
+        font-size: 18pt;
+        font-family: "Bold" sans-serif;
+        font-weight: normal;
+    }
+    article > h3 {
+        font-size: 14pt;
+        font-family: "Bold" sans-serif;
+    }
+    aside {
+        display: flex;
+        flex-flow: column;
+        width: calc(60% - 10px);
+        margin: 0 5px;
+        align-items: center;
+        justify-content: flex-start;
+        align-content: flex-start;
+    }
+    aside > img {
+        max-width: 100%;
+    }
+    h3 {
+        margin: 0;
+    }
+    .page-image + .page-image {
+        margin-top: 10px;
+    }
+</style>
+
+    </head>
+    <body>
+        <header id="header">
+            <a href="/">
+                Example Site
+            </a>
+            </svg>
+            <nav id="nav">
+                <a href="/"
+                
+                    class="button selected"
+                
+                >
+                    Work
+                </a>
+                <a href="/about/index.html"
+                
+                    class="button"
+                
+                >
+                    About
+                </a>
+                <a href="/contact/index.html"
+                
+                    class="button"
+                
+                >
+                    Contact
+                </a>
+            </nav>
+        </header>
+        <main id="main">
+            
+<div class="page-wrapper">
+    <article>
+        <h1>First Project</h1>
+        <h2>Really its my first time</h2>
+        
+            <h3>teammates</h3>
+            <span class="teammates">
+                A. Person, B. Person
+            </span>
+        
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus vehicula velit quis turpis posuere vestibulum. In volutpat vel odio nec commodo. Donec id orci ex. Phasellus eleifend vel nulla id sodales. Sed accumsan fringilla elit, scelerisque fringilla augue eleifend quis. Pellentesque in dignissim odio. Aenean dictum metus augue, sed finibus libero mollis in. Phasellus consequat accumsan velit sit amet auctor. Pellentesque et sem est. Nam a tincidunt quam. Nulla facilisi. Aenean elementum nisl ligula, vel cursus mi ullamcorper at. Cras vehicula ac ex nec vulputate. Quisque ut imperdiet tortor.</p>
+<p>Mauris eu ligula lectus. Suspendisse bibendum posuere accumsan. Morbi in risus non enim posuere dapibus. Morbi dictum sapien vel erat finibus, eu sagittis justo pellentesque. Duis ultricies imperdiet nibh in egestas. Vestibulum nec porttitor dolor. Donec non metus eu nisi tincidunt egestas. Vivamus dapibus vulputate suscipit. Sed hendrerit finibus risus, quis pharetra ligula volutpat vitae. Vivamus fermentum nunc nec ligula viverra faucibus. Proin ultricies, lectus non porttitor convallis, odio lacus finibus neque, ac volutpat odio nunc eu lorem.</p>
+<p>Integer pretium consequat dui, ac finibus nibh vulputate faucibus. Phasellus elit elit, consequat bibendum pulvinar eu, ultricies id ex. Nunc id molestie eros. Nunc at ligula quis magna ullamcorper mattis id nec eros. Ut eu justo consequat purus accumsan rhoncus in vel ligula. Etiam ut scelerisque magna. Suspendisse egestas elit ac nisi iaculis, in suscipit quam porttitor. Ut lacus ex, laoreet sit amet lorem ac, feugiat tincidunt metus.</p>
+<p>Etiam non ornare purus. Integer erat quam, laoreet ut consequat ac, bibendum vitae magna. In viverra erat ante, sed hendrerit risus consequat ut. Suspendisse tristique quam id varius semper. In tortor ligula, laoreet eget scelerisque vel, rhoncus viverra sapien. Suspendisse potenti. In fermentum iaculis est et condimentum. Vestibulum tempor dapibus accumsan. Phasellus eget ornare risus, ac ullamcorper elit. Sed felis velit, sagittis eu dictum in, tempus sit amet arcu. Aenean elementum at mauris id congue.</p>
+<p>Quisque vel enim lacinia, hendrerit libero in, vestibulum ante. Proin rhoncus lacus in magna dictum imperdiet luctus sit amet elit. Vestibulum placerat urna risus, sed pulvinar ante viverra sit amet. Aliquam placerat turpis at diam laoreet, eget porta augue mattis. Curabitur sodales eros neque, id ultrices elit malesuada sit amet. Morbi semper augue eu tellus eleifend fermentum. Sed id purus lacus. Nullam lacinia in lectus at aliquet. Cras vel eros ut diam mollis scelerisque. Nullam non nisl non lorem cursus iaculis ac sed lorem. Pellentesque mollis neque at augue convallis semper. Cras placerat, erat ut accumsan ultrices, quam nulla rhoncus dui, sit amet maximus est lorem sit amet quam. In interdum eros vitae justo viverra, nec hendrerit ipsum condimentum. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Sed condimentum urna libero, sit amet ullamcorper nibh lacinia quis.</p>
+<p>Praesent consequat non tortor nec venenatis. Ut molestie arcu eu arcu pretium tempor. Nam facilisis dui a nibh rutrum, id tincidunt elit sodales. Quisque gravida scelerisque iaculis. Nunc eleifend turpis magna, dignissim tempor mauris finibus sit amet. Sed a leo vehicula ex mattis tempor. Nulla eget lorem eget. </p>
+
+    </article>
+    <aside>
+        
+            <img class="page-image" src="portfolio/First-Project/img/doge.jpg" alt="doge.jpg" />
+        
+            <img class="page-image" src="portfolio/First-Project/img/Screen_Shot_2015-05-12_at_3.31.31_PM.png" alt="Screen_Shot_2015-05-12_at_3.31.31_PM.png" />
+        
+            <img class="page-image" src="portfolio/First-Project/img/yesthisisdog.jpg" alt="yesthisisdog.jpg" />
+        
+    </aside>
+</div>
+
+        </main>
+    </body>
+</html>

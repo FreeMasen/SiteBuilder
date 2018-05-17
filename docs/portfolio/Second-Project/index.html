@@ -1,0 +1,203 @@
+<html>
+    <head>
+        <base href="/" /> 
+        <style>
+            @font-face {
+                font-family: 'Bold';
+                src: url('/fonts/Roboto-Bold.ttf')
+            }
+            @font-face {
+                font-family: 'Normal';
+                src: url('/fonts/Roboto-Regular.ttf')
+            }
+        html, body {
+            border: 0;
+            padding: 0;
+            margin: 0;
+        }
+        html > * {
+            box-sizing: border-box;
+            font-family: 'Normal', sans-serif;
+        }
+        input, textarea {
+            font-family: 'Normal', sans-serif !important;
+            font-size: 14pt;
+        }
+        #header {
+            margin-top: 10px;
+            font-size: 18pt;
+            display: flex;
+            flex-flow: row;
+            justify-content: space-between;
+            align-items: center;
+            align-content: flex-start;
+            margin-left: 11vw;
+            margin-right: 11vw;
+        }
+        #header > a {
+            font-family: 'Normal', sans-serif;
+            padding: 5px 0px;
+            font-weight: bold;
+            color: black;
+            text-decoration: none;
+        }
+        #header > a:visited {
+            color: black;
+        }
+        #nav {
+            display: flex;
+            flex-flow: row;
+            justify-content: center;
+            align-items: center;
+            align-content: flex-start;
+        }
+        .button {
+            display: block;
+            padding: 5px 10px;
+            text-decoration: none;
+            color: black;
+            background: none;
+            border: none;
+            font-family: 'Normal', sans-serif;
+        }
+        .button:visited {
+            color: black;
+        }
+        .button:hover,
+        .button.selected {
+            color: rgb(210, 72, 4, 1);
+        }
+        .button.selected:hover {
+            color: black;
+        }
+        @media (max-width: 550px) {
+            #header {
+                font-size: 14pt;
+            }
+        }
+        @media (max-width: 375px) {
+            #header {
+                font-size: 12pt;
+            }
+        }
+        </style>
+        
+<style>
+    .page-wrapper {
+        display: flex;
+        flex-flow: row;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin: 6vw;
+    }
+    article {
+        width: calc(40% - 10px);
+        margin: 0 5px;
+    }
+    article > h1 {
+        font-size: 18pt;
+        font-family: "Bold" sans-serif;
+        font-weight: bold;
+    }
+    article > h2 {
+        font-size: 18pt;
+        font-family: "Bold" sans-serif;
+        font-weight: normal;
+    }
+    article > h3 {
+        font-size: 14pt;
+        font-family: "Bold" sans-serif;
+    }
+    aside {
+        display: flex;
+        flex-flow: column;
+        width: calc(60% - 10px);
+        margin: 0 5px;
+        align-items: center;
+        justify-content: flex-start;
+        align-content: flex-start;
+    }
+    aside > img {
+        max-width: 100%;
+    }
+    h3 {
+        margin: 0;
+    }
+    .page-image + .page-image {
+        margin-top: 10px;
+    }
+</style>
+
+    </head>
+    <body>
+        <header id="header">
+            <a href="/">
+                Example Site
+            </a>
+            </svg>
+            <nav id="nav">
+                <a href="/"
+                
+                    class="button selected"
+                
+                >
+                    Work
+                </a>
+                <a href="/about/index.html"
+                
+                    class="button"
+                
+                >
+                    About
+                </a>
+                <a href="/contact/index.html"
+                
+                    class="button"
+                
+                >
+                    Contact
+                </a>
+            </nav>
+        </header>
+        <main id="main">
+            
+<div class="page-wrapper">
+    <article>
+        <h1>Second Project</h1>
+        <h2>I&#x27;ve done this before</h2>
+        
+            <h3>teammates</h3>
+            <span class="teammates">
+                C. Person, D. Person
+            </span>
+        
+        <h1>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</h1>
+<p>Aenean a lobortis lectus, vitae accumsan ante. Donec dignissim ligula metus, sed vestibulum nulla aliquam sed. Praesent euismod congue metus vitae hendrerit. Quisque et gravida lectus, quis tincidunt dolor. Donec ipsum erat, feugiat quis porttitor non, mattis eget est. Fusce maximus, enim sagittis dictum accumsan, augue nisi cursus augue, quis euismod sapien orci id libero. Proin in ullamcorper ipsum. Phasellus sagittis magna a neque semper facilisis. Fusce mollis posuere orci, at porta lorem aliquet in. Sed ut tristique est, vitae convallis purus. Sed sit amet posuere enim. Donec in ante ornare, finibus odio ut, viverra nisl. Suspendisse sodales sed enim ac pellentesque. Suspendisse non suscipit libero, a dictum justo. Aenean malesuada luctus nulla id maximus. Suspendisse malesuada pellentesque bibendum.</p>
+<p>Aliquam mollis ligula quis orci vulputate congue. Praesent sollicitudin et nisi eget aliquet. Donec eu arcu a urna rhoncus lobortis. Donec egestas feugiat justo in tincidunt. Nullam ornare feugiat quam et vulputate. Aenean vitae nisi id enim placerat luctus at in nunc. Morbi tempus molestie lacus, non vehicula nunc elementum ac. Suspendisse fermentum bibendum turpis, laoreet porta quam laoreet et. In lacus ligula, feugiat laoreet consequat a, condimentum in tellus.</p>
+<p>Ut velit mi, fringilla nec imperdiet id, venenatis id dolor. Integer ultricies, dolor id volutpat consectetur, lorem dui sodales urna, ut pretium erat ligula et nulla. Aenean molestie ligula tellus. Aenean et pharetra tellus. Sed vitae velit quis nulla finibus elementum ac nec purus. Phasellus quis ullamcorper massa, non semper tortor. Sed aliquam mollis pharetra. Ut consectetur tellus vitae nisi mattis imperdiet. Mauris iaculis accumsan varius. Pellentesque vitae commodo est. Suspendisse volutpat, orci vel sollicitudin eleifend, massa ipsum faucibus massa, id blandit massa felis at erat.</p>
+<p>Integer gravida leo non diam sagittis, sed porttitor ante finibus. Duis pellentesque facilisis velit a pulvinar. Sed id mi eget ligula scelerisque aliquam. Pellentesque tincidunt lectus nec ipsum sollicitudin, eu lacinia odio tempus. Vestibulum ut tempor dui. Aliquam in pulvinar lorem, sit amet sollicitudin lectus. Nullam quis pretium neque, id tempus felis.</p>
+<p>In luctus, sem vitae ornare condimentum, tortor justo vestibulum dui, ut aliquam mauris lacus eget urna. Pellentesque eu imperdiet dolor. Proin aliquet congue molestie. Nam ante dui, accumsan nec sagittis eget, dapibus volutpat leo. Nunc id justo at nunc mollis pharetra eget vitae sem. Nam semper augue eget pharetra gravida. Proin laoreet finibus erat eget fringilla. Morbi venenatis nisl mollis ex commodo, a auctor arcu rhoncus. Maecenas at ex pharetra, consectetur dui nec, pulvinar tortor. Mauris porta nisi quis magna lobortis maximus. Integer magna erat, lobortis et consequat quis, rutrum non sem.</p>
+<p>Quisque molestie consequat neque, ac laoreet diam blandit a. Proin feugiat nulla orci, eu facilisis ex eleifend ac. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Aliquam convallis efficitur ex sit amet malesuada. Praesent lacinia rhoncus sem, eget tincidunt tellus porttitor vitae. Duis fringilla semper risus a gravida. Cras nec arcu eget nisi vestibulum accumsan.</p>
+<blockquote>
+<p>Vivamus mollis nisi at accumsan gravida. Nulla facilisi. Nulla rutrum purus ex, eu condimentum sem gravida efficitur. Aenean at nisl vitae lacus dignissim sollicitudin. Donec ut urna in magna auctor placerat non facilisis ex. Nulla dignissim in lectus ut fringilla. Ut in erat hendrerit, feugiat odio vitae, posuere leo. Etiam eu nunc risus.</p>
+</blockquote>
+<p>Nullam porta volutpat libero, ac fringilla risus tincidunt eget. Suspendisse dapibus, sapien et gravida placerat, turpis tortor fermentum magna, quis varius nisi justo eu nisl. Nulla mauris nibh, ultricies in congue sed, placerat eu metus. Nunc ultrices elit lorem, blandit tincidunt ipsum elementum venenatis. Duis in nulla nec mauris mattis ultricies. Curabitur ultrices, sapien sit amet pulvinar fringilla, massa elit pulvinar nulla, id malesuada tellus ex eu est. Suspendisse potenti. Nullam sodales nisi id eros vehicula, a interdum sapien scelerisque. Nullam in eleifend metus. Nullam elementum tincidunt dui quis aliquam. Proin volutpat ligula sem, ac viverra tortor fringilla sit amet.</p>
+<p>Morbi at dolor dictum, malesuada sem et, commodo nisi. In hac habitasse platea dictumst. Phasellus sed dolor at elit dictum consequat. Integer ut justo nibh. Etiam nibh metus, vestibulum eu est sed, bibendum rhoncus urna. In auctor porttitor pulvinar. Sed non efficitur arcu. Curabitur malesuada euismod nunc, non suscipit libero sodales id. Nulla vel felis a nibh semper vulputate eu nec nisl. Quisque vitae lectus tristique, dictum dui sed, pretium purus. Cras tempus urna purus, eget iaculis sapien faucibus et. Suspendisse placerat felis vitae lorem tincidunt, ut lacinia dolor condimentum. Donec felis diam, lobortis at eleifend eget, tincidunt id lorem. Curabitur ipsum lorem, aliquet quis turpis feugiat, semper aliquet enim. Duis in est at neque feugiat pharetra sed eu neque.</p>
+<p>Morbi ut nibh vel massa fermentum pellentesque eu a dolor. Duis scelerisque est ante, at elementum mi finibus at. Aenean ultrices leo placerat massa vulputate, non volutpat risus mattis. Nam sed ante ut metus ultrices aliquam. Aliquam mollis augue enim, accumsan venenatis arcu lobortis imperdiet. Etiam a quam ac quam dapibus venenatis. Sed malesuada, massa sed sodales ultricies, dolor sapien tempor tellus, mollis vehicula ligula risus ut nulla. Vestibulum vitae magna eget urna ornare fermentum id ut lectus. Vestibulum ut urna vel ligula interdum malesuada. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Suspendisse porttitor, neque nec pharetra malesuada, mauris neque tempor ligula, volutpat euismod metus quam eget lorem. In bibendum luctus lectus nec molestie. Praesent a varius nunc. Morbi et pharetra leo, id luctus quam.</p>
+<p>Nullam nec purus eu nunc volutpat porta sed ac dui. Sed aliquam quam vel erat rutrum venenatis. Cras ultrices metus eu purus tempor hendrerit. Pellentesque nec nulla vitae augue viverra suscipit non sit amet elit. Duis ut metus tempor, tempor mi a, maximus metus. Quisque non odio magna. Nullam aliquet ut orci nec sodales. Donec ut nunc gravida, venenatis risus ut, consectetur orci. Proin commodo nec ligula in lobortis. Morbi at facilisis lorem. Vestibulum bibendum quis sem eu molestie. Sed sit amet ex eget lacus elementum tincidunt. Aenean sollicitudin euismod velit, non tincidunt tortor facilisis sit amet. Fusce sed tellus vitae mi pharetra maximus id vitae lectus. Sed eleifend. </p>
+
+    </article>
+    <aside>
+        
+            <img class="page-image" src="portfolio/Second-Project/img/800px-Sup_dawg.jpg" alt="800px-Sup_dawg.jpg" />
+        
+            <img class="page-image" src="portfolio/Second-Project/img/7CPUUJ7QBGYDURSRVA4ANDVRI6K2Z6WC.jpg" alt="7CPUUJ7QBGYDURSRVA4ANDVRI6K2Z6WC.jpg" />
+        
+            <img class="page-image" src="portfolio/Second-Project/img/captain_picard.jpg" alt="captain_picard.jpg" />
+        
+    </aside>
+</div>
+
+        </main>
+    </body>
+</html>
