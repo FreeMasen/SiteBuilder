@@ -70,4 +70,7 @@ When a user clicks the 'Generate' button it will convert the files in the `sourc
    └─── [image file]
 ```
 
-The example html output can be found [here](./docs).
+The example html output can be found [here](./docs) (note, these files have been modified slightly to allow them to work with github pages).
+
+To allow for additional customization, user are able to select the order in which their images appear for each project, which fonts should be used and what the accent color should be.
+
