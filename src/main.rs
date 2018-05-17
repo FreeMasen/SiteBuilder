@@ -1,5 +1,4 @@
-#![allow(unknown_lints)]
-#![warn(clippy)]
+#![windows_subsystem(windows)]
 extern crate bincode;
 extern crate chrono;
 extern crate nfd;
