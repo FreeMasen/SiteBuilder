@@ -5,6 +5,7 @@ import About from './components/about';
 import All from './components/all';
 import ProjectEditor from './components/project';
 import SelectSite from './components/selectSite';
+import TemplateList from './components/templateList';
 import TitleBar from './components/titleBar';
 import Toast from './components/toast';
 import Communicator from './services/communicator';
@@ -26,7 +27,7 @@ class AppContainer extends React.Component<{}, AppState> {
     communicatorCallback(s: AppState) {
         this.setState((prev, props) => {
             return s
-        })
+        });
     }
 
     changeView(route: Route, project: Project = null) {
@@ -97,6 +98,9 @@ class AppContainer extends React.Component<{}, AppState> {
                         selectFontClicked={bold => this.comm.selectFont(bold)}
                         updateTitle={title => this.comm.updateTitle(title)}
                         colorSaved={color => this.comm.updateColor(color)}
+                        templateOptions={this.state.templates}
+                        selectedTemplate={this.state.site.template}
+                        selectedTemplateChange={name => this.comm.changeSiteTemplate(name)}
                     />
                 );
             case Route.Project:
@@ -122,11 +126,20 @@ class AppContainer extends React.Component<{}, AppState> {
                 )
             case Route.Select:
                 return (
-                    <SelectSite
-                        options={this.state.siteOptions || []}
-                        selectionHandler={idx => this.comm.selectSite(idx)}
-                        newSiteHandler={() => this.comm.newSite()}
-                    />
+                    <div>
+                        <SelectSite
+                            options={this.state.siteOptions || []}
+                            selectionHandler={idx => this.comm.selectSite(idx)}
+                            newSiteHandler={() => this.comm.newSite()}
+                        />
+                        <TemplateList
+                            names={this.state.templates}
+                            removeHandler={name => this.comm.removeTemplate(name)}
+                            updateHandler={name => this.comm.updateTemplate(name)}
+                            newHandler={name => this.comm.addTemplate(name)}
+                            exportHandler={name => this.comm.exportTemplate(name)}
+                        />
+                    </div>
                 );
         }
         return this.state.currentView;

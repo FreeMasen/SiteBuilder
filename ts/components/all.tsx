@@ -10,8 +10,10 @@ interface IAllProps {
     destination: string;
     pages: Project[];
     fonts: Fonts;
-    title: string,
-    color: Color,
+    title: string;
+    color: Color;
+    templateOptions: string[];
+    selectedTemplate: string;
     updateRequested: () => void;
     sourceSelected: () => void;
     destSelected: () => void;
@@ -20,8 +22,9 @@ interface IAllProps {
     aboutSelected: () => void;
     generateSite: () => void;
     selectFontClicked: (bold: boolean) => void;
-    updateTitle: (title: String) => void;
+    updateTitle: (title: string) => void;
     colorSaved: (color: Color) => void;
+    selectedTemplateChange: (name: string) => void;
 }
 
 interface IAllState {
@@ -119,6 +122,22 @@ export default class All extends React.Component<IAllProps, IAllState> {
                     >
                         <span className="font-name">Bold: {StringHandler.fileName(this.props.fonts.bold)}</span>
                     </div>
+                </div>
+                <h2>Template</h2>
+                <div className="template-option">
+                    <div
+                        className="selected-template">
+                        <span className="template-name">Template Placeholder</span>
+                    </div>
+                    <select className="template-select" value={this.props.selectedTemplate} onChange={ev => this.props.selectedTemplateChange(ev.currentTarget.value)}>
+                        {
+                            this.props.templateOptions.map((name, i) => {
+                                return (
+                                    <option key={`template-option-${i}`} value={name}>{name}</option>
+                                )
+                            })
+                        }
+                    </select>
                 </div>
                 <ColorPicker
                     red={this.props.color.red}

@@ -68,7 +68,7 @@ export default class Comm {
 
     public changeView(route: Route, project?: Project) {
         let msg = {
-            kind: "changeView", 
+            kind: "changeView",
             route,
             project: project ? project.asJson() : null
         }
@@ -114,6 +114,43 @@ export default class Comm {
         this.sendMessage({
             kind: 'clearMessage',
             id,
+        });
+    }
+
+    public addTemplate(name: string) {
+        this.sendMessage({
+            kind: 'newTemplate',
+            name,
+        });
+    }
+
+    public updateTemplate(name: string) {
+        this.sendMessage({
+            kind: 'updateTemplate',
+            name,
+        });
+    }
+
+    public removeTemplate(name: string) {
+        this.sendMessage({
+            kind: 'removeTemplate',
+            name,
+        });
+    }
+
+    public exportTemplate(name: string) {
+        console.log('exportTemplate', name);
+        this.sendMessage({
+            kind: 'exportTemplate',
+            name,
+        })
+    }
+
+    public changeSiteTemplate(name: string) {
+        console.log('changeSiteTemplate', name);
+        this.sendMessage({
+            kind: 'setSiteTemplate',
+            name,
         })
     }
 

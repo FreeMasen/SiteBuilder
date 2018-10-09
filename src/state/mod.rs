@@ -3,6 +3,7 @@ use std::{
     io::{Read, Write},
     fs::{File, DirBuilder, remove_file, OpenOptions},
     env::{var_os},
+    collections::HashMap,
 };
 
 use bincode::{deserialize_from, serialize_into};
@@ -17,6 +18,7 @@ pub mod fonts;
 pub mod image;
 pub mod meta;
 pub mod build;
+pub mod template;
 
 pub use site_state::SiteState;
 pub use website::{Website, Color};
@@ -26,7 +28,7 @@ pub use image::Image;
 pub use meta::Meta;
 pub use valid::Valid;
 pub use project::Project;
-
+pub use template::{Template, get_templates, cache_templates, template_from_folder};
 
 use messaging::ServerMessage;
 
@@ -39,6 +41,7 @@ pub struct State {
     pub message: Vec<ServerMessage>,
     pub current_view: Route,
     next_msg_id: u32,
+    pub available_templates: HashMap<String, Template>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Default, Clone)]
@@ -55,7 +58,7 @@ impl State {
         let mut site_options: Vec<CachedSite> = if let Ok(opts) = deserialize_from(f) {
             opts
         } else {
-            vec!()
+            vec![]
         };
         site_options.retain(|o| o.path.exists());
         Ok(State {
@@ -65,6 +68,7 @@ impl State {
             message: vec!(),
             current_view: Route::Select,
             next_msg_id: 0,
+            available_templates: get_templates(),
         })
     }
 
@@ -75,6 +79,55 @@ impl State {
             s.cache()
         }
         Ok(ret)
+    }
+
+    pub fn cache_templates(&self) -> Result<(), StateError> {
+        cache_templates(&self.available_templates);
+        Ok(())
+    }
+
+    pub fn add_new_template(&mut self, name: String, path: &PathBuf) -> Result<String, StateError> {
+        if self.available_templates.contains_key(&name) {
+            return Err(StateError::new("This name already exists in your saved templates"));
+        }
+        let new_template = template_from_folder(path)?;
+        let msg = format!("Successfully added new template {}", name);
+        self.available_templates.insert(name, new_template);
+        self.cache_templates()?;
+        Ok(msg)
+    }
+
+    pub fn remove_template(&mut self, name: String) -> Result<String, StateError> {
+        if !self.available_templates.contains_key(&name) {
+            return Err(StateError::new("This name does not exist to be removed"));
+        }
+        self.available_templates.remove(&name);
+        Ok(format!("Successfully removed template {}", name))
+    }
+
+    pub fn save_template_changes(&mut self, name: String, path: &PathBuf) -> Result<String, StateError> {
+        if !self.available_templates.contains_key(&name) {
+            return Err(StateError::new("Cannot save template that does not exist"));
+        }
+        let partial_update = template::partial_template_from_folder(path);
+        let msg = format!("Successfully updated template {}", name);
+        self.available_templates.entry(name).and_modify(|t| t.update_partial(partial_update));
+        Ok(msg)
+    }
+
+    pub fn export_template(&self, name: String, path: &PathBuf) -> Result<String, StateError> {
+        if !self.available_templates.contains_key(&name) {
+            return Err(StateError::new("Cannot export non-existent template"))
+        }
+        ensure_folder(path)?;
+        if let Some(ref template) = self.available_templates.get(&name) {
+            write_file(template.base.as_str(), path.join("base.html"))?;
+            write_file(template.index.as_str(), path.join("index.html"))?;
+            write_file(template.page.as_str(), path.join("page.html"))?;
+            write_file(template.contact.as_str(), path.join("contact.html"))?;
+            write_file(template.about.as_str(), path.join("about.html"))?;
+        }
+        Ok(format!("Successfully exported {} to {}", name, path.display()))
     }
 
     pub fn choose_site(&mut self, idx: usize) -> Result<(), StateError> {
@@ -181,8 +234,23 @@ impl State {
     }
 
     pub fn build_site(&mut self) -> StateResult {
+        if let Some(ref s) = self.site {
+            if let Some(template) = self.available_templates.get(&s.template) {
+                let msg = s.build(template)?;
+                return Ok(msg)
+            }
+        };
+        Err(StateError::new("Unable to get tempalte for site"))
+    }
+
+    pub fn set_site_template(&mut self, name: String) -> StateResult {
+        if !self.available_templates.contains_key(&name) {
+            return Err(StateError::new(format!("Unable to find {} in available templates", name)));
+        }
         let s = self.site()?;
-        s.build()
+        let msg = format!("Successfully set site template to {}", &name);
+        s.set_template(name);
+        Ok(msg)
     }
 
     pub fn add_project(&mut self, name: String) -> StateResult {
@@ -325,21 +393,21 @@ impl State {
     }
 
     fn get_cache_file() -> Result<File, StateError> {
-        let path = Self::get_home()?.join(".site_builder_cache");
+        let path = get_home()?.join(".site_builder_cache");
         let f = OpenOptions::new().write(true).read(true).create(true).open(&path)?;
         Ok(f)
     }
 
-    fn get_home() -> Result<PathBuf, StateError> {
-        let arg = if cfg!(windows) {
-            "USERPROFILE"
-        } else {
-            "HOME"
-        };
-        match var_os(arg) {
-            Some(s) => Ok(PathBuf::from(s)),
-            None => Err(StateError::new("Error getting user folder")),
-        }
+}
+pub fn get_home() -> Result<PathBuf, StateError> {
+    let arg = if cfg!(windows) {
+        "USERPROFILE"
+    } else {
+        "HOME"
+    };
+    match var_os(arg) {
+        Some(s) => Ok(PathBuf::from(s)),
+        None => Err(StateError::new("Error getting user folder")),
     }
 }
 
@@ -429,4 +497,5 @@ pub enum Route {
     Project = 1,
     About = 2,
     Select = 3,
+    Templates = 4,
 }

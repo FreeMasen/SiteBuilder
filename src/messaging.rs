@@ -60,6 +60,16 @@ pub enum Message {
     ChangeSiteTitle { title: String },
     /// Add a new site
     AddSite,
-    // Change the webiste's accent color
-    ChangeColor { color: Color }
+    /// Change the webiste's accent color
+    ChangeColor { color: Color },
+    /// add new templates
+    NewTemplate { name: String },
+    /// update template
+    UpdateTemplate { name: String },
+    /// remove template
+    RemoveTemplate { name: String },
+    /// export a template to a directory
+    ExportTemplate { name: String },
+    /// set a site's template
+    SetSiteTemplate { name: String },
 }

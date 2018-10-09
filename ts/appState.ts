@@ -8,6 +8,7 @@ export default class AppState {
         site: Site = null,
         siteOptions: SiteOption[] = [],
         message: ServerMessage[] = [],
+        public templates: string[] = [],
     ) {
         this.site = site;
         this.siteOptions = siteOptions;
@@ -20,6 +21,7 @@ export default class AppState {
             Site.fromJson(json.site),
             json.siteOptions.map(SiteOption.fromJson),
             json.message.map(ServerMessage.fromJson),
+            Object.getOwnPropertyNames(json.availableTemplates),
         )
     }
 
@@ -45,6 +47,7 @@ export class Site {
         public source: string = '',
         public destination: string = '',
         public website: Website = new Website(),
+        public template: string = 'Default',
         selectedProject: Project = null,
         lastBuilt: Date = null,
     ) {
@@ -58,6 +61,7 @@ export class Site {
             json.source,
             json.destination,
             Website.fromJson(json.website),
+            json.template,
             Project.fromJson(json.selectedProject),
             json.lastBuilt ? new Date(json.lastBuilt) : null,
         );
@@ -67,6 +71,7 @@ export class Site {
             source: this.source,
             destination: this.destination,
             website: this.website.asJson(),
+            template: this.template,
             selectedProject: this.selectedProject,
             lastBuilt: this.lastBuilt,
         };

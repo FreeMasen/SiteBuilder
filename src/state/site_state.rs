@@ -1,6 +1,7 @@
 use std::{
     fs::{File, remove_dir_all, remove_file},
     path::{PathBuf},
+    io::Read,
 };
 
 use bincode::{serialize_into, deserialize_from};
@@ -13,13 +14,7 @@ use project::{Project};
 use error::{StateError, StateResult};
 use website::{Website, Color};
 use build::{IndexProject, Page};
-
-const ABOUT: &'static str = include_str!("../assets/templates/about.html");
-const BASE: &'static str = include_str!("../assets/templates/base.html");
-const CONTACT: &'static str = include_str!("../assets/templates/contact.html");
-const INDEX: &'static str = include_str!("../assets/templates/index.html");
-const PAGE: &'static str = include_str!("../assets/templates/page.html");
-
+use template::Template;
 
 #[derive(Serialize, Deserialize, Debug, Default, Clone)]
 #[serde(rename_all = "camelCase")]
@@ -29,6 +24,34 @@ pub struct SiteState {
     pub website: Website,
     pub selected_project: Option<Project>,
     pub last_built: Option<DateTime<Local>>,
+    pub template: String,
+}
+
+#[derive(Serialize, Deserialize, Debug, Default, Clone)]
+#[serde(rename_all = "camelCase")]
+pub struct OldSiteState {
+    pub source: PathBuf,
+    pub destination: PathBuf,
+    pub website: Website,
+    pub selected_project: Option<Project>,
+    pub last_built: Option<DateTime<Local>>,
+}
+
+impl Into<SiteState> for OldSiteState {
+    fn into(self) -> SiteState {
+        SiteState {
+            template: default_template(),
+            source: self.source,
+            destination: self.destination,
+            website: self.website,
+            selected_project: self.selected_project,
+            last_built: self.last_built,
+        }
+    }
+}
+
+fn default_template() -> String {
+    "Default".to_string()
 }
 
 impl SiteState {
@@ -41,7 +64,7 @@ impl SiteState {
     }
     pub fn get(path: &PathBuf) -> Result<SiteState, StateError> {
         let p = path.join(".site_builder");
-        let f = super::get_cache_file(&p)?;
+        let mut f = super::get_cache_file(&p)?;
         if f.metadata()?.len() == 0 {
             let s = 
             SiteState {
@@ -50,12 +73,20 @@ impl SiteState {
                 website: Website::default(),
                 selected_project: None,
                 last_built: None,
+                template: "Default".to_string(),
             };
             s.ensure_dir_defaults();
             return Ok(s)
         }
-        let ret = deserialize_from(f)?;
-        Ok(ret)
+        let mut buf: Vec<u8> = Vec::with_capacity(f.metadata()?.len() as usize);
+
+        f.read_to_end(&mut buf)?;
+        if let Ok(ret) = deserialize_from(buf.as_slice()) {
+            Ok(ret)
+        } else {
+            let old_state: OldSiteState = deserialize_from(buf.as_slice())?;
+            Ok(old_state.into())
+        }
     }
     /// use the source property of a state instance to
     /// get the current file structure/content
@@ -101,6 +132,10 @@ impl SiteState {
 
     pub fn update_title(&mut self, title: String) {
         self.website.update_title(title);
+    }
+
+    pub fn set_template(&mut self, template: String) {
+        self.template = template;
     }
 
     /// Attempt to get the cache file. This will also
@@ -195,14 +230,14 @@ impl SiteState {
         };
         Ok(String::new())
     }
-    pub fn build(&self) -> StateResult {
+    pub fn build(&self, template: &Template) -> StateResult {
         let mut t = Tera::default();
         t.add_raw_templates(vec![
-                            ("base.html", BASE),
-                            ("about.html", ABOUT),
-                            ("contact.html", CONTACT),
-                            ("index.html", INDEX),
-                            ("page.html", PAGE),
+                            ("base.html", template.base.as_str()),
+                            ("about.html", template.about.as_str()),
+                            ("contact.html", template.contact.as_str()),
+                            ("index.html", template.index.as_str()),
+                            ("page.html", template.page.as_str()),
                             ])?;
         self.ensure_out_dir_defaults()?;
         self.move_fonts()?;
