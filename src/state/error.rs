@@ -1,3 +1,7 @@
+use std::{
+    error::Error,
+    fmt::{Display,Result as FmtRes, Formatter}
+};
 use bincode::{Error as BError};
 use tera::{Error as TError};
 use walkdir::{Error as WDError};
@@ -8,12 +12,26 @@ pub struct StateError {
 }
 
 impl StateError {
-    pub fn new<T: ToString>(msg: T) -> StateError {
+    pub fn new<T: ToString>(msg: T) -> Self {
         StateError {
             msg: msg.to_string(),
         }
     }
+
+    pub fn take(msg: String) -> Self {
+        StateError {
+            msg,
+        }
+    }
 }
+
+impl Display for StateError {
+    fn fmt(&self, f: &mut Formatter) -> FmtRes {
+        write!(f, "{}", self.msg)
+    }
+}
+
+impl Error for StateError {}
 
 pub type StateResult = Result<String, StateError>;
 
