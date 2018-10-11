@@ -7,5 +7,7 @@
 /src/assets/*.css
 /src/assets/*.map
 /src/assets/*.js
-assets/*.rc
-.DS_Store
+/assets/*.rc
+**/.DS_Store
+/SiteBuilder.tar.gz
+/SiteBuilder.app

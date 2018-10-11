@@ -45,7 +45,6 @@ fn main() {
         Some(size),
         true,
         true,
-        true,
         |_wv: MyUnique<WebView<State>>| {},
         event_handler,
         s,

@@ -17,7 +17,7 @@ serde_derive = "1"
 serde_json = "1"
 toml = "0"
 walkdir = "2"
-web-view = { git = "https://github.com/huytd/web-view" }
+web-view = "0.2"
 
 [target.'cfg(windows)'.build-dependencies]
 windres = "0.1.0"
