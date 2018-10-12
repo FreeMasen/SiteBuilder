@@ -28,6 +28,7 @@ use state::*;
 const INDEX: &'static str = include_str!("assets/index.html");
 const JS: &'static str = include_str!("assets/app.js");
 const CSS: &'static str = include_str!("assets/main.css");
+const DD_CSS: &str = include_str!("../node_modules/react-dropdown/style.css");
 
 fn main() {
     println!("starting");
@@ -118,7 +119,7 @@ fn event_handler(wv: &mut WebView<State>, arg: &str, state: &mut State) {
 
 fn load_event(wv: &mut WebView<State>) {
     println!("Message::Load");
-    wv.inject_css(CSS);
+    wv.inject_css(&(DD_CSS.to_owned() + CSS));
     wv.eval(JS);
 }
 fn refresh_event(state: &mut State) {

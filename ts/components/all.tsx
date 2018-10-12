@@ -3,7 +3,7 @@ import { Color, Fonts, Project } from '../appState';
 import StringHandler from '../services/stringHandler';
 import ColorPicker from './colorPicker';
 import InputGroup from './inputGroup';
-
+import Dropdown from 'react-dropdown';
 
 interface IAllProps {
     source: string;
@@ -124,11 +124,12 @@ export default class All extends React.Component<IAllProps, IAllState> {
                     </div>
                 </div>
                 <h2>Template</h2>
-                <div className="template-option">
-                    <div
-                        className="selected-template">
-                        <span className="template-name">Template Placeholder</span>
-                    </div>
+                <Dropdown
+                    options={this.props.templateOptions}
+                    value={this.props.selectedTemplate}
+                    onChange={op => this.props.selectedTemplateChange(op.value)}
+                />
+                {/*<div className="template-option">
                     <select className="template-select" value={this.props.selectedTemplate} onChange={ev => this.props.selectedTemplateChange(ev.currentTarget.value)}>
                         {
                             this.props.templateOptions.map((name, i) => {
@@ -138,7 +139,7 @@ export default class All extends React.Component<IAllProps, IAllState> {
                             })
                         }
                     </select>
-                </div>
+                </div>*/}
                 <ColorPicker
                     red={this.props.color.red}
                     green={this.props.color.green}
